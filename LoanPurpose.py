@@ -19,6 +19,9 @@ class LoanPurpose(Filter):
                 "home_improvement", "small_business", "vacation", "moving", "wedding",
                 "house", "medical", "major_purchase", "renewable_energy"])
 
+    def convert(self, raw_data):
+        return raw_data
+
     def apply(self, loan, LOAN_ENUM_purpose=LOAN_ENUM_purpose):
         current = self.getCurrent()
         return loan[LOAN_ENUM_purpose] in current

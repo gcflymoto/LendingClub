@@ -19,6 +19,11 @@ class Filter(object):
         self.current = current
         self.args = args
 
+    def convert(self, str_data):
+        return float(str_data)
+    def __str__(self):
+        return str(self.getCurrent())
+
     def getCount(self):
         return len(self.options)
 
@@ -40,12 +45,17 @@ class Filter(object):
         return l
 
     def increment(self, filters):
-        n = 1
-        num = len(filters)
-        while (not filters[num - n].next()):
-            n += 1
+        # n = 1
+        # num = len(filters)
+        # while (not filters[num - n].next()):
+        #    n += 1
+        # return filters[num - n]
 
-        return filters[num - n]
+        for lc_filter in filters:
+            if not lc_filter.next():
+                continue
+            else:
+                return lc_filter
 
     def getCurrent(self):
         return self.options[self.current]

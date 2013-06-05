@@ -7,6 +7,8 @@ Created on May 30, 2013
 from Filter import Filter
 from LoanEnum import LOAN_ENUM_inq_last_6mths
 
+DEFAULT_INQ_LAST_6MTHS = 0
+
 class Inquiries(Filter):
     '''
     classdocs
@@ -18,6 +20,9 @@ class Inquiries(Filter):
         '''
         Filter.__init__(self, args, current)
         self.options = list(range(11))
+
+    def convert(self, raw_data):
+        return int(raw_data) if raw_data else DEFAULT_INQ_LAST_6MTHS
 
     def apply(self, loan, LOAN_ENUM_inq_last_6mths=LOAN_ENUM_inq_last_6mths):
         current = self.getCurrent()

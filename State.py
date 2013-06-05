@@ -31,6 +31,9 @@ class State(Filter):
         # "NY", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT",
         # "VA", "VT", "WA", "WI", "WV", "WY", "NULL"])
 
+    def convert(self, raw_data):
+        return raw_data if raw_data else "NULL"
+
     def apply(self, loan, LOAN_ENUM_addr_state=LOAN_ENUM_addr_state):
         current = self.getCurrent()
         return loan[LOAN_ENUM_addr_state] not in current

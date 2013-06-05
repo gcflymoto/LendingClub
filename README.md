@@ -15,13 +15,13 @@ Lending Club Data field descriptions are here [http://www.lendingclub.com/kb/ind
 
 Here are the usage models
 
-`
-C:\pypy-2.0.2\pypy.exe C:\Users\gczajkow\workspace\LendingClub\src\lcbt.py
+```
+C:\pypy-2.0.2\pypy.exe lcbt.py
 
-C:\Python27\python.exe -O C:\Users\gczajkow\workspace\LendingClub\src\lcbt.py
+C:\Python27\python.exe -O lcbt.py
 
-C:\Python32\python.exe -O C:\Users\gczajkow\workspace\LendingClub\src\lcbt.py
-`
+C:\Python32\python.exe -O lcbt.py
+```
 
 Some of the performance figures on my laptop
 

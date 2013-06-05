@@ -57,14 +57,6 @@ DEBUG = 0
 TESTRUN = 0
 PROFILE = 0
 
-DEFAULT_REVOLING_UTILIZATION = 0.0
-DEFAULT_EARLIEST_CREDIT_LINE = 0
-DEFAULT_MTHS_SINCE_LAST_DELINQ = 61
-DEFAULT_INQ_LAST_6MTHS = 0
-DEFAULT_PUBIC_RECORDS = 0
-DEFAULT_TOTAL_ACCOUNTS = 0
-DEFAULT_DELINQUENCIES_LAST_2YEARS = 0
-
 class Unbuffered:
     def __init__(self, stream):
         self.stream = stream
@@ -137,28 +129,15 @@ class CLIError(Exception):
 class GA_Test:
     population = []
 
-    def __init__(self, lcbt, args):
-        self.args = args
+    def __init__(self, conversionFilters, lcbt, args):
+        self.conversionFilters = conversionFilters
         self.lcbt = lcbt
+        self.args = args
+
 
         csv_field_names = []
         for _ in range(self.args.population_size):
-            filters = [
-                       AmountRequested.AmountRequested(args),
-                       CreditGrade.CreditGrade(args),
-                       DebtToIncomeRatio.DebtToIncomeRatio(args),
-                       Delinquencies.Delinquencies(args),
-                       EarliestCreditLine.EarliestCreditLine(args),
-                       HomeOwnership.HomeOwnership(args),
-                       Inquiries.Inquiries(args),
-                       LoanPurpose.LoanPurpose(args),
-                       MonthsSinceLastDelinquency.MonthsSinceLastDelinquency(args),
-                       PublicRecordsOnFile.PublicRecordsOnFile(args),
-                       RevolvingLineUtilization.RevolvingLineUtilization(args),
-                       State.State(args),
-                       TotalCreditLines.TotalCreditLines(args),
-                       WordsInDescription.WordsInDescription(args)
-                    ]
+            filters = [lc_filter(args) for lc_filter in self.conversionFilters.values()]
             for lc_filter in filters:
                 csv_field_names.append(lc_filter.getName())
                 lc_filter.current = random.randint(0, lc_filter.getCount() - 1)
@@ -228,14 +207,14 @@ class GA_Test:
         filters = ''
         for lc_filter in self.population[0]['filters']:
             filter_name = lc_filter.getName()
-            filter_val_str = str(lc_filter.getCurrent())
+            filter_val_str = str(lc_filter)
             best_results[filter_name] = filter_val_str
             filters += filter_name + '=' + filter_val_str + ','
 
         # Replace the last ',' with a newline
         sys.stdout.write(filters[:-1] + '\n')
 
-        sys.stdout.write('[iteration %d/%d %.2f sec/iter] %d loans test at %0.2f%% APY. ' % (self.iteration + 1, self.args.iterations, self.iteration_time / (self.iteration + 1), best_results['num_loans'], best_results['expected_apy']))
+        sys.stdout.write('[iteration %d/%d %.2f sec/iter] %d loans (%d/mo.) test at %0.2f%% APY. ' % (self.iteration + 1, self.args.iterations, self.iteration_time / (self.iteration + 1), best_results['num_loans'], best_results['loans_per_month'], best_results['expected_apy']))
         sys.stdout.write('%d loans defaulted (%0.2f%%, $%0.2f avg loss) ' % (best_results['num_defaulted'], best_results['pct_defaulted'], best_results['avg_default_loss']))
         sys.stdout.write('%0.4f%% net APY\n' % best_results['net_apy'])
 
@@ -265,7 +244,16 @@ class GA_Test:
         self.population = final_population
 
 class LCBT:
-    def __init__(self, args):
+    def __init__(self, conversionFilters, args):
+
+        self.conversionFilters = [None] * len(conversionFilters)
+
+        for filter_idx, lc_filter in conversionFilters.items():
+            self.conversionFilters[filter_idx] = lc_filter(args).convert
+
+
+        self.args = args
+
         self.row = 0
         self.labels = False
         self.results = []
@@ -273,7 +261,9 @@ class LCBT:
         self.loans = []
         self.datetime = datetime.datetime(2013, 1, 30)
         self.now = self.datetime.now()
-        self.args = args
+
+        self.last_date_for_full_month_for_volume = self.datetime.now() - datetime.timedelta(days=(args.young_loans_in_days + 30))
+
         self.skipped_loans = 0
         self.young_loans = 0
         self.removed_expired_loans = 0
@@ -288,13 +278,13 @@ class LCBT:
 
             serialized_mod = os.path.getmtime(pickle_name) if os.path.exists(pickle_name) else 0
             if serialized_mod and serialized_mod > csv_mod:
-                sys.stdout.write("Initializing from cache...")
+                sys.stdout.write("Initializing from %s ..." % pickle_name)
                 with open(pickle_name, "rb") as fh:
                     self.loans = pickle.load(fh)
                 sys.stdout.write(" done\n")
             # double cache miss
             elif os.path.exists(self.args.stats):
-                sys.stdout.write("Initializing from csv...")
+                sys.stdout.write("Initializing from %s ..." % self.args.stats)
 
                 loans = []
 
@@ -302,13 +292,6 @@ class LCBT:
                     fh = open(self.args.stats, newline='', encoding="latin-1")
                     csvreader = csv.reader(fh)
                 else:
-                    # fh = codecs.open(self.args.stats, mode='rU', encoding="utf-8")
-                    # fh = codecs.open(self.args.stats, mode='U', encoding="latin-1")
-                    # fh = codecs.open(self.args.stats, mode='rU', encoding="latin-1")
-                    # fh = codecs.open(self.args.stats, 'rU', encoding="latin-1")
-                    # csvreader = csv.reader(fh)
-                    # fh = open(self.args.stats, "rU")
-                    # csvreader = UnicodeDictReader(fh, encoding="latin-1")
                     fh = open(self.args.stats)
                     csvreader = UnicodeReader(fh, encoding="latin-1")
 
@@ -325,7 +308,7 @@ class LCBT:
                 with open(pickle_name, "wb") as fh:
                     pickle.dump(loans, fh)
                 self.loans = loans
-                sys.stdout.write(" done. Loans Found:" + str(len(loans)) + " Skipped Loans:" + str(self.skipped_loans) + " Skipped Young Loans:" + str(self.young_loans) + " Skipped Removed or Expired Loans:" + str(self.removed_expired_loans) + '\n')
+                sys.stdout.write(" done.\nLoans Found:" + str(len(loans)) + " Skipped non-parseable Loans:" + str(self.skipped_loans) + " Skipped Young Loans:" + str(self.young_loans) + " Skipped Removed or Expired Loans:" + str(self.removed_expired_loans) + '\n')
             else:
                 sys.stdout.write(self.args.stats + " not found.\n")
                 sys.exit(-1)
@@ -350,42 +333,6 @@ class LCBT:
         profit = principal = lost = 0.0
 
         for loan in invested:
-            if not loan[LOAN_ENUM_profit_calculated]:
-                loan_defaulted = loan_lost = 0
-                loan_profit = loan_principal = 0.0
-                elapsed = loan[LOAN_ENUM_elapsed_months_since_issue_date]
-                balance = loan[LOAN_ENUM_funded_amnt]
-                monthly_payment = loan[LOAN_ENUM_installment]
-                rate = loan[LOAN_ENUM_int_rate]
-                ratio = 25.0 / balance
-                payments = 0.0
-                default = self.defaultedAmount(loan)
-                while elapsed > 0:
-                    elapsed -= 1
-                    # Interest and service charge for the whole loan (not just me)
-                    interest = balance * rate / 1200.0
-                    service = 0.01 * monthly_payment
-                    payments += monthly_payment
-                    if (default and payments > loan[LOAN_ENUM_total_pymnt]):
-                        loan_profit -= default * ratio
-                        loan_lost += default * ratio
-                        loan_defaulted = 1
-                        break
-
-                    # Compute my ratio of the profit
-                    loan_profit += (interest - service) * ratio
-                    loan_principal += balance * ratio
-                    balance -= monthly_payment
-                #
-                # cache some of the calculated amounts
-                #
-                loan[LOAN_ENUM_profit] = loan_profit
-                loan[LOAN_ENUM_principal] = loan_principal
-                loan[LOAN_ENUM_lost] = loan_lost
-                loan[LOAN_ENUM_defaulted] = loan_defaulted
-                loan[LOAN_ENUM_profit_calculated] = 1
-                #
-                #
             profit += loan[LOAN_ENUM_profit]
             principal += loan[LOAN_ENUM_principal]
             lost += loan[LOAN_ENUM_lost]
@@ -395,8 +342,11 @@ class LCBT:
 
         if num_loans:
 
-            # nar = pretty_decimal(Decimal(100 * math.pow(1 + profit / rounded_principal, 12) - 1), significance=4)
-            nar = 100.0 * (math.pow(1 + profit / principal, 12) - 1.0)
+            if principal == 0:
+                nar = 0.0
+            else:
+                # nar = pretty_decimal(Decimal(100 * math.pow(1 + profit / rounded_principal, 12) - 1), significance=4)
+                nar = 100.0 * (math.pow(1 + profit / principal, 12) - 1.0)
 
             rate = 0.0
             for loan in invested:
@@ -411,22 +361,22 @@ class LCBT:
             # avg_loss = pretty_decimal(Decimal(lost / defaulted), significance=2) if defaulted > 0  else pretty_decimal(Decimal(0.0), significance=2)
             avg_loss = (lost / defaulted) if defaulted > 0 else 0.0
 
-            # # Count loan volume
-            # per_month = 0
-            # for loan in invested:
-            #    if loan[LOAN_ENUM_issue_datetime].year == self.now.year and loan[LOAN_ENUM_issue_datetime].month == self.now.month:
-            #        per_month += 1
+            # Count loan volume
+            per_month = 0
+            for loan in invested:
+                if loan[LOAN_ENUM_issue_datetime].year == self.last_date_for_full_month_for_volume.year and loan[LOAN_ENUM_issue_datetime].month == self.last_date_for_full_month_for_volume.month:
+                    per_month += 1
         else:
             nar = 0.0
             rate = 0.0
             expect = 0.0
             default_percent = 0.0
             avg_loss = 0.0
-            # per_month = 0
+            per_month = 0
 
         return {
          'num_loans': num_loans,
-         # 'loans_per_month': per_month,
+         'loans_per_month': per_month,
          'expected_apy': expect,
          'num_defaulted': defaulted,
          'pct_defaulted': default_percent,
@@ -434,10 +384,11 @@ class LCBT:
          'net_apy': nar
          }
 
-    def defaultedAmount(self, loan):
+    def defaultedAmount(self, loan, LOAN_ENUM_loan_status=LOAN_ENUM_loan_status, LOAN_ENUM_out_prncp=LOAN_ENUM_out_prncp, LOAN_ENUM_out_prncp_inv=LOAN_ENUM_out_prncp_inv):
         if loan[LOAN_ENUM_loan_status] == "Charged Off" or loan[LOAN_ENUM_loan_status] == "Default":
-            return loan[LOAN_ENUM_out_prncp]
-        return 0
+            # For some reason outstanding principal is 0.0 and this will not cause the loan to be considered defaulted by our algorithm. So let's add a penny
+            return loan[LOAN_ENUM_out_prncp] + 0.01
+        return 0.0
 
     def consider(self, loan):
         for lc_filter in self.filters:
@@ -447,34 +398,75 @@ class LCBT:
 
     def normalizeLoanData(self, raw_loan_dict):
         loan_array = LOAN_ENUM_default_data[:]
+        conversion_filters = self.conversionFilters
         if raw_loan_dict:
             try:
-                loan_array[LOAN_ENUM_purpose] = raw_loan_dict["purpose"]
-                loan_array[LOAN_ENUM_desc_word_count] = len([word_maybe for word_maybe in re.findall(r"[\w']+|[.,!?;%#\$&\-\(\)_]", raw_loan_dict["desc"]) if word_maybe not in ".,!?;%#\$&-()_"])
-                loan_array[LOAN_ENUM_earliest_credit_line] = (self.now - self.datetime.strptime(raw_loan_dict["earliest_cr_line"], "%Y-%m-%d %H:%M")).total_seconds() / 60 / 60 / 24 / 365 if raw_loan_dict["earliest_cr_line"] else DEFAULT_EARLIEST_CREDIT_LINE
-                loan_array[LOAN_ENUM_addr_state] = raw_loan_dict["addr_state"] if raw_loan_dict["addr_state"] else "NULL"
-                loan_array[LOAN_ENUM_revol_utilization] = float(raw_loan_dict["revol_util"][:-1]) if raw_loan_dict["revol_util"] else DEFAULT_REVOLING_UTILIZATION
-                loan_array[LOAN_ENUM_debt_to_income_ratio] = float(raw_loan_dict["dti"][:-1]) if raw_loan_dict["dti"][-1] == '%' else float(raw_loan_dict["dti"])
-                loan_array[LOAN_ENUM_funded_amnt] = float(raw_loan_dict["funded_amnt"])
-                loan_array[LOAN_ENUM_grade] = raw_loan_dict["grade"]
-                loan_array[LOAN_ENUM_delinq_2yrs] = int(raw_loan_dict["delinq_2yrs"]) if raw_loan_dict["delinq_2yrs"] else DEFAULT_DELINQUENCIES_LAST_2YEARS
-                loan_array[LOAN_ENUM_home_ownership] = raw_loan_dict["home_ownership"] if raw_loan_dict["home_ownership"] else "NULL"
-                loan_array[LOAN_ENUM_inq_last_6mths] = int(raw_loan_dict["inq_last_6mths"]) if raw_loan_dict["inq_last_6mths"] else DEFAULT_INQ_LAST_6MTHS
-                loan_array[LOAN_ENUM_mths_since_last_delinq] = int(raw_loan_dict["mths_since_last_delinq"]) if raw_loan_dict["mths_since_last_delinq"] else DEFAULT_MTHS_SINCE_LAST_DELINQ
-                loan_array[LOAN_ENUM_pub_rec] = int(raw_loan_dict["pub_rec"]) if raw_loan_dict["pub_rec"] else DEFAULT_PUBIC_RECORDS
-                loan_array[LOAN_ENUM_total_acc] = int(raw_loan_dict["total_acc"]) if raw_loan_dict["total_acc"] else DEFAULT_TOTAL_ACCOUNTS
+                loan_array[LOAN_ENUM_purpose] = conversion_filters[LOAN_ENUM_purpose](raw_loan_dict["purpose"])
+                loan_array[LOAN_ENUM_desc_word_count] = conversion_filters[LOAN_ENUM_desc_word_count](raw_loan_dict["desc"])
+                loan_array[LOAN_ENUM_earliest_credit_line] = conversion_filters[LOAN_ENUM_earliest_credit_line](raw_loan_dict["earliest_cr_line"])
+                loan_array[LOAN_ENUM_addr_state] = conversion_filters[LOAN_ENUM_addr_state](raw_loan_dict["addr_state"])
+                loan_array[LOAN_ENUM_revol_utilization] = conversion_filters[LOAN_ENUM_revol_utilization](raw_loan_dict["revol_util"])
+                loan_array[LOAN_ENUM_debt_to_income_ratio] = conversion_filters[LOAN_ENUM_debt_to_income_ratio](raw_loan_dict["dti"])
+                loan_array[LOAN_ENUM_funded_amnt] = conversion_filters[LOAN_ENUM_funded_amnt](raw_loan_dict["funded_amnt"])
+                loan_array[LOAN_ENUM_grade] = conversion_filters[LOAN_ENUM_grade](raw_loan_dict["grade"])
+                loan_array[LOAN_ENUM_delinq_2yrs] = conversion_filters[LOAN_ENUM_delinq_2yrs](raw_loan_dict["delinq_2yrs"])
+                loan_array[LOAN_ENUM_home_ownership] = conversion_filters[LOAN_ENUM_home_ownership](raw_loan_dict["home_ownership"])
+                loan_array[LOAN_ENUM_inq_last_6mths] = conversion_filters[LOAN_ENUM_inq_last_6mths](raw_loan_dict["inq_last_6mths"])
+                loan_array[LOAN_ENUM_mths_since_last_delinq] = conversion_filters[LOAN_ENUM_mths_since_last_delinq](raw_loan_dict["mths_since_last_delinq"])
+                loan_array[LOAN_ENUM_pub_rec] = conversion_filters[LOAN_ENUM_pub_rec](raw_loan_dict["pub_rec"])
+                loan_array[LOAN_ENUM_total_acc] = conversion_filters[LOAN_ENUM_total_acc](raw_loan_dict["total_acc"])
+
                 loan_array[LOAN_ENUM_loan_status] = raw_loan_dict["loan_status"]
                 loan_array[LOAN_ENUM_issue_datetime] = self.datetime.strptime(raw_loan_dict["issue_d"], "%Y-%m-%d")
-                loan_array[LOAN_ENUM_elapsed_months_since_issue_date] = math.floor((self.now - loan_array[LOAN_ENUM_issue_datetime]).total_seconds() / 86400 / 30)
+                loan_array[LOAN_ENUM_number_of_payments] = int(raw_loan_dict["term"].strip().split()[0])
                 loan_array[LOAN_ENUM_installment] = float(raw_loan_dict["installment"])
                 loan_array[LOAN_ENUM_int_rate] = float(raw_loan_dict["int_rate"][:-1])
                 loan_array[LOAN_ENUM_total_pymnt] = float(raw_loan_dict["total_pymnt"])
                 loan_array[LOAN_ENUM_out_prncp] = float(raw_loan_dict["out_prncp"])
-                loan_array[LOAN_ENUM_profit_calculated] = 0
-                loan_array[LOAN_ENUM_profit] = 0.0
-                loan_array[LOAN_ENUM_principal] = 0.0
-                loan_array[LOAN_ENUM_lost] = 0.0
-                loan_array[LOAN_ENUM_defaulted] = 0
+                loan_array[LOAN_ENUM_out_prncp_inv] = float(raw_loan_dict["out_prncp_inv"])
+
+                total_received_interest = float(raw_loan_dict["total_rec_int"])
+                total_received_principal = float(raw_loan_dict["total_rec_prncp"])
+
+                if loan_array[LOAN_ENUM_loan_status] == "Charged Off" or loan_array[LOAN_ENUM_loan_status] == "Default":
+                    defaulted_amount = loan_array[LOAN_ENUM_lost] = ((loan_array[LOAN_ENUM_number_of_payments] * loan_array[LOAN_ENUM_installment]) - (total_received_interest + total_received_principal)) * .99
+                    loan_array[LOAN_ENUM_defaulted] = 1
+                else:
+                    defaulted_amount = loan_array[LOAN_ENUM_lost] = 0.0
+                    loan_array[LOAN_ENUM_defaulted] = 0
+
+
+                loan_profit = loan_principal = loan_lost = 0.0
+                elapsed = loan_array[LOAN_ENUM_number_of_payments]
+                balance = loan_array[LOAN_ENUM_funded_amnt]
+                monthly_payment = loan_array[LOAN_ENUM_installment]
+                rate = loan_array[LOAN_ENUM_int_rate]
+                ratio = 25.0 / balance
+                payments = 0.0
+                while elapsed > 0:
+                    elapsed -= 1
+                    # Interest and service charge for the whole loan (not just me)
+                    interest = balance * rate / 1200.0
+                    service = 0.01 * monthly_payment
+                    payments += monthly_payment
+                    if (loan_array[LOAN_ENUM_defaulted] and payments > loan_array[LOAN_ENUM_total_pymnt]):
+                        loan_profit -= defaulted_amount * ratio
+                        loan_lost += defaulted_amount * ratio
+                        break
+
+                    # Compute my ratio of the profit
+                    loan_profit += (interest - service) * ratio
+                    loan_principal += balance * ratio
+                    balance -= monthly_payment
+
+                # sys.stderr.write("Calculated profit=%.2f principal=%.2f loss=%.2f ... csv total_received_interest=%.2f total_received_principal=%.2f loss=%.2f\n" % (loan_profit, loan_principal, loan_lost, total_received_interest, total_received_principal, loan_array[LOAN_ENUM_lost]))
+                loan_array[LOAN_ENUM_profit] = loan_profit
+                loan_array[LOAN_ENUM_principal] = loan_principal
+                loan_array[LOAN_ENUM_lost] = loan_lost
+
+                # Profit will be the interest minus the service fee
+                # loan_array[LOAN_ENUM_profit] = total_received_interest * .99
+                # loan_array[LOAN_ENUM_principal] = total_received_principal
 
             except:
                 sys.stdout.write("Error in row" + str(self.row) + '\n')
@@ -496,7 +488,7 @@ class LCBT:
             loan[self.labels[c]] = data[c]
 
         if "loan_status" not in loan or not loan["loan_status"] or "funded_amnt" not in loan or not loan["funded_amnt"]:
-            sys.stdout.write("Skipping loan, did not find loan_status or funded_amnt" + str(loan) + '\n')
+            # sys.stdout.write("Skipping loan, did not find loan_status or funded_amnt" + str(loan) + '\n')
             self.skipped_loans += 1
             return False
 
@@ -581,10 +573,27 @@ USAGE
 
     random.seed(args.random_seed)
 
-    lcbt = LCBT(args)
+    conversionFilters = {
+                       LOAN_ENUM_funded_amnt:               AmountRequested.AmountRequested,
+                       LOAN_ENUM_grade:                     CreditGrade.CreditGrade,
+                       LOAN_ENUM_debt_to_income_ratio:      DebtToIncomeRatio.DebtToIncomeRatio,
+                       LOAN_ENUM_delinq_2yrs:               Delinquencies.Delinquencies,
+                       LOAN_ENUM_earliest_credit_line:      EarliestCreditLine.EarliestCreditLine,
+                       LOAN_ENUM_home_ownership:            HomeOwnership.HomeOwnership,
+                       LOAN_ENUM_inq_last_6mths:            Inquiries.Inquiries,
+                       LOAN_ENUM_purpose:                   LoanPurpose.LoanPurpose,
+                       LOAN_ENUM_mths_since_last_delinq:    MonthsSinceLastDelinquency.MonthsSinceLastDelinquency,
+                       LOAN_ENUM_pub_rec:                   PublicRecordsOnFile.PublicRecordsOnFile,
+                       LOAN_ENUM_revol_utilization:         RevolvingLineUtilization.RevolvingLineUtilization,
+                       LOAN_ENUM_addr_state:                State.State,
+                       LOAN_ENUM_total_acc:                 TotalCreditLines.TotalCreditLines,
+                       LOAN_ENUM_desc_word_count:           WordsInDescription.WordsInDescription,
+                       }
+
+    lcbt = LCBT(conversionFilters, args)
     lcbt.initialize()
 
-    ga_test = GA_Test(lcbt, args)
+    ga_test = GA_Test(conversionFilters, lcbt, args)
     ga_test.run()
 
     return 0
