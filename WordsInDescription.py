@@ -17,8 +17,9 @@ class WordsInDescription(Filter):
         '''
         Constructor
         '''
-        Filter.__init__(self, args, current)
-        self.options = list(range(25, 250, 50))
+        options = list(range(25, 250, 50))
+
+        Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data, word_re=re.compile(r"[\w']+|[.,!?;%#\$&\-\(\)_]").findall):
         return len([word_maybe for word_maybe in word_re(raw_data) if word_maybe not in ".,!?;%#\$&-()_"])

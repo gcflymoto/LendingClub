@@ -18,8 +18,9 @@ class MonthsSinceLastDelinquency(Filter):
         '''
         Constructor
         '''
-        Filter.__init__(self, current)
-        self.options = [12, 24, 60]
+        options = [12, 24, 60]
+
+        Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         return int(raw_data) if raw_data else DEFAULT_MTHS_SINCE_LAST_DELINQ

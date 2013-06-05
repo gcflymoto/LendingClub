@@ -15,8 +15,9 @@ class AmountRequested(Filter):
         '''
         Constructor
         '''
-        Filter.__init__(self, args, current)
-        self.options = [float(n) for n in range(5000, 30000, 5000)]
+        options = [float(n) for n in range(5000, 30000, 5000)]
+
+        Filter.__init__(self, args, options, current)
 
     def apply(self, loan, LOAN_ENUM_funded_amnt=LOAN_ENUM_funded_amnt):
         current = self.getCurrent()

@@ -16,9 +16,11 @@ class HomeOwnership(Filter):
         '''
         Constructor
         '''
-        Filter.__init__(self, args, current)
+        options = [0, 1, 2, 3, 4, 5]
+
+        Filter.__init__(self, args, options, current)
+
         self.reverse_table = ["MORTGAGE", "OWN", "RENT", "OTHER", "NONE", "NULL"]
-        self.options = [0, 1, 2, 3, 4, 5]
 
     def convert(self, raw_data, conversion_table={"MORTGAGE":0, "OWN":1, "RENT":2, "OTHER":3, "NONE":4, "":5}):
         return conversion_table[str(raw_data)]

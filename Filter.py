@@ -11,21 +11,23 @@ class Filter(object):
     '''
     pass
 
-    def __init__(self, args, current=None):
+    def __init__(self, args, options, current=None):
         '''
         Constructor
         '''
-        self.options = []
-        self.current = current
         self.args = args
+        self.options = options
+        self.size = len(options)
+        self.current = current
 
     def convert(self, str_data):
         return float(str_data)
+
     def __str__(self):
         return str(self.getCurrent())
 
     def getCount(self):
-        return len(self.options)
+        return self.size
 
     def next(self):
         if self.current is None:
@@ -36,7 +38,6 @@ class Filter(object):
             self.current = None
         return self.current is not None
 
-
     def powerSet(self, options):
         # http://docs.python.org/2/library/itertools.html#recipes
         # print("Creating powerset for", options)
@@ -44,18 +45,33 @@ class Filter(object):
         # print("Done creating powerset for", options)
         return l
 
+    def powerBitSet(self, options):
+        l = self.powerSet(options)
+        # No we need to sum up each individual set_tupple
+        return [sum(set_tupple) for set_tupple in l]
+
     def increment(self, filters):
-        # n = 1
-        # num = len(filters)
-        # while (not filters[num - n].next()):
-        #    n += 1
-        # return filters[num - n]
+        """
+        ###
+        ### Original algorithm which went backwards through the filters
+        ###        
+        n = 1
+        num = len(filters)
+        while (not filters[num - n].next()):
+           n += 1
+        return filters[num - n]
+        
+        ###
+        ### My algorithm goes from front to back through the filters and is more pythonistic
+        ###
+        """
 
         for lc_filter in filters:
             if not lc_filter.next():
                 continue
             else:
                 return lc_filter
+        return lc_filter
 
     def getCurrent(self):
         return self.options[self.current]

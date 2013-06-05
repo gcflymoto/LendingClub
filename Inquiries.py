@@ -18,8 +18,9 @@ class Inquiries(Filter):
         '''
         Constructor
         '''
-        Filter.__init__(self, args, current)
-        self.options = list(range(11))
+        options = list(range(11))
+
+        Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         return int(raw_data) if raw_data else DEFAULT_INQ_LAST_6MTHS

@@ -21,8 +21,9 @@ class EarliestCreditLine(Filter):
         '''
         Constructor
         '''
-        Filter.__init__(self, args, current)
-        self.options = [1.0, 5.0, 10.0]
+        options = [1.0, 5.0, 10.0]
+
+        Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         if raw_data:

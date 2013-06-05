@@ -18,8 +18,9 @@ class PublicRecordsOnFile(Filter):
         '''
         Constructor
         '''
-        Filter.__init__(self, args, current)
-        self.options = ["Exclude loans with public records"]
+        options = ["Exclude loans with public records"]
+
+        Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         return int(raw_data) if raw_data else DEFAULT_PUBIC_RECORDS

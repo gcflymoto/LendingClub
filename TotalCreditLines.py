@@ -18,8 +18,9 @@ class TotalCreditLines(Filter):
         '''
         Constructor
         '''
-        Filter.__init__(self, args, current)
-        self.options = [10, 20, 30]
+        options = [10, 20, 30]
+
+        Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         return int(raw_data) if raw_data else DEFAULT_TOTAL_ACCOUNTS

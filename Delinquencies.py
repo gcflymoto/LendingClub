@@ -17,16 +17,17 @@ class Delinquencies(Filter):
         '''
         Constructor
         '''
-        Filter.__init__(self, args, current)
-        self.options = [
-                        1 << 0,  # 0
-                        1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,  # 0, 1-3
-                        1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,  # 0, 1-3, 4
-                        1 << 1 | 1 << 2 | 1 << 3,  # 1-3
-                        1 << 1 | 1 << 2 | 1 << 3 | 1 << 4,  # 1-3, 4
-                        1 << 4,  # 4
-                        1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 11,  # 5 - 11
-                        ]
+        options = [
+                    1 << 0,  # 0
+                    1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,  # 0, 1-3
+                    1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,  # 0, 1-3, 4
+                    1 << 1 | 1 << 2 | 1 << 3,  # 1-3
+                    1 << 1 | 1 << 2 | 1 << 3 | 1 << 4,  # 1-3, 4
+                    1 << 4,  # 4
+                    1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 11,  # 5 - 11
+                    ]
+
+        Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         delinq = int(raw_data) if raw_data else DEFAULT_DELINQUENCIES_LAST_2YEARS

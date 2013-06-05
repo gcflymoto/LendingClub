@@ -15,8 +15,9 @@ class DebtToIncomeRatio(Filter):
         '''
         Constructor
         '''
-        Filter.__init__(self, args, current)
-        self.options = list(range(10, 35, 5))
+        options = list(range(10, 35, 5))
+
+        Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         return float(raw_data[:-1]) if raw_data[-1] == '%' else float(raw_data)
