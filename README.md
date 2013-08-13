@@ -22,6 +22,13 @@ C:\Python27\python.exe -O lcbt.py
 
 C:\Python32\python.exe -O lcbt.py
 ```
+Best performance with linux + pypy + zmqpy
+
+### Pypy2.0 beta version on linux with 8-threads
+[iteration 190/4096 6.16 sec/iter] 1024 loans (48/mo.) test at 15.63% APY. 45 loans defaulted (4.00%, $21.30 avg loss) 11.9808% net APY
+
+### Python27 version on linux with 8-threads
+[iteration 53/4096 49.54 sec/iter] 1013 loans (50/mo.) test at 15.51% APY. 40 loans defaulted (3.00%, $21.15 avg loss) 12.2170% net APY
 
 Some of the performance figures on my laptop
 
