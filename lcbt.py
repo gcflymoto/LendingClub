@@ -81,6 +81,7 @@ def check_for_zmqpy():
      
     if enable_zmqpy:
         try:
+            global zmq
             import zmqpy as zmq
         except ImportError:
             sys.stderr.write("Did not find zmqpy module installed, disabling parallel workers\n")
@@ -97,6 +98,7 @@ def check_for_pyzmq():
 
     if enable_pyzmq:
         try:
+            global zmq
             import zmq
         except ImportError:
             sys.stderr.write("Did not find pyzmq module installed, disabling parallel workers\n")
