@@ -30,13 +30,22 @@ class Filter(object):
         return self.size
 
     def next(self):
+        #
+        # Original algorithm used 'None'
+        #
         if self.current is None:
             self.current = 0
-        elif self.current + 1 < len(self.options):
+        elif self.current + 1 < self.size:
             self.current += 1
         else:
             self.current = None
         return self.current is not None
+
+        # #
+        # # Switched to an algorithm which uses an index that is out of bounds as None
+        # #
+        # self.current = (self.current + 1) % (self.size + 1)
+        # return self.current != self.size
 
     def powerSet(self, options):
         # http://docs.python.org/2/library/itertools.html#recipes

@@ -29,8 +29,9 @@ LOAN_ENUM_profit = 22
 LOAN_ENUM_principal = 23
 LOAN_ENUM_lost = 24
 LOAN_ENUM_defaulted = 25
+LOAN_ENUM_rowid = 26
 
-LOAN_ENUM_SIZE = 26
+LOAN_ENUM_SIZE = 27
 
 LOAN_ENUM_default_data = [0] * LOAN_ENUM_SIZE
 
