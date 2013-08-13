@@ -747,24 +747,23 @@ def worker(worker_idx, args):
 def download_data(url, file_name):
     if sys.version_info.major == 2:
         import urllib2 as urllib
-        import urlparse
+        import urlparse        
+        u = urllib.urlopen(url)
+        meta = u.info()        
+        content_length = meta.getheaders("Content-Length")
+        file_size = int(content_length[0]) if content_length else 0        
     else:
         import urllib.request as urllib
         import urllib.parse as urlparse
+        u = urllib.urlopen(url)
+        content_length = int(u.getheader("Content-Length", default=0))
+        file_size = content_length
         
-    #file_name = urlparse.parse_qs(urlparse.urlparse(url).query)['file'][0]
-    response = urllib.urlopen(url)
-    
-    u = urllib.urlopen(url)
-    #meta = u.info()
-    
-    content_length = response.getheader("Content-Length", default=0) 
-    
+    #file_name = urlparse.parse_qs(urlparse.urlparse(url).query)['file'][0]    
+
     if content_length:
-        file_size = int(content_length[0])
         sys.stdout.write("Downloading: %s Bytes: %s\n" % (file_name, file_size))
     else:
-        file_size = 0
         sys.stdout.write("Downloading: %s\n" % file_name)
 
     f = open(file_name, 'wb')
