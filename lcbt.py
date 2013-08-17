@@ -23,7 +23,6 @@ import re
 import datetime
 import math
 import functools
-import codecs
 import time
 import platform
 
@@ -70,15 +69,15 @@ conversionFilters = {
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 def check_for_zmqpy():
     enable_zmqpy = 1
-    # 
+    #
     # SET VS90COMNTOOLS=%VS100COMNTOOLS%
     # C:\Python27\python.exe -O lcbt.py
-    # zmqpy does not work on windows 
+    # zmqpy does not work on windows
     # C:\Python27\lib\site-packages\zmqpy\__pycache__\_cffi__x88b86722x954aa029.c(153) : fatal error C1083: Cannot open include file: 'zmq.h': No such file or directory
     #
     if sys.platform == 'win32' or sys.platform == 'cygwin':
         enable_zmqpy = 0
-     
+
     if enable_zmqpy:
         try:
             global zmq
@@ -87,14 +86,14 @@ def check_for_zmqpy():
             sys.stderr.write("Did not find zmqpy module installed, disabling parallel workers\n")
             enable_zmqpy = 0
 
-    return enable_zmqpy           
+    return enable_zmqpy
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-def check_for_pyzmq():        
+def check_for_pyzmq():
     enable_pyzmq = 1
-            
+
     if platform.python_implementation() == 'PyPy':
-        enable_pyzmq = 0 
+        enable_pyzmq = 0
 
     if enable_pyzmq:
         try:
@@ -104,13 +103,13 @@ def check_for_pyzmq():
             sys.stderr.write("Did not find pyzmq module installed, disabling parallel workers\n")
             enable_pyzmq = 0
 
-    return enable_pyzmq        
+    return enable_pyzmq
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        
+
 enable_workers = check_for_zmqpy() or check_for_pyzmq()
 
-#------------------------------------------------------------------------------------------------------------------------------------------------------------------------        
-        
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 __all__ = []
 __version__ = 1.0
 __date__ = '2013-05-29'
@@ -155,7 +154,41 @@ class Timer(object):
     def duration_in_seconds(self):
         return self.__finish - self.__start
 
+class ProfileGuidedOptimization(object):
+
+    def __init__(self, f, intial_value):
+        self.f = f
+        self.initial_value = intial_value
+        self.current_value = intial_value
+        self.exponent = 1.0
+        self.backoff = 0.5
+        self.last_duration = 0
+
+    def __call__(self):
+        # sys.stdout.write("timing function call duration for %s\n" % self.f.__name__)
+        t = Timer()
+        with t:
+            self.f(self.current_value)
+        current_duration = t.duration_in_seconds()
+
+        if self.last_duration:
+            # compare the current duration to the previous
+            # if the current duration is less keep incrementing exponentially
+            sys.stdout.write("function call duration for %s is %.02f while the last duration was %.02f exponent=%.02f backoff=%.02f\n" % (self.f.__name__, current_duration, self.last_duration, self.exponent, self.backoff))
+            if current_duration < self.last_duration:
+                self.exponent = self.exponent + 1 / (10 + self.backoff)
+                self.backoff = self.backoff + 1 / (10 + self.backoff)
+            else:
+                # if the current duration is more keep decrementing exponentially
+                self.backoff = self.backoff - self.backoff / 2
+                self.exponent -= self.backoff
+            self.current_value = self.initial_value ** self.exponent
+        else:
+            # This is the first time we called this function just store our duration
+            self.last_duration = current_duration
+
 if sys.version_info.major < 3:
+    import codecs
     class UTF8Recoder(object):
         """
         Iterator that reads an encoded stream and re-encodes the input to UTF-8
@@ -245,7 +278,11 @@ class GA_Test:
             self.printBest()
             self.mate()
 
+    # Python27 does not have decorator support like we want instead use wrapper functions which do additional manipulation
     def calculateFitness(self):
+        self.calculate()
+
+    def calculate(self):
         for citizen in self.population:
             citizen['results'] = self.lcbt.test(citizen['filters'])
             sys.stdout.write('.')
@@ -316,10 +353,10 @@ class GA_Test:
 
 class ZMQ_GA_Test(GA_Test):
     def __init__(self, conversionFilters, lcbt, args):
-        GA_Test.__init__(self, conversionFilters, lcbt, args)   
-        self.json_filters = [0] * len(conversionFilters)
+        GA_Test.__init__(self, conversionFilters, lcbt, args)
+
         self.range_filters = range(len(conversionFilters))
-        
+
         # Initialize a zeromq context
         self.context = zmq.Context()
 
@@ -336,20 +373,25 @@ class ZMQ_GA_Test(GA_Test):
         self.control_sender.bind("tcp://127.0.0.1:5559")
 
         # Give everything a second to spin up and connect
-        sys.stderr.write('Waiting for all the workers to get setup\n')
+        sys.stdout.write('Worker[-1] Waiting for all the workers to get setup\n')
         # Wait for all workers to send a message indicating they are ready
         for _ in range(self.args.workers):
             self.results_receiver.recv_json()
-            sys.stderr.write('Received Setup confirmation\n')
-        sys.stderr.write('Workers are setup\n')
-        
+            if self.args.verbose:
+                sys.stdout.write('Worker[-1] Received Setup confirmation\n')
+        sys.stdout.write('Worker[-1] Workers are setup\n')
+        self.pgo = ProfileGuidedOptimization(self.calculate, 100)
+
     def run(self):
         GA_Test.run(self)
-        
+
         # Signal to all workers that we are finished
         self.control_sender.send_unicode(u("FINISHED"))
 
     def calculateFitness(self):
+        self.pgo()
+
+    def calculate(self, min_work_messages=100):
         citizen_idx = 0
 
         # Bundle up the filters
@@ -357,12 +399,13 @@ class ZMQ_GA_Test(GA_Test):
 
         for citizen in self.population:
 
+            json_filters = [0] * len(conversionFilters)
             for i in self.range_filters:
-                self.json_filters[i] = citizen['filters'][i].current
+                json_filters[i] = citizen['filters'][i].current
 
-            work_messages.append((citizen_idx, self.json_filters[:]))
+            work_messages.append((citizen_idx, json_filters))
 
-            if len(work_messages) > 100:
+            if len(work_messages) > int(min_work_messages):
                 self.ventilator_send.send_json(work_messages)
                 work_messages = []
 
@@ -380,12 +423,13 @@ class ZMQ_GA_Test(GA_Test):
         results_receiver = self.results_receiver
         for _ in range(self.args.workers):
             result_message = results_receiver.recv_json()
-            sys.stderr.write("Worker[%i] returned %d results\n" % (result_message['worker'], len(result_message['results'])))
+            if self.args.verbose:
+                sys.stdout.write("Worker[%i] returned %d results\n" % (result_message['worker'], len(result_message['results'])))
             for citizen_idx, results in result_message['results']:
                 # sys.stderr.write("results[%d]=%s\n" % (citizen_idx, results))
                 self.population[citizen_idx]['results'] = results
         sys.stdout.write('\n')
-                
+
 class LCBT:
     def __init__(self, conversionFilters, args, worker_idx=-1):
 
@@ -665,7 +709,7 @@ class LCBT:
                 self.labels[i] = data[i]
 
         return False
-        
+
 class ZMQ_LCBT(LCBT):
     def setup_zmq(self):
 
@@ -693,13 +737,14 @@ class ZMQ_LCBT(LCBT):
         # Send a message that we are done with the setup and ready to receive work
         answer_message = {'worker' : self.worker_idx, 'message' : 'READY'}
         self.results_sender.send_json(answer_message)
-    
+
     def work(self):
         # Loop and accept messages from both channels, acting accordingly
         poller = self.poller
         work_receiver = self.work_receiver
         results_sender = self.results_sender
         control_receiver = self.control_receiver
+        verbose = self.args.verbose
 
         answer_message = {'worker' : self.worker_idx, 'results' : []}
 
@@ -710,8 +755,9 @@ class ZMQ_LCBT(LCBT):
             # and send the answer to the results reporter
             if socks.get(work_receiver) == zmq.POLLIN:
                 work_messages = work_receiver.recv_json()
-                
-                sys.stderr.write("Worker[%i] received work_messages of length: %d\n" % (self.worker_idx, len(work_messages)))
+
+                if verbose:
+                    sys.stdout.write("Worker[%i] received work_messages of length: %d\n" % (self.worker_idx, len(work_messages)))
 
                 for citizen_idx, filters in work_messages:
                     for i in range(len(self.filters)):
@@ -723,21 +769,24 @@ class ZMQ_LCBT(LCBT):
             # If the message came over the control channel, process the message type
             elif socks.get(control_receiver) == zmq.POLLIN:
                 control_message = control_receiver.recv().decode('utf-8')
-                sys.stderr.write("Worker[%i] control message received: %s\n" % (self.worker_idx, control_message))
+                if verbose:
+                    sys.stdout.write("Worker[%i] control message received: %s\n" % (self.worker_idx, control_message))
 
                 if control_message == "SEND_RESULTS":
-                    sys.stderr.write("Worker[%i] sending answer message\n" % self.worker_idx)
+                    if verbose:
+                        sys.stdout.write("Worker[%i] sending answer message\n" % self.worker_idx)
                     results_sender.send_json(answer_message)
                     # Result our results array
                     answer_message['results'] = []
                     continue
 
                 if control_message == "FINISHED":
-                    sys.stderr.write("Worker[%i] received FINSHED, quitting!\n" % self.worker_idx)
+                    if verbose:
+                        sys.stdout.write("Worker[%i] received FINSHED, quitting!\n" % self.worker_idx)
                     break
-                    
-                sys.write("Worker[%i] Exiting. Unknown control_message received %s\n" % (self.worker_idx, control_message))
-                sys.exit(-1)        
+
+                sys.stderr.write("Worker[%i] Exiting. Unknown control_message received %s\n" % (self.worker_idx, control_message))
+                sys.exit(-1)
 
 def worker(worker_idx, args):
     random.seed(args.random_seed)
@@ -749,19 +798,19 @@ def worker(worker_idx, args):
 def download_data(url, file_name):
     if sys.version_info.major == 2:
         import urllib2 as urllib
-        import urlparse        
+        import urlparse
         u = urllib.urlopen(url)
-        meta = u.info()        
+        meta = u.info()
         content_length = meta.getheaders("Content-Length")
-        file_size = int(content_length[0]) if content_length else 0        
+        file_size = int(content_length[0]) if content_length else 0
     else:
         import urllib.request as urllib
         import urllib.parse as urlparse
         u = urllib.urlopen(url)
         content_length = int(u.getheader("Content-Length", default=0))
         file_size = content_length
-        
-    #file_name = urlparse.parse_qs(urlparse.urlparse(url).query)['file'][0]    
+
+    # file_name = urlparse.parse_qs(urlparse.urlparse(url).query)['file'][0]
 
     if content_length:
         sys.stdout.write("Downloading: %s Bytes: %s\n" % (file_name, file_size))
@@ -782,11 +831,11 @@ def download_data(url, file_name):
             status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
         else:
             status = r"%10d" % file_size_dl
-        status = status + chr(8)*(len(status)+1)
+        status = status + chr(8) * (len(status) + 1)
         sys.stdout.write(status)
 
     f.close()
-    
+
 def main(argv=None):  # IGNORE:C0111
     '''Command line options.'''
 
@@ -829,7 +878,7 @@ USAGE
     parser.add_argument('-m', '--mutation_rate', default=0.05, type=float, help="mutation rate [default: %(default)s]")
     parser.add_argument('-f', '--fitness_sort_size', default=1000, type=int, help="number of loans to limit the fitness sort size, the larger the longer and more optimal solution [default: %(default)s]")
     parser.add_argument('-y', '--young_loans_in_days', default=3 * 30, type=int, help="filter young loans if they are younger than specified number of days [default: %(default)s]")
-    parser.add_argument('-w', '--workers', default=enable_workers*cpu_count(), type=int, help="number of workers defaults to the number of cpu cores [default: %(default)s]")
+    parser.add_argument('-w', '--workers', default=enable_workers * cpu_count(), type=int, help="number of workers defaults to the number of cpu cores [default: %(default)s]")
 
     # Process arguments
     args = parser.parse_args()
@@ -837,10 +886,10 @@ USAGE
     random.seed(args.random_seed)
 
     if os.path.exists(args.stats):
-        sys.stdout.write("Using %s as the data file\n" % args.stats) 
+        sys.stdout.write("Using %s as the data file\n" % args.stats)
     else:
-        download_data(args.data, args.stats)    
-    
+        download_data(args.data, args.stats)
+
     if enable_workers:
         lcbt = ZMQ_LCBT(conversionFilters, args)
     else:
