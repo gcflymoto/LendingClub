@@ -1,24 +1,24 @@
-'''
+"""
 Created on May 30, 2013
 
 @author: gczajkow
-'''
+"""
 
-from Filter import Filter
-from LoanEnum import LOAN_ENUM_home_ownership
+import Filter
+import LoanEnum
 
-class HomeOwnership(Filter):
-    '''
+
+class HomeOwnership(Filter.Filter):
+    """
     People with mortgages suck at repaying LC loans.
-    '''
-
+    """
     def __init__(self, args, current=None):
-        '''
+        """
         Constructor
-        '''
+        """
         options = [0, 1, 2, 3, 4, 5]
 
-        Filter.__init__(self, args, options, current)
+        Filter.Filter.__init__(self, args, options, current)
 
         self.reverse_table = ["MORTGAGE", "OWN", "RENT", "OTHER", "NONE", "NULL"]
 
@@ -28,6 +28,5 @@ class HomeOwnership(Filter):
     def __str__(self):
         return self.reverse_table[self.current]
 
-    def apply(self, loan):
-        current = self.getCurrent()
-        return loan[LOAN_ENUM_home_ownership] != current
+    def apply(self, loan, home_ownership=LoanEnum.LOAN_ENUM_home_ownership):
+        return loan[home_ownership] != self.get_current()

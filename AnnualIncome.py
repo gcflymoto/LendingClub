@@ -3,14 +3,11 @@ Created on May 30, 2013
 
 @author: gczajkow
 """
-
 import Filter
 import LoanEnum
 
-DEFAULT_TOTAL_ACCOUNTS = 0
 
-
-class TotalCreditLines(Filter.Filter):
+class AnnualIncome(Filter.Filter):
     """
     classdocs
     """
@@ -18,12 +15,12 @@ class TotalCreditLines(Filter.Filter):
         """
         Constructor
         """
-        options = [10, 20, 30]
+        options = [i for i in range(0, 300000, 25000)]
 
         Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
-        return int(raw_data) if raw_data else DEFAULT_TOTAL_ACCOUNTS
+        return int(raw_data[0]) if raw_data else 0
 
-    def apply(self, loan, total_acc=LoanEnum.LOAN_ENUM_total_acc):
-        return loan[total_acc] <= self.get_current()
+    def apply(self, loan, annual_income=LoanEnum.LOAN_ENUM_annual_income):
+        return loan[annual_income] <= self.get_current()

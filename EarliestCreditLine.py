@@ -1,29 +1,28 @@
-'''
+"""
 Created on May 30, 2013
 
 @author: gczajkow
-'''
+"""
 
 import datetime
-from Filter import Filter
-from LoanEnum import LOAN_ENUM_earliest_credit_line
+import Filter
+import LoanEnum
 
 DEFAULT_EARLIEST_CREDIT_LINE = 0
 
-class EarliestCreditLine(Filter):
-    '''
-    '''
 
+class EarliestCreditLine(Filter.Filter):
+    """
+    """
     datetime = datetime.datetime(2013, 1, 30)
     now = datetime.now()
-
     def __init__(self, args, current=None):
-        '''
+        """
         Constructor
-        '''
+        """
         options = [1.0, 5.0, 10.0]
 
-        Filter.__init__(self, args, options, current)
+        Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         if raw_data:
@@ -31,6 +30,5 @@ class EarliestCreditLine(Filter):
         else:
             return DEFAULT_EARLIEST_CREDIT_LINE
 
-    def apply(self, loan, LOAN_ENUM_earliest_credit_line=LOAN_ENUM_earliest_credit_line):
-        current = self.getCurrent()
-        return loan[LOAN_ENUM_earliest_credit_line] >= current
+    def apply(self, loan, earliest_credit_line=LoanEnum.LOAN_ENUM_earliest_credit_line):
+        return loan[earliest_credit_line] >= self.get_current()

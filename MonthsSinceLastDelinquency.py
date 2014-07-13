@@ -1,31 +1,28 @@
-'''
+"""
 Created on May 30, 2013
 
 @author: gczajkow
-'''
+"""
 
-from Filter import Filter
-from LoanEnum import LOAN_ENUM_mths_since_last_delinq
+import Filter
+import LoanEnum
 
 DEFAULT_MTHS_SINCE_LAST_DELINQ = 61
 
-class MonthsSinceLastDelinquency(Filter):
-    '''
+class MonthsSinceLastDelinquency(Filter.Filter):
+    """
     classdocs
-    '''
-
+    """
     def __init__(self, args, current=None):
-        '''
+        """
         Constructor
-        '''
+        """
         options = [12, 24, 60]
 
-        Filter.__init__(self, args, options, current)
+        Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         return int(raw_data) if raw_data else DEFAULT_MTHS_SINCE_LAST_DELINQ
 
-    def apply(self, loan, LOAN_ENUM_mths_since_last_delinq=LOAN_ENUM_mths_since_last_delinq):
-        current = self.getCurrent()
-        return loan[LOAN_ENUM_mths_since_last_delinq] >= current
-
+    def apply(self, loan, mths_since_last_delinq=LoanEnum.LOAN_ENUM_mths_since_last_delinq):
+        return loan[mths_since_last_delinq] >= self.get_current()

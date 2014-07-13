@@ -1,40 +1,30 @@
-'''
+"""
 Created on May 30, 2013
 
 @author: gczajkow
-'''
-from Filter import Filter
-from LoanEnum import LOAN_ENUM_purpose
+"""
+import Filter
+import LoanEnum
 
-class LoanPurpose(Filter):
-    '''
+
+class LoanPurpose(Filter.Filter):
+    """
     classdocs
-    '''
+    """
     def __init__(self, args, current=None):
-        '''
+        """
         Constructor
-        '''
-        purpose_bitmap = {'other':              1 << 0,
-                          'debt_consolidation': 1 << 1,
-                          'educational':        1 << 2,
-                          'credit_card':        1 << 3,
-                          'car':                1 << 4,
-                          'home_improvement':   1 << 5,
-                          'small_business':     1 << 6,
-                          'vacation':           1 << 7,
-                          'moving':             1 << 8,
-                          'wedding':            1 << 9,
-                          'house':              1 << 10,
-                          'medical':            1 << 11,
-                          'major_purchase':     1 << 12,
-                          'renewable_energy':   1 << 13,
-                          }
+        """
+        purpose_bitmap = dict(other=1 << 0, debt_consolidation=1 << 1, educational=1 << 2, credit_card=1 << 3,
+                              car=1 << 4, home_improvement=1 << 5, small_business=1 << 6, vacation=1 << 7,
+                              moving=1 << 8, wedding=1 << 9, house=1 << 10, medical=1 << 11, major_purchase=1 << 12,
+                              renewable_energy=1 << 13)
 
         self.conversion_table = purpose_bitmap.copy()
 
-        options = self.powerBitSet(purpose_bitmap.values())
+        options = self.power_bitset(purpose_bitmap.values())
 
-        Filter.__init__(self, args, options, current)
+        Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         return self.conversion_table[raw_data]
@@ -46,6 +36,5 @@ class LoanPurpose(Filter):
                 l.append(key)
         return str(l)
 
-    def apply(self, loan, LOAN_ENUM_purpose=LOAN_ENUM_purpose):
-        current = self.getCurrent()
-        return loan[LOAN_ENUM_purpose] & current > 0
+    def apply(self, loan, purpose=LoanEnum.LOAN_ENUM_purpose):
+        return (loan[purpose] & self.get_current()) > 0

@@ -1,45 +1,63 @@
-'''
+"""
 Created on May 29, 2013
 
 @author: gczajkow
-'''
+"""
 import itertools
+import sys
+
+if sys.version < '3':
+    import codecs
+    def u(x):
+        return codecs.unicode_escape_decode(x)[0]
+    def s(x):
+        return x.encode('ascii')
+else:
+    def u(x):
+        return x
+    def s(x):
+        return x.encode('ascii')
 
 class Filter(object):
-    '''
+    """
     classdocs
-    '''
-    pass
-
+    """
     def __init__(self, args, options, current=None):
-        '''
+        """
         Constructor
-        '''
+        """
         self.args = args
         self.options = options
         self.size = len(options)
-        self.current = current
+        self.size_plus_one = self.size + 1
+        if current is None:
+            self.current = self.size
+        else:
+            self.current = current
 
     def convert(self, str_data):
         return float(str_data)
 
     def __str__(self):
-        return str(self.getCurrent())
+        return str(self.get_current())
 
-    def getCount(self):
+    def get_count(self):
         return self.size
 
     def next(self):
         #
         # Original algorithm used 'None'
         #
-        if self.current is None:
-            self.current = 0
-        elif self.current + 1 < self.size:
-            self.current += 1
-        else:
-            self.current = None
-        return self.current is not None
+        #if self.current is None:
+        #    self.current = 0
+        #elif self.current + 1 < self.size:
+        #    self.current += 1
+        #else:
+        #    self.current = None
+        #return self.current is not None
+        self.current = (self.current + 1) % self.size_plus_one
+
+        return self.current != self.size
 
         # #
         # # Switched to an algorithm which uses an index that is out of bounds as None
@@ -47,15 +65,15 @@ class Filter(object):
         # self.current = (self.current + 1) % (self.size + 1)
         # return self.current != self.size
 
-    def powerSet(self, options):
+    def power_set(self, options):
         # http://docs.python.org/2/library/itertools.html#recipes
         # print("Creating powerset for", options)
         l = list(itertools.chain.from_iterable(itertools.combinations(options, r) for r in range(len(options) + 1)))
         # print("Done creating powerset for", options)
         return l
 
-    def powerBitSet(self, options):
-        l = self.powerSet(options)
+    def power_bitset(self, options):
+        l = self.power_set(options)
         # No we need to sum up each individual set_tupple
         return [sum(set_tupple) for set_tupple in l]
 
@@ -80,16 +98,16 @@ class Filter(object):
                 continue
             else:
                 return lc_filter
-        return lc_filter
+        return None
 
-    def getCurrent(self):
+    def get_current(self):
         return self.options[self.current]
 
-    def getName(self):
+    def get_name(self):
         return self.__class__.__name__
 
-    def getDetails(self):
-        return self.getName() + '=' + str(self.getCurrent())
+    def get_details(self):
+        return self.get_name() + '=' + str(self.get_current())
 
-    def getStringValue(self):
-        return str(self.getCurrent())
+    def get_string_value(self):
+        return str(self.get_current())

@@ -1,27 +1,26 @@
-'''
+"""
 Created on May 30, 2013
 
 @author: gczajkow
-'''
+"""
 
-from Filter import Filter
-from LoanEnum import LOAN_ENUM_debt_to_income_ratio
+import Filter
+import LoanEnum
 
-class DebtToIncomeRatio(Filter):
-    '''
-    '''
 
+class DebtToIncomeRatio(Filter.Filter):
+    """
+    """
     def __init__(self, args, current=None):
-        '''
+        """
         Constructor
-        '''
+        """
         options = list(range(10, 35, 5))
 
-        Filter.__init__(self, args, options, current)
+        Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         return float(raw_data[:-1]) if raw_data[-1] == '%' else float(raw_data)
 
-    def apply(self, loan, LOAN_ENUM_debt_to_income_ratio=LOAN_ENUM_debt_to_income_ratio):
-        current = self.getCurrent()
-        return loan[LOAN_ENUM_debt_to_income_ratio] <= current
+    def apply(self, loan, debt_to_income_ratio=LoanEnum.LOAN_ENUM_debt_to_income_ratio):
+        return loan[debt_to_income_ratio] <= self.get_current()

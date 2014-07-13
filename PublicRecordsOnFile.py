@@ -1,31 +1,30 @@
-'''
+"""
 Created on May 30, 2013
 
 @author: gczajkow
-'''
+"""
 
-from Filter import Filter
-from LoanEnum import LOAN_ENUM_pub_rec
+import Filter
+import LoanEnum
 
 DEFAULT_PUBIC_RECORDS = 0
 
-class PublicRecordsOnFile(Filter):
-    '''
-    classdocs
-    '''
 
+class PublicRecordsOnFile(Filter.Filter):
+    """
+    classdocs
+    """
     def __init__(self, args, current=None):
-        '''
+        """
         Constructor
-        '''
+        """
         options = ["Exclude loans with public records"]
 
-        Filter.__init__(self, args, options, current)
+        Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         return int(raw_data) if raw_data else DEFAULT_PUBIC_RECORDS
 
-    def apply(self, loan, LOAN_ENUM_pub_rec=LOAN_ENUM_pub_rec):
+    def apply(self, loan, pub_rec=LoanEnum.LOAN_ENUM_pub_rec):
         # Does not mutate
-        return not loan[LOAN_ENUM_pub_rec]
-
+        return not loan[pub_rec]

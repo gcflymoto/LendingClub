@@ -1,18 +1,18 @@
-'''
+"""
 Created on May 30, 2013
 
 @author: gczajkow
-'''
+"""
 
-from Filter import Filter
-from LoanEnum import LOAN_ENUM_grade
+import Filter
+import LoanEnum
 
-class CreditGrade(Filter):
-    '''
-    '''
 
+class CreditGrade(Filter.Filter):
+    """
+    """
     def __init__(self, args, current=None):
-        '''
+        """
         Construct a set similar to this based on the passed in grades
          'A',
          'AB',
@@ -42,20 +42,13 @@ class CreditGrade(Filter):
          'F',
          'FG',
          'G'
-        '''
+        """
 
         options = []
-        grades_bitmap = {'A': 1 << 0,
-                         'B': 1 << 1,
-                         'C': 1 << 2,
-                         'D': 1 << 3,
-                         'E': 1 << 4,
-                         'F': 1 << 5,
-                         'G': 1 << 6,
-                        }
+        grades_bitmap = dict(A=1 << 0, B=1 << 1, C=1 << 2, D=1 << 3, E=1 << 4, F=1 << 5, G=1 << 6)
 
         self.conversion_table = grades_bitmap.copy()
-        self.reverse_table = {v:k for k, v in grades_bitmap.items()}
+        self.reverse_table = {v: k for k, v in grades_bitmap.items()}
         num_grades = len(args.grades)
         for i in range(1, num_grades + 1):
             for j in range(num_grades):
@@ -68,7 +61,7 @@ class CreditGrade(Filter):
                     self.conversion_table[grades] = grades_bit_value
                     self.reverse_table[grades_bit_value] = grades
 
-        Filter.__init__(self, args, options, current)
+        Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, str_grades):
         # Convert a string of grades to a bit value
@@ -79,8 +72,7 @@ class CreditGrade(Filter):
         return self.conversion_table[str(str_grades)]
 
     def __str__(self):
-        return self.reverse_table[self.getCurrent()]
+        return self.reverse_table[self.get_current()]
 
-    def apply(self, loan):
-        current = self.getCurrent()
-        return loan[LOAN_ENUM_grade] & current > 0
+    def apply(self, loan, grade=LoanEnum.LOAN_ENUM_grade):
+        return (loan[grade] & self.get_current()) > 0
