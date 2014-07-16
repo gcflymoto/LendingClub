@@ -3,13 +3,13 @@
 """
 lcbt -- Lending Club Back Testing based on Genetic Algorithm
 
-lcbt is a tool which analyzes Lending Club loan data and uses a genetic algorithm to determine the best set of 
-criteria for finding the loans which have the lowest default rate and highest profit
+lcbt is a tool which analyzes Lending Club loan data and uses a genetic algorithm to determine the best set of
+criteria for finding the loans which have the lowest default rate and highest return
 
 @author:     Gregory Czajkowski
-        
+
 @copyright:  2013 Freedom. All rights reserved.
-        
+
 @license:    Licensed under the Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
 
 @contact:    gregczajkowski at yahoo.com
@@ -27,12 +27,10 @@ $ ./pypy-2.1/bin/pip install pyzmq
 import sys
 import os
 import random
-import pickle
 import csv
-import re
-import datetime
 import math
 import functools
+import copy
 
 # from pretty_decimal import pretty_decimal
 # from decimal import Decimal
@@ -40,6 +38,7 @@ import functools
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
 from multiprocessing import Process, cpu_count
+from multiprocessing import Queue as MultiProcessingQueue
 
 import AccountsOpenPast24Months
 import AmountRequested
@@ -60,11 +59,12 @@ import State
 import TotalCreditLines
 import WordsInDescription
 
+import LoanData
 import Filter
 import utilities
 from LoanEnum import *
 
-ConversionFilters = {
+BackTestFilters = {
     LOAN_ENUM_acc_open_past_24mths: AccountsOpenPast24Months.AccountsOpenLast24Months,
     LOAN_ENUM_funded_amnt: AmountRequested.AmountRequested,
     LOAN_ENUM_annual_income: AnnualIncome.AnnualIncome,
@@ -85,10 +85,16 @@ ConversionFilters = {
     LOAN_ENUM_desc_word_count: WordsInDescription.WordsInDescription,
 }
 
+ConversionFilters = copy.copy(BackTestFilters)
+
 #----------------------------------------------------------------------------------------------------------------------
-
-enable_workers = utilities.check_for_zmqpy() or utilities.check_for_pyzmq()
-
+if cpu_count() > 1:
+    enable_workers = 1
+    #enable_zmq = utilities.check_for_zmqpy() or utilities.check_for_pyzmq()
+    enable_zmq = False
+else:
+    enable_workers = 0
+    enable_zmq = False
 #----------------------------------------------------------------------------------------------------------------------
 
 __all__ = []
@@ -101,10 +107,10 @@ TESTRUN = 0
 PROFILE = 0
 
 class ProfileGuidedOptimization(object):
-    def __init__(self, f, intial_value):
+    def __init__(self, f, initial_value):
         self.f = f
-        self.initial_value = intial_value
-        self.current_value = intial_value
+        self.initial_value = initial_value
+        self.current_value = initial_value
         self.exponent = 1.0
         self.backoff = 0.5
         self.last_duration = 0
@@ -138,21 +144,21 @@ class ProfileGuidedOptimization(object):
 class GATest:
     population = []
 
-    def __init__(self, conversion_filters, lcbt, args):
+    def __init__(self, backtest_filters, lcbt, args):
         """
-        :param conversion_filters:
+        :param backtest_filters:
         :param lcbt:
         :param args:
         """
         self.iteration = 0
         self.iteration_time = 0
-        self.conversion_filters = conversion_filters
+        self.backtest_filters = backtest_filters
         self.lcbt = lcbt
         self.args = args
 
         csv_field_names = []
         for _ in range(self.args.population_size):
-            filters = [lc_filter(args) for lc_filter in conversion_filters.values()]
+            filters = [lc_filter(args) for lc_filter in backtest_filters.values()]
             for lc_filter in filters:
                 csv_field_names.append(lc_filter.get_name())
                 lc_filter.current = random.randint(0, lc_filter.get_count() - 1)
@@ -197,22 +203,22 @@ class GATest:
 
     def calculate(self):
         for citizen in self.population:
-            citizen['results'] = self.lcbt.test(citizen['filters'])
+            citizen['result'] = self.lcbt.test(citizen['filters'])
             sys.stdout.write('.')
         sys.stdout.write('\n')
 
     def sort_by_fitness(self):
 
         def net_apy_cmp(a, b, config_fitness_sort_num_loans=self.args.fitness_sort_size):
-            if a['results']['num_loans'] < config_fitness_sort_num_loans:
+            if a['result']['num_loans'] < config_fitness_sort_num_loans:
                 a_fit = 0
             else:
-                a_fit = int(a['results']['net_apy'] * 100)
+                a_fit = int(a['result']['net_apy'] * 100)
 
-            if b['results']['num_loans'] < config_fitness_sort_num_loans:
+            if b['result']['num_loans'] < config_fitness_sort_num_loans:
                 b_fit = 0
             else:
-                b_fit = int(b['results']['net_apy'] * 100)
+                b_fit = int(b['result']['net_apy'] * 100)
 
             return b_fit - a_fit
 
@@ -223,7 +229,7 @@ class GATest:
 
     def print_best(self):
 
-        best_results = self.population[0]['results']
+        best_results = self.population[0]['result']
 
         filters = ''
         for lc_filter in self.population[0]['filters']:
@@ -274,12 +280,81 @@ class GATest:
                     lc_filter.current = random.randint(0, lc_filter.get_count() - 1)
         self.population = final_population
 
+    def debug_msg(self, msg):
+        if self.args.verbose:
+            sys.stdout.write('GA: %s\n' % msg)
+
+    def info_msg(self, msg):
+        sys.stdout.write('GA: %s\n' % msg)
+
+
+class ParallelGATest(GATest):
+    def __init__(self, backtest_filters, lcbt, args, work_queue, response_queue):
+        GATest.__init__(self, backtest_filters, lcbt, args)
+
+        self.work_queue = work_queue
+        self.response_queue = response_queue
+
+        self.range_filters = range(len(backtest_filters))
+        self.pgo = ProfileGuidedOptimization(self.calculate, args.work_batch)
+
+    def run(self):
+        GATest.run(self)
+
+        # Signal to all workers that we are finished
+        for _ in range(self.args.workers):
+            self.work_queue.put(None)
+
+    def calculate_fitness(self):
+        #self.pgo()
+        self.calculate(self.args.work_batch)
+
+    def calculate(self, min_work_messages=100):
+        citizen_idx = 0
+
+        # Bundle up the filters
+        work_messages = []
+
+        for citizen in self.population:
+
+            filter_values = [citizen['filters'][i].current for i in self.range_filters]
+
+            work_messages.append((citizen_idx, filter_values))
+
+            if len(work_messages) >= int(min_work_messages):
+                self.work_queue.put(work_messages)
+                work_messages = []
+
+            # citizen['results'] = self.lcbt.test(citizen['filters'])
+            # sys.stdout.write('.')
+
+            citizen_idx += 1
+
+        # Send the tail
+        if work_messages:
+            self.work_queue.put(work_messages)
+
+        # Get all the results
+        results_count = 0
+        population_count = len(self.population)
+        while results_count < population_count:
+            self.debug_msg("Population Count: %d Results Count: %d" % (population_count, results_count))
+            result_message = self.response_queue.get()
+            new_results_count = len(result_message['results'])
+            self.debug_msg("Worker[%i] returned %d results" %
+                          (result_message['worker'], new_results_count))
+            for citizen_idx, result in result_message['results']:
+                # sys.stderr.write("results[%d]=%s\n" % (citizen_idx, result))
+                self.population[citizen_idx]['result'] = result
+            results_count += new_results_count
+        self.info_msg('Calculate complete')
+
 
 class ZmqGATest(GATest):
-    def __init__(self, conversion_filters, lcbt, args):
-        GATest.__init__(self, conversion_filters, lcbt, args)
+    def __init__(self, backtest_filters, lcbt, args):
+        GATest.__init__(self, backtest_filters, lcbt, args)
 
-        self.range_filters = range(len(conversion_filters))
+        self.range_filters = range(len(backtest_filters))
 
         # Initialize a zeromq context
         self.context = utilities.zmq.Context()
@@ -297,14 +372,13 @@ class ZmqGATest(GATest):
         self.control_sender.bind("tcp://127.0.0.1:5559")
 
         # Give everything a second to spin up and connect
-        sys.stdout.write('Worker[-1] Waiting for all the workers to get setup\n')
+        self.info_msg('Waiting for all the workers to get setup')
         # Wait for all workers to send a message indicating they are ready
         for idx in range(self.args.workers):
             self.results_receiver.recv_json()
-            if self.args.verbose:
-                sys.stdout.write('Worker[-1] Received Setup confirmation from %d\n' % idx)
-        sys.stdout.write('Worker[-1] Workers are setup\n')
-        self.pgo = ProfileGuidedOptimization(self.calculate, 100)
+            self.debug_msg('Received Setup confirmation from %d' % idx)
+        self.info_msg('Workers are setup')
+        self.pgo = ProfileGuidedOptimization(self.calculate, args.work_batch)
 
     def run(self):
         GATest.run(self)
@@ -313,7 +387,8 @@ class ZmqGATest(GATest):
         self.control_sender.send_unicode(Filter.u("FINISHED"))
 
     def calculate_fitness(self):
-        self.pgo()
+        #self.pgo()
+        self.calculate(self.args.work_batch)
 
     def calculate(self, min_work_messages=100):
         citizen_idx = 0
@@ -323,13 +398,11 @@ class ZmqGATest(GATest):
 
         for citizen in self.population:
 
-            json_filters = [0] * len(self.conversion_filters)
-            for i in self.range_filters:
-                json_filters[i] = citizen['filters'][i].current
+            filter_values = [citizen['filters'][i].current for i in self.range_filters]
 
-            work_messages.append((citizen_idx, json_filters))
+            work_messages.append((citizen_idx, filter_values))
 
-            if len(work_messages) > int(min_work_messages):
+            if len(work_messages) >= int(min_work_messages):
                 self.ventilator_send.send_json(work_messages)
                 work_messages = []
 
@@ -346,280 +419,14 @@ class ZmqGATest(GATest):
         self.control_sender.send_unicode(Filter.u("SEND_RESULTS"))
         results_receiver = self.results_receiver
         for _ in range(self.args.workers):
-            result_message = results_receiver.recv_json()
-            if self.args.verbose:
-                sys.stdout.write("Worker[%i] returned %d results\n" %
-                                 (result_message['worker'], len(result_message['results'])))
-            for citizen_idx, results in result_message['results']:
-                # sys.stderr.write("results[%d]=%s\n" % (citizen_idx, results))
-                self.population[citizen_idx]['results'] = results
-        sys.stdout.write('\n')
+            results_message = results_receiver.recv_json()
+            self.debug_msg("Worker[%i] returned %d results" %
+                          (results_message['worker'], len(results_message['results'])))
+            for citizen_idx, result in results_message['results']:
+                # sys.stderr.write("results[%d]=%s\n" % (citizen_idx, result))
+                self.population[citizen_idx]['result'] = result
+        self.info_msg('Calculate complete')
 
-
-class LCLoanData:
-    def __init__(self, conversion_filters, args, worker_idx):
-
-        # Create each of the filters and use its conversion utility for normalizing the data
-        self.filters = [None] * len(conversion_filters)
-        for filter_idx, lc_filter in conversion_filters.items():
-            self.filters[filter_idx] = lc_filter(args)
-
-        self.args = args
-        self.worker_idx = worker_idx
-
-        self.row = 0
-        self.datetime = datetime.datetime(2013, 1, 30)
-        self.now = self.datetime.now()
-
-        delta = datetime.timedelta(days=(args.young_loans_in_days + 30))
-        self.last_date_for_full_month_for_volume = self.datetime.now() - delta
-
-        self.labels = []
-        self.results = []
-        self.loans = []
-
-        self.skipped_loans = 0
-        self.young_loans = 0
-        self.removed_expired_loans = 0
-
-    def initialize(self):
-        # Check serialized file cache.
-        csv_mod = os.path.getmtime(self.args.stats)
-
-        pickle_name = "loans_serialized_python%d.bin" % sys.version_info.major
-
-        serialized_mod = os.path.getmtime(pickle_name) if os.path.exists(pickle_name) else 0
-        if serialized_mod and serialized_mod > csv_mod:
-            sys.stdout.write("Worker[%d] Initializing from %s ...\n" % (self.worker_idx, pickle_name))
-            with open(pickle_name, "rb") as fh:
-                self.loans = pickle.load(fh)
-
-            sys.stdout.write("Worker[%d] done\n" % self.worker_idx)
-        # double cache miss
-        elif os.path.exists(self.args.stats):
-            sys.stdout.write("Worker[%d] Initializing from %s ...\n" % (self.worker_idx, self.args.stats))
-
-            loans = []
-
-            if sys.version_info.major >= 3:
-                fh = open(self.args.stats, newline='', encoding="latin-1")
-                csv_reader = csv.reader(fh)
-            else:
-                fh = open(self.args.stats)
-                csv_reader = utilities.UnicodeReader(fh, encoding="latin-1")
-
-            for data in csv_reader:
-                # Skip the first row after reading the first rows field labels
-                if self.get_labels(data):
-                    continue
-                raw_loan_dict = self.get_loan(data)
-                loan, parsed_ok = self.normalize_loan_data(raw_loan_dict)
-                if parsed_ok:
-                    # Assign the rowid of the loan to be the current last index in the loans list
-                    loan[LOAN_ENUM_rowid] = len(loans)
-                    loans.append(loan)
-
-            fh.close()
-
-            with open(pickle_name, "wb") as fh:
-                pickle.dump(loans, fh)
-
-            self.loans = loans
-
-            sys.stdout.write("Worker[%d] done initializing. Loans Found:" % self.worker_idx +
-                             str(len(loans)) + " Skipped non-parseable Loans:" + str(self.skipped_loans) +
-                             " Skipped Young Loans:" + str(self.young_loans) + " Skipped Removed or Expired Loans:" +
-                             str(self.removed_expired_loans) + '\n')
-        else:
-            sys.stdout.write(self.args.stats + " not found.\n")
-            sys.exit(-1)
-
-    def get_labels(self, data):
-        # First row in the data is a garbage comment
-        # Second row is where we have the labels
-        self.row += 1
-
-        # Print some status to the user that we are processing data
-        if self.row % 10000 == 0:
-            sys.stdout.write('.')
-        if self.row > 2:
-            return False
-        if self.row == 2:
-            self.labels = data[:]
-
-        return True
-
-    def get_loan(self, data, issue_d_re=re.compile("^\d{4}-\d{2}-\d{2}$").match):
-        loan = dict()
-        for c in range(len(data)):
-            loan[self.labels[c]] = data[c]
-
-        if "loan_status" not in loan or not loan["loan_status"] or "funded_amnt" not in loan or not loan["funded_amnt"]:
-            # sys.stdout.write("Skipping loan, did not find loan_status or funded_amnt" + str(loan) + '\n')
-            self.skipped_loans += 1
-            return False
-
-        # Only look at loans > 3 months old
-        if not issue_d_re(loan["issue_d"]):
-            sys.stdout.write("Skipping loan, did not find issue_d:" + str(loan))
-            self.skipped_loans += 1
-            return False
-
-        # Ignore loans that are too young for consideration
-        tot_seconds = (self.now - self.datetime.strptime(loan["issue_d"], "%Y-%m-%d")).total_seconds()
-        if tot_seconds < (86400 * self.args.young_loans_in_days):
-            self.young_loans += 1
-            return False
-
-        # Ignore loans that didn't event start
-        if loan["loan_status"] == "Removed" or loan["loan_status"] == "Expired":
-            self.removed_expired_loans += 1
-            return False
-
-        # loan["rowid"] = self.row
-        # loan["row_data"] = data
-
-        return loan
-
-    def get_nar(self, invested):
-
-        defaulted = 0
-        profit = principal = lost = 0.0
-
-        for loan in invested:
-            profit += loan[LOAN_ENUM_profit]
-            principal += loan[LOAN_ENUM_principal]
-            lost += loan[LOAN_ENUM_lost]
-            defaulted += loan[LOAN_ENUM_defaulted]
-
-        num_loans = len(invested)
-
-        if num_loans:
-
-            if principal == 0:
-                nar = 0.0
-            else:
-                # nar = pretty_decimal(Decimal(100 * math.pow(1 + profit / rounded_principal, 12) - 1), significance=4)
-                nar = 100.0 * (math.pow(1 + profit / principal, 12) - 1.0)
-
-            rate = 0.0
-            for loan in invested:
-                rate += loan[LOAN_ENUM_int_rate]
-
-            # expect = pretty_decimal(Decimal(rate / num_loans), significance=2)
-            expect = rate / num_loans
-
-            # default_percent = pretty_decimal(Decimal(100 * defaulted / num_loans), significance=1)
-            default_percent = 100 * defaulted / num_loans
-
-            # avg_loss = pretty_decimal(Decimal(lost / defaulted), significance=2)
-            #            if defaulted > 0 else pretty_decimal(Decimal(0.0), significance=2)
-            avg_loss = (lost / defaulted) if defaulted > 0 else 0.0
-
-            # Count loan volume
-            per_month = 0
-            for loan in invested:
-                if loan[LOAN_ENUM_issue_datetime].year == self.last_date_for_full_month_for_volume.year and \
-                   loan[LOAN_ENUM_issue_datetime].month == self.last_date_for_full_month_for_volume.month:
-                    per_month += 1
-        else:
-            nar = 0.0
-            expect = 0.0
-            default_percent = 0.0
-            avg_loss = 0.0
-            per_month = 0
-
-        return dict(num_loans=num_loans, loans_per_month=per_month, expected_apy=expect, num_defaulted=defaulted,
-                    pct_defaulted=default_percent, avg_default_loss=avg_loss, net_apy=nar)
-
-    def normalize_loan_data(self, raw_loan_dict):
-        loan_dict = LOAN_ENUM_default_data[:]
-        conversion_filters = self.filters
-        if raw_loan_dict:
-            try:
-                loan_dict[LOAN_ENUM_acc_open_past_24mths] = conversion_filters[LOAN_ENUM_acc_open_past_24mths].convert(raw_loan_dict["acc_open_past_24mths"])
-                loan_dict[LOAN_ENUM_funded_amnt] = conversion_filters[LOAN_ENUM_funded_amnt].convert(raw_loan_dict["funded_amnt"])
-                loan_dict[LOAN_ENUM_annual_income] = conversion_filters[LOAN_ENUM_annual_income].convert(raw_loan_dict["annual_inc"])
-                loan_dict[LOAN_ENUM_grade] = conversion_filters[LOAN_ENUM_grade].convert(raw_loan_dict["grade"])
-                loan_dict[LOAN_ENUM_debt_to_income_ratio] = conversion_filters[LOAN_ENUM_debt_to_income_ratio].convert(raw_loan_dict["dti"])
-                loan_dict[LOAN_ENUM_delinq_2yrs] = conversion_filters[LOAN_ENUM_delinq_2yrs].convert(raw_loan_dict["delinq_2yrs"])
-                loan_dict[LOAN_ENUM_earliest_credit_line] = conversion_filters[LOAN_ENUM_earliest_credit_line].convert(raw_loan_dict["earliest_cr_line"])
-                loan_dict[LOAN_ENUM_emp_length] = conversion_filters[LOAN_ENUM_emp_length].convert(raw_loan_dict["emp_length"])
-                loan_dict[LOAN_ENUM_home_ownership] = conversion_filters[LOAN_ENUM_home_ownership].convert(raw_loan_dict["home_ownership"])
-                loan_dict[LOAN_ENUM_income_validated] = conversion_filters[LOAN_ENUM_income_validated].convert(raw_loan_dict["is_inc_v"])
-                loan_dict[LOAN_ENUM_inq_last_6mths] = conversion_filters[LOAN_ENUM_inq_last_6mths].convert(raw_loan_dict["inq_last_6mths"])
-                loan_dict[LOAN_ENUM_purpose] = conversion_filters[LOAN_ENUM_purpose].convert(raw_loan_dict["purpose"])
-                loan_dict[LOAN_ENUM_mths_since_last_delinq] = conversion_filters[LOAN_ENUM_mths_since_last_delinq].convert(raw_loan_dict["mths_since_last_delinq"])
-                loan_dict[LOAN_ENUM_pub_rec] = conversion_filters[LOAN_ENUM_pub_rec].convert(raw_loan_dict["pub_rec"])
-                loan_dict[LOAN_ENUM_revol_utilization] = conversion_filters[LOAN_ENUM_revol_utilization].convert(raw_loan_dict["revol_util"])
-                loan_dict[LOAN_ENUM_addr_state] = conversion_filters[LOAN_ENUM_addr_state].convert(raw_loan_dict["addr_state"])
-                loan_dict[LOAN_ENUM_total_acc] = conversion_filters[LOAN_ENUM_total_acc].convert(raw_loan_dict["total_acc"])
-                loan_dict[LOAN_ENUM_desc_word_count] = conversion_filters[LOAN_ENUM_desc_word_count].convert(raw_loan_dict["desc"])
-
-                loan_dict[LOAN_ENUM_loan_status] = raw_loan_dict["loan_status"]
-                loan_dict[LOAN_ENUM_issue_datetime] = self.datetime.strptime(raw_loan_dict["issue_d"], "%Y-%m-%d")
-                loan_dict[LOAN_ENUM_number_of_payments] = int(raw_loan_dict["term"].strip().split()[0])
-                loan_dict[LOAN_ENUM_installment] = float(raw_loan_dict["installment"])
-                loan_dict[LOAN_ENUM_int_rate] = float(raw_loan_dict["int_rate"][:-1])
-                loan_dict[LOAN_ENUM_total_pymnt] = float(raw_loan_dict["total_pymnt"])
-                loan_dict[LOAN_ENUM_out_prncp] = float(raw_loan_dict["out_prncp"])
-                loan_dict[LOAN_ENUM_out_prncp_inv] = float(raw_loan_dict["out_prncp_inv"])
-
-                total_received_interest = float(raw_loan_dict["total_rec_int"])
-                total_received_principal = float(raw_loan_dict["total_rec_prncp"])
-
-                if loan_dict[LOAN_ENUM_loan_status] == "Charged Off" or loan_dict[LOAN_ENUM_loan_status] == "Default":
-                    defaulted_amount = ((loan_dict[LOAN_ENUM_number_of_payments] * loan_dict[LOAN_ENUM_installment]) -
-                                        (total_received_interest + total_received_principal)) * .99
-                    loan_dict[LOAN_ENUM_lost] = defaulted_amount
-                    loan_dict[LOAN_ENUM_defaulted] = 1
-                else:
-                    defaulted_amount = loan_dict[LOAN_ENUM_lost] = 0.0
-                    loan_dict[LOAN_ENUM_defaulted] = 0
-
-                loan_profit = loan_principal = loan_lost = 0.0
-                elapsed = loan_dict[LOAN_ENUM_number_of_payments]
-                balance = loan_dict[LOAN_ENUM_funded_amnt]
-                monthly_payment = loan_dict[LOAN_ENUM_installment]
-                rate = loan_dict[LOAN_ENUM_int_rate]
-                ratio = 25.0 / balance
-                payments = 0.0
-                while elapsed > 0:
-                    elapsed -= 1
-                    # Interest and service charge for the whole loan (not just me)
-                    interest = balance * rate / 1200.0
-                    service = 0.01 * monthly_payment
-                    payments += monthly_payment
-                    if loan_dict[LOAN_ENUM_defaulted] and payments > loan_dict[LOAN_ENUM_total_pymnt]:
-                        loan_profit -= defaulted_amount * ratio
-                        loan_lost += defaulted_amount * ratio
-                        break
-
-                    # Compute my ratio of the profit
-                    loan_profit += (interest - service) * ratio
-                    loan_principal += balance * ratio
-                    balance -= monthly_payment
-
-                # sys.stderr.write("Calculated profit=%.2f principal=%.2f loss=%.2f ... ")
-                # sys.stderr.write("csv total_received_interest=%.2f total_received_principal=%.2f loss=%.2f\n" %
-                # (loan_profit, loan_principal, loan_lost, total_received_interest,
-                # total_received_principal, loan_array[LOAN_ENUM_lost]))
-                loan_dict[LOAN_ENUM_profit] = loan_profit
-                loan_dict[LOAN_ENUM_principal] = loan_principal
-                loan_dict[LOAN_ENUM_lost] = loan_lost
-
-                # Profit will be the interest minus the service fee
-                # loan_array[LOAN_ENUM_profit] = total_received_interest * .99
-                # loan_array[LOAN_ENUM_principal] = total_received_principal
-
-            except:
-                sys.stdout.write("Error in row " + str(self.row) + '\n')
-                for key,val in raw_loan_dict.iteritems():
-                    sys.stdout.write("    %s: %s\n" % (key, val))
-                raise
-            return loan_dict, True
-        else:
-            return loan_dict, False
 
 class LCBT:
     def __init__(self, conversion_filters, args, worker_idx):
@@ -629,7 +436,7 @@ class LCBT:
         for filter_idx, lc_filter in conversion_filters.items():
             self.filters[filter_idx] = lc_filter(args)
 
-        self.loan_data = LCLoanData(conversion_filters, args, worker_idx)
+        self.loan_data = LoanData.LCLoanData(conversion_filters, args, worker_idx)
         self.args = args
         self.worker_idx = worker_idx
 
@@ -651,6 +458,41 @@ class LCBT:
     def debug_msg(self, msg):
         if self.args.verbose:
             sys.stdout.write("Worker[%i] %s\n" % (self.worker_idx, msg))
+
+
+class ParallelLCBT(LCBT, Process):
+    def __init__(self, conversion_filters, args, worker_idx, work_queue, response_queue):
+        LCBT.__init__(self, conversion_filters, args, worker_idx)
+        Process.__init__(self)
+        self.work_queue = work_queue
+        self.response_queue = response_queue
+
+    def run(self):
+        self.debug_msg("Started")
+
+        # do some initialization here
+        self.initialize()
+
+        # do computation
+        for work_messages in iter(self.work_queue.get, None):
+            # Use data
+            self.debug_msg("Received %d work_messages" % len(work_messages))
+
+            answer_message = dict(worker=self.worker_idx)
+            results = []
+
+            for citizen_idx, filters in work_messages:
+                for i in range(len(self.filters)):
+                    self.filters[i].current = filters[i]
+
+                result = self.test(self.filters)
+                sys.stdout.write(str(self.worker_idx))
+                results.append((citizen_idx, result))
+
+            answer_message['results'] = results
+            self.response_queue.put_nowait(answer_message)
+
+        self.debug_msg("Finished receiving work")
 
 
 class ZmqLCBT(LCBT):
@@ -681,7 +523,7 @@ class ZmqLCBT(LCBT):
         answer_message = dict(worker=self.worker_idx, message='READY')
         self.results_sender.send_json(answer_message)
 
-    def work(self):
+    def run(self):
         # Loop and accept messages from both channels, acting accordingly
         poller = self.poller
         work_receiver = self.work_receiver
@@ -726,14 +568,17 @@ class ZmqLCBT(LCBT):
                 self.debug_msg("Exiting. Unknown control_message received %s", control_message)
                 sys.exit(-1)
 
-
-def worker(worker_idx, args):
+def zmq_worker(worker_idx, args):
     random.seed(args.random_seed)
     lcbt = ZmqLCBT(ConversionFilters, args, worker_idx)
     lcbt.initialize()
     lcbt.setup_zmq()
-    lcbt.work()
+    lcbt.run()
 
+def mp_worker(worker_idx, args, work_queue, response_queue):
+    random.seed(args.random_seed)
+    lcbt = ParallelLCBT(ConversionFilters, args, worker_idx, work_queue, response_queue)
+    lcbt.start()
 
 def main(argv=None):  # IGNORE:C0111
     """Command line options."""
@@ -787,6 +632,9 @@ USAGE
                         help="filter young loans if they are younger than specified number of days [default: %(default)s]")
     parser.add_argument('-w', '--workers', default=enable_workers * cpu_count(), type=int,
                         help="number of workers defaults to the number of cpu cores [default: %(default)s]")
+    parser.add_argument('-b', '--work_batch', default=75, type=int,
+                        help="size of work batch size to give to each worker [default: %(default)s]")
+
 
     # Process arguments
     args = parser.parse_args()
@@ -799,16 +647,27 @@ USAGE
         utilities.download_data(args.data, args.stats)
 
     if enable_workers:
-        lcbt = ZmqLCBT(ConversionFilters, args, worker_idx=-1)
-        lcbt.initialize()
-        for worker_idx in range(args.workers):
-            Process(target=worker, args=(worker_idx, args)).start()
-        ga_test = ZmqGATest(ConversionFilters, lcbt, args)
-        ga_test.run()
+        if enable_zmq:
+            lcbt = ZmqLCBT(ConversionFilters, args, worker_idx=-1)
+            lcbt.initialize()
+            for worker_idx in range(args.workers):
+                Process(target=zmq_worker, args=(worker_idx, args)).start()
+            ga_test = ZmqGATest(BackTestFilters, lcbt, args)
+            ga_test.run()
+        else:
+            # only need this one to initialize the data
+            lcbt = LCBT(ConversionFilters, args, worker_idx=-1)
+            lcbt.initialize()
+            work_queue = MultiProcessingQueue()
+            response_queue = MultiProcessingQueue()
+            for worker_idx in range(args.workers):
+                mp_worker(worker_idx, args, work_queue, response_queue)
+            ga_test = ParallelGATest(BackTestFilters, lcbt, args, work_queue, response_queue)
+            ga_test.run()
     else:
         lcbt = LCBT(ConversionFilters, args, worker_idx=-1)
         lcbt.initialize()
-        ga_test = GATest(ConversionFilters, lcbt, args)
+        ga_test = GATest(BackTestFilters, lcbt, args)
         ga_test.run()
 
     return 0

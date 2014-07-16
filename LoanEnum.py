@@ -1,8 +1,16 @@
 """
-Created on Jun 1, 2013
+Created on May 30, 2013
 
-@author: gczajkow
+@author:     Gregory Czajkowski
+
+@copyright:  2013 Freedom. All rights reserved.
+
+@license:    Licensed under the Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+
+@contact:    gregczajkowski at yahoo.com
 """
+
+# These enums are used for conversions and backtesting
 
 LOAN_ENUM_purpose = 0
 LOAN_ENUM_desc_word_count = 1
@@ -21,6 +29,8 @@ LOAN_ENUM_emp_length = 13
 LOAN_ENUM_annual_income = 14
 LOAN_ENUM_income_validated = 15
 LOAN_ENUM_acc_open_past_24mths = 16
+
+# These enums are only used for conversions
 
 LOAN_ENUM_total_acc = 17
 LOAN_ENUM_loan_status = 18
@@ -42,4 +52,3 @@ LOAN_ENUM_SIZE = 31
 
 LOAN_ENUM_default_data = [0] * LOAN_ENUM_SIZE
 
-# This enums are only used for conversions
