@@ -19,6 +19,10 @@ class WordsInDescription(Filter.Filter):
     """
       > 75 looks best
     """
+    sqlite_type = "INT"
+    name = "desc"
+    query = "(desc >= ?)"
+    named_query = "(desc >= :desc)"
     def __init__(self, args, current=None):
         """
         Constructor

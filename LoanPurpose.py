@@ -18,6 +18,10 @@ class LoanPurpose(Filter.Filter):
     """
     classdocs
     """
+    sqlite_type = "INT"
+    name = "purpose"
+    query = "((purpose & ?) > 0)"
+    named_query = "((purpose & :purpose) > 0)"
     def __init__(self, args, current=None):
         """
         Constructor

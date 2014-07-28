@@ -19,6 +19,10 @@ DEFAULT_DELINQUENCIES_LAST_2YEARS = 0
 class Delinquencies(Filter.Filter):
     """
     """
+    sqlite_type = "INT"
+    name = "delinq_2yrs"
+    query = "((delinq_2yrs & ?) > 0)"
+    named_query = "((delinq_2yrs & :delinq_2yrs) > 0)"
     def __init__(self, args, current=None):
         """
         Constructor

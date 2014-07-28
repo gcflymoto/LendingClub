@@ -25,6 +25,10 @@ class State(Filter.Filter):
     """
     classdocs
     """
+    sqlite_type = "INT"
+    name = "addr_state"
+    query = "((addr_state & ?) > 0)"
+    named_query = "((addr_state & :addr_state) > 0)"
     def __init__(self, args, current=None):
         """
         Constructor

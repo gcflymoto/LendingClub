@@ -18,6 +18,10 @@ class HomeOwnership(Filter.Filter):
     """
     People with mortgages suck at repaying LC loans.
     """
+    sqlite_type = "INT"
+    name = "home_ownership"
+    query = "(home_ownership != ?)"
+    named_query = "(home_ownership != :home_ownership)"
     def __init__(self, args, current=None):
         """
         Constructor

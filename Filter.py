@@ -14,17 +14,6 @@ Created on May 30, 2013
 import itertools
 import sys
 
-if sys.version < '3':
-    import codecs
-    def u(x):
-        return codecs.unicode_escape_decode(x)[0]
-    def s(x):
-        return x.encode('ascii')
-else:
-    def u(x):
-        return x
-    def s(x):
-        return x.encode('ascii')
 
 class Filter(object):
     """

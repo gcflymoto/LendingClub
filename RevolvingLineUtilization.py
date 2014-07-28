@@ -20,6 +20,10 @@ class RevolvingLineUtilization(Filter.Filter):
     """
     classdocs
     """
+    sqlite_type = "REAL"
+    name = "revol_util"
+    query = "(revol_util <= ?)"
+    named_query = "(revol_util <= :revol_util)"
     def __init__(self, args, current=None):
         """
         Constructor

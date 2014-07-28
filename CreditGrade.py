@@ -22,6 +22,10 @@ import LoanEnum
 class CreditGrade(Filter.Filter):
     """
     """
+    sqlite_type = "INT"
+    name = "grade"
+    query = "((grade & ?) > 0)"
+    named_query = "((grade & :grade) > 0)"
     def __init__(self, args, current=None):
         """
         Construct a set similar to this based on the passed in grades

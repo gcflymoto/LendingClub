@@ -46,6 +46,13 @@ def check_for_zmqpy():
 
 
 #----------------------------------------------------------------------------------------------------------------------
+def check_for_sqlite():
+    if platform.python_implementation() == 'PyPy':
+        enable_sqlite = 0
+    else:
+        enable_sqlite = 1
+    return enable_sqlite
+
 def check_for_pyzmq():
     enable_pyzmq = 1
 
@@ -78,6 +85,17 @@ class Unbuffered(object):
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
 
+if sys.version < '3':
+    import codecs
+    def u(x):
+        return codecs.unicode_escape_decode(x)[0]
+    def s(x):
+        return x.encode('ascii')
+else:
+    def u(x):
+        return x
+    def s(x):
+        return x.encode('ascii')
 
 if sys.platform == "win32":
     # On Windows, the best timer is time.clock()
@@ -97,6 +115,14 @@ class Timer(object):
 
     def duration_in_seconds(self):
         return self.__finish - self.__start
+
+
+if sys.version_info.major < 3:
+    from StringIO import StringIO
+    stringio = StringIO
+else:
+    from io import StringIO
+    stringio = StringIO
 
 if sys.version_info.major < 3:
     import codecs

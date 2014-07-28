@@ -40,6 +40,7 @@ from argparse import RawDescriptionHelpFormatter
 from multiprocessing import Process, cpu_count
 from multiprocessing import Queue as MultiProcessingQueue
 
+import StubFilter
 import AccountsOpenPast24Months
 import AmountRequested
 import AnnualIncome
@@ -65,6 +66,7 @@ import utilities
 from LoanEnum import *
 
 BackTestFilters = {
+    LOAN_ENUM_rowid: StubFilter.StubFilter,
     LOAN_ENUM_acc_open_past_24mths: AccountsOpenPast24Months.AccountsOpenLast24Months,
     LOAN_ENUM_funded_amnt: AmountRequested.AmountRequested,
     LOAN_ENUM_annual_income: AnnualIncome.AnnualIncome,
@@ -86,16 +88,6 @@ BackTestFilters = {
 }
 
 ConversionFilters = copy.copy(BackTestFilters)
-
-#----------------------------------------------------------------------------------------------------------------------
-if cpu_count() > 1:
-    enable_workers = 1
-    #enable_zmq = utilities.check_for_zmqpy() or utilities.check_for_pyzmq()
-    enable_zmq = False
-else:
-    enable_workers = 0
-    enable_zmq = False
-#----------------------------------------------------------------------------------------------------------------------
 
 __all__ = []
 __version__ = 1.1
@@ -204,8 +196,8 @@ class GATest:
     def calculate(self):
         for citizen in self.population:
             citizen['result'] = self.lcbt.test(citizen['filters'])
-            sys.stdout.write('.')
-        sys.stdout.write('\n')
+            #sys.stdout.write('.')
+        #sys.stdout.write('\n')
 
     def sort_by_fitness(self):
 
@@ -384,7 +376,7 @@ class ZmqGATest(GATest):
         GATest.run(self)
 
         # Signal to all workers that we are finished
-        self.control_sender.send_unicode(Filter.u("FINISHED"))
+        self.control_sender.send_unicode(utilities.u("FINISHED"))
 
     def calculate_fitness(self):
         #self.pgo()
@@ -416,7 +408,7 @@ class ZmqGATest(GATest):
             self.ventilator_send.send_json(work_messages)
 
         # Send control message to signal sending back the results
-        self.control_sender.send_unicode(Filter.u("SEND_RESULTS"))
+        self.control_sender.send_unicode(utilities.u("SEND_RESULTS"))
         results_receiver = self.results_receiver
         for _ in range(self.args.workers):
             results_message = results_receiver.recv_json()
@@ -434,7 +426,24 @@ class LCBT:
         # Create each of the filters
         self.filters = [None] * len(conversion_filters)
         for filter_idx, lc_filter in conversion_filters.items():
+            #print(filter_idx, lc_filter.name)
             self.filters[filter_idx] = lc_filter(args)
+
+        # Generate the Sqlite Query
+        self.sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join([lc_filter.query for lc_filter in self.filters if lc_filter.query])
+        #print(self.sql_query)
+
+        self.named_sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join([lc_filter.named_query for lc_filter in self.filters if lc_filter.query])
+
+        """
+        This ends up being slower
+        SELECT * FROM table1 WHERE rowid IN
+         (SELECT rowid FROM table1 WHERE a=5
+           INTERSECT SELECT rowid FROM table1 WHERE b=11);
+        """
+        # http://www.sqlite.org/cvstrac/wiki?p=PerformanceTuning
+        self.expanded_query = "SELECT Id FROM Loans WHERE Id IN\n (" + '\n INTERSECT '.join(['SELECT Id from Loans WHERE %s' % lc_filter.query for lc_filter in self.filters if lc_filter.query]) + ')'
+        #print(self.expanded_query)
 
         self.loan_data = LoanData.LCLoanData(conversion_filters, args, worker_idx)
         self.args = args
@@ -443,15 +452,36 @@ class LCBT:
     def initialize(self):
         self.loan_data.initialize()
 
+    """
     def test(self, filters):
         self.filters = filters
         invested = [loan for loan in self.loan_data.loans if self.consider(loan)]
 
         return self.loan_data.get_nar(invested)
+    """
+
+
+    def test(self, filters):
+        #print(self.sql_query)
+        params = tuple(lc_filter.get_current() for lc_filter in filters if '?' in lc_filter.query)
+        #print([type(param) for param in params])
+        self.loan_data.cursor.execute(self.sql_query, params)
+        invested = [self.loan_data.loans[row[0]] for row in self.loan_data.cursor.fetchall()]
+
+        #params = dict()
+        #for lc_filter in filters:
+        #    if '?' in lc_filter.query:
+        #        params[lc_filter.name] = lc_filter.get_current()
+        ##print(self.named_sql_query)
+        #self.loan_data.cursor.execute(self.named_sql_query, params)
+        #invested = [self.loan_data.loans[row[0]] for row in self.loan_data.cursor.fetchall()]
+
+        return self.loan_data.get_nar(invested)
 
     def consider(self, loan):
         for lc_filter in self.filters:
-            if lc_filter.current != lc_filter.size and not lc_filter.apply(loan):
+            #if lc_filter.current != lc_filter.size and not lc_filter.apply(loan):
+            if not lc_filter.apply(loan):
                 return False
         return True
 
@@ -486,7 +516,7 @@ class ParallelLCBT(LCBT, Process):
                     self.filters[i].current = filters[i]
 
                 result = self.test(self.filters)
-                sys.stdout.write(str(self.worker_idx))
+                #sys.stdout.write(str(self.worker_idx))
                 results.append((citizen_idx, result))
 
             answer_message['results'] = results
@@ -512,7 +542,7 @@ class ZmqLCBT(LCBT):
         # Set up a channel to receive control messages over
         self.control_receiver = self.context.socket(utilities.zmq.SUB)
         self.control_receiver.connect("tcp://127.0.0.1:5559")
-        self.control_receiver.setsockopt_string(utilities.zmq.SUBSCRIBE, Filter.u(""))
+        self.control_receiver.setsockopt_string(utilities.zmq.SUBSCRIBE, utilities.u(""))
 
         # Set up a poller to multiplex the work receiver and control receiver channels
         self.poller = utilities.zmq.Poller()
@@ -605,6 +635,10 @@ def main(argv=None):  # IGNORE:C0111
 USAGE
 ''' % (program_name, program_shortdesc, str(__date__))
 
+    #----------------------------------------------------------------------------------------------------------------------
+    enable_workers = (cpu_count() > 1)
+    #----------------------------------------------------------------------------------------------------------------------
+
     # Setup argument parser
     parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
     parser.add_argument("-v", "--verbose", dest="verbose", action="count",
@@ -625,6 +659,7 @@ USAGE
     parser.add_argument('-e', '--elite_rate', default=0.05, type=float, help="elite rate [default: %(default)s]")
     parser.add_argument('-m', '--mutation_rate', default=0.05, type=float, help="mutation rate [default: %(default)s]")
     parser.add_argument('-k', '--check', default=False, action='store_true', help="checking mode: open the CSV results file and filter the loans into a separate file [default: %(default)s]")
+    parser.add_argument('-z', '--zmq', default=False, action='store_true', help="Use zmq libraries for multi-processing [default: %(default)s]")
     parser.add_argument('-r', '--checkresults', default="LoanStatsNewFiltered.csv", help="file name for the filtered results used during checking mode [default: %(default)s]")
     parser.add_argument('-f', '--fitness_sort_size', default=1000, type=int,
                         help="number of loans to limit the fitness sort size, the larger the longer and more optimal solution [default: %(default)s]")
@@ -635,9 +670,13 @@ USAGE
     parser.add_argument('-b', '--work_batch', default=75, type=int,
                         help="size of work batch size to give to each worker [default: %(default)s]")
 
-
     # Process arguments
     args = parser.parse_args()
+
+    if args.workers > 0 and args.zmq:
+        enable_zmq = utilities.check_for_zmqpy() or utilities.check_for_pyzmq()
+    else:
+        enable_zmq = False
 
     random.seed(args.random_seed)
 

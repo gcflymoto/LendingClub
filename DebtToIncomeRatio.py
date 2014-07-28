@@ -18,11 +18,15 @@ import LoanEnum
 class DebtToIncomeRatio(Filter.Filter):
     """
     """
+    sqlite_type = "REAL"
+    name = "dti"
+    query = "(dti <= ?)"
+    named_query = "(dti <= :dti)"
     def __init__(self, args, current=None):
         """
         Constructor
         """
-        options = list(range(10, 35, 5))
+        options = [float(p) for p in range(10, 35, 5)]
 
         Filter.Filter.__init__(self, args, options, current)
 

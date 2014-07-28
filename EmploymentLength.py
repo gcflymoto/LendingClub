@@ -12,12 +12,17 @@ Created on May 30, 2013
 
 import Filter
 import LoanEnum
+import utilities
 
 
 class EmploymentLength(Filter.Filter):
     """
     classdocs
     """
+    sqlite_type = "INT"
+    name = "emp_length"
+    query = "(emp_length <= ?)"
+    named_query = "(emp_length <= :emp_length)"
     def __init__(self, args, current=None):
         """
         Constructor
@@ -27,12 +32,12 @@ class EmploymentLength(Filter.Filter):
         Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
-        raw_data_s = Filter.s(raw_data)
-        if raw_data == u'n/a':
+        raw_data_s = utilities.s(raw_data)
+        if raw_data == utilities.u('n/a'):
             return 0
-        elif raw_data == u'< 1 year':
+        elif raw_data == utilities.u('< 1 year'):
             return 1
-        elif raw_data == u'10+ years':
+        elif raw_data == utilities.u('10+ years'):
             return 11
         return int(raw_data[0]) + 1
 

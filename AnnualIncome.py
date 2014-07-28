@@ -18,6 +18,10 @@ class AnnualIncome(Filter.Filter):
     """
     classdocs
     """
+    sqlite_type = "INT"
+    name = "annual_inc"
+    query = "(annual_inc <= ?)"
+    named_query = "(annual_inc <= :annual_inc)"
     def __init__(self, args, current=None):
         """
         Constructor

@@ -20,6 +20,10 @@ class AccountsOpenLast24Months(Filter.Filter):
     """
     classdocs
     """
+    sqlite_type = "INT"
+    name = "acc_open_past_24mths"
+    query = "(acc_open_past_24mths <= ?)"
+    named_query = "(acc_open_past_24mths <= :acc_open_past_24mths)"
     def __init__(self, args, current=None):
         """
         Constructor

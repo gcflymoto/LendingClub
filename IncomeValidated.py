@@ -18,6 +18,10 @@ class IncomeValidated(Filter.Filter):
     """
     classdocs
     """
+    sqlite_type = "INT"
+    name = "is_inc_v"
+    query = "(is_inc_v != ?)"
+    named_query = "(is_inc_v != :is_inc_v)"
     def __init__(self, args, current=None):
         """
         Constructor

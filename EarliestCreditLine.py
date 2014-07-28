@@ -14,7 +14,7 @@ import datetime
 import Filter
 import LoanEnum
 
-DEFAULT_EARLIEST_CREDIT_LINE = 0
+DEFAULT_EARLIEST_CREDIT_LINE = 0.0
 
 
 class EarliestCreditLine(Filter.Filter):
@@ -22,6 +22,10 @@ class EarliestCreditLine(Filter.Filter):
     """
     datetime = datetime.datetime(2013, 1, 30)
     now = datetime.now()
+    sqlite_type = "REAL"
+    name = "earliest_cr_line"
+    query = "(earliest_cr_line >= ?)"
+    named_query = "(earliest_cr_line >= :earliest_cr_line)"
     def __init__(self, args, current=None):
         """
         Constructor
@@ -32,7 +36,7 @@ class EarliestCreditLine(Filter.Filter):
 
     def convert(self, raw_data):
         if raw_data:
-            return (self.now - self.datetime.strptime(raw_data, "%Y-%m-%d %H:%M")).total_seconds() / 60 / 60 / 24 / 365
+            return float((self.now - self.datetime.strptime(raw_data, "%Y-%m-%d %H:%M")).total_seconds() / 60 / 60 / 24 / 365)
         else:
             return DEFAULT_EARLIEST_CREDIT_LINE
 

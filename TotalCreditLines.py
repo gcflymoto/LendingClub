@@ -20,6 +20,10 @@ class TotalCreditLines(Filter.Filter):
     """
     classdocs
     """
+    sqlite_type = "INT"
+    name = "total_acc"
+    query = "(total_acc <= ?)"
+    named_query = "(total_acc <= :total_acc)"
     def __init__(self, args, current=None):
         """
         Constructor

@@ -20,6 +20,10 @@ class InquiriesLast6Months(Filter.Filter):
     """
     classdocs
     """
+    sqlite_type = "INT"
+    name = "inq_last_6mths"
+    query = "(inq_last_6mths <= ?)"
+    named_query = "(inq_last_6mths <= :inq_last_6mths)"
     def __init__(self, args, current=None):
         """
         Constructor

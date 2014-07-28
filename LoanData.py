@@ -20,6 +20,22 @@ import math
 
 import utilities
 from LoanEnum import *
+import sqlite3
+
+def init_sqlite_db(db_name):
+    # Read database to tempfile
+    con = sqlite3.connect(db_name)
+    tempfile = utilities.stringio()
+    for line in con.iterdump():
+        tempfile.write('%s\n' % line)
+    con.close()
+    tempfile.seek(0)
+
+    # Create a database in memory and import from tempfile
+    mem_db = sqlite3.connect(":memory:")
+    mem_db.cursor().executescript(tempfile.read())
+    mem_db.commit()
+    return mem_db
 
 __author__ = 'gczajkow'
 
@@ -49,6 +65,9 @@ class LCLoanData:
         self.young_loans = 0
         self.removed_expired_loans = 0
 
+    def info_msg(self, msg):
+        sys.stdout.write("Worker[%d] %s\n" % (self.worker_idx, msg))
+
     def initialize(self):
         # Check serialized file cache.
         csv_mod = os.path.getmtime(self.args.stats)
@@ -57,14 +76,17 @@ class LCLoanData:
 
         serialized_mod = os.path.getmtime(pickle_name) if os.path.exists(pickle_name) else 0
         if serialized_mod and serialized_mod > csv_mod:
-            sys.stdout.write("Worker[%d] Initializing from %s ...\n" % (self.worker_idx, pickle_name))
+            self.info_msg("Initializing from %s ..." % pickle_name)
             with open(pickle_name, "rb") as fh:
                 self.loans = pickle.load(fh)
 
-            sys.stdout.write("Worker[%d] Initializing done\n" % self.worker_idx)
+            self.info_msg("Initializing sqlite")
+            self.create_sqlite_db(self.loans)
+            self.info_msg("Initializing done")
+
         # double cache miss
         elif os.path.exists(self.args.stats):
-            sys.stdout.write("Worker[%d] Initializing from %s ...\n" % (self.worker_idx, self.args.stats))
+            self.info_msg("Initializing from %s ..." % self.args.stats)
 
             loans = []
 
@@ -91,14 +113,17 @@ class LCLoanData:
             with open(pickle_name, "wb") as fh:
                 pickle.dump(loans, fh)
 
+            self.info_msg("Initializing sqlite")
+            self.create_sqlite_db(loans)
+
             self.loans = loans
 
-            sys.stdout.write("Worker[%d] Initializing done. Loans Found:" % self.worker_idx +
-                             str(len(loans)) + " Skipped non-parseable Loans:" + str(self.skipped_loans) +
-                             " Skipped Young Loans:" + str(self.young_loans) + " Skipped Removed or Expired Loans:" +
-                             str(self.removed_expired_loans) + '\n')
+            self.info_msg("Initializing done. Loans Found:" +
+                          str(len(loans)) + " Skipped non-parseable Loans:" + str(self.skipped_loans) +
+                          " Skipped Young Loans:" + str(self.young_loans) + " Skipped Removed or Expired Loans:" +
+                          str(self.removed_expired_loans))
         else:
-            sys.stdout.write(self.args.stats + " not found.\n")
+            self.info_msg(self.args.stats + " not found")
             sys.exit(-1)
 
     def get_labels(self, data):
@@ -128,7 +153,7 @@ class LCLoanData:
 
         # Only look at loans > 3 months old
         if not issue_d_re(loan["issue_d"]):
-            sys.stdout.write("Skipping loan, did not find issue_d:" + str(loan))
+            self.info_msg("Skipping loan, did not find issue_d:" + str(loan))
             self.skipped_loans += 1
             return False
 
@@ -198,6 +223,48 @@ class LCLoanData:
 
         return dict(num_loans=num_loans, loans_per_month=per_month, expected_apy=expect, num_defaulted=defaulted,
                     pct_defaulted=default_percent, avg_default_loss=avg_loss, net_apy=nar)
+
+    def create_sqlite_db(self, loans):
+        #db_name = "loans_serialized_python%d.db" % sys.version_info.major
+
+        self.con = sqlite3.connect(":memory:")
+        self.cursor = self.con.cursor()
+        self.cursor.execute("PRAGMA temp_store = MEMORY")
+        self.cursor.execute("PRAGMA count_changes = OFF")
+        self.cursor.execute("PRAGMA PAGE_SIZE = 4096")
+        self.cursor.execute("DROP TABLE IF EXISTS Loans")
+
+        create_sql = "CREATE TABLE Loans("
+        insert_sql = "INSERT INTO  Loans VALUES("
+
+        for filter in self.filters:
+            create_sql += filter.name + " " + filter.sqlite_type + ", "
+            insert_sql += "?, "
+        create_sql = create_sql[:-2] + ")"
+        #print(create_sql)
+        self.cursor.execute(create_sql)
+
+        insert_sql = insert_sql[:-2] + ")"
+        #print(insert_sql)
+        num_filters = len(self.filters)
+        self.cursor.executemany(insert_sql, (loan[:num_filters] for loan in loans))
+        self.con.commit()
+
+        for filter in self.filters:
+            index_sql = "CREATE INDEX index_%s ON Loans(%s)" % (filter.name, filter.name)
+            self.cursor.execute(index_sql)
+            self.con.commit()
+
+
+    def open_sqlite_db(self):
+        db_name = "loans_serialized_python%d.db" % sys.version_info.major
+        self.info_msg("Initializing sqlite3 %s" % db_name)
+
+        if utilities.check_for_sqlite():
+            self.con = init_sqlite_db(db_name)
+        else:
+            self.con = sqlite3.connect(db_name)
+        self.cursor = self.con.cursor()
 
     def normalize_loan_data(self, raw_loan_dict):
         loan_dict = LOAN_ENUM_default_data[:]
