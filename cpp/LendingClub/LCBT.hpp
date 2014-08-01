@@ -23,31 +23,34 @@ namespace lc {
 
 class LCBT {
 public:
-	LCBT(
-		const std::vector<LCLoan::LoanType>& conversion_filters,
-		const Arguments& args,
-		const int worker_idx) :
-			_args(args),
-			_filters(conversion_filters.size()),
-			_worker_idx(worker_idx),
-			_loan_data(conversion_filters, args, worker_idx)
-	{
-		// Create each of the filters and use its conversion utility for normalizing the data
-		unsigned i = 0;
-		for (auto& filter_type : conversion_filters) {
-			_filters[i++] = construct_filter(filter_type, args);
-		}
-	}
+    LCBT(
+        const std::vector<LCLoan::LoanType>& conversion_filters,
+        const Arguments& args,
+        const int worker_idx) :
+            _args(args),
+            _filters(conversion_filters.size()),
+            _worker_idx(worker_idx),
+            _loan_data(conversion_filters, args, worker_idx)
+    {
+        // Create each of the filters and use its conversion utility for normalizing the data
+        unsigned i = 0;
+        auto filter_begin_it = _filters.begin();
+        for (auto& filter_type : conversion_filters) {
+            //_filters[i++] = construct_filter(filter_type, args);
+            construct_filter(filter_type, args, filter_begin_it + i++);
+        }
+    }
         
     void initialize() {
         _loan_data.initialize();
-	}
+    }
 
 private:
-	const Arguments&						_args;
-	std::vector<boost::any>					_filters;
-	const int								_worker_idx;
-	LCLoanData								_loan_data;
+    const Arguments&						_args;
+    //std::vector<boost::any>			    _filters;
+    std::vector<Filter*>					_filters;
+    const int								_worker_idx;
+    LCLoanData								_loan_data;
 };
 
 };

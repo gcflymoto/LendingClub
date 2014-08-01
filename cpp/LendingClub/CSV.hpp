@@ -30,17 +30,17 @@ public:
         return m_data[index];
     }
     
-	std::size_t size() const
+    std::size_t size() const
     {
         return m_data.size();
     }
 
-	std::vector<std::string> row() const
-	{
-		return m_data;
-	}
+    std::vector<std::string> row() const
+    {
+        return m_data;
+    }
  
-	void readNextRow(std::istream& str)
+    void readNextRow(std::istream& str)
     {
         std::string         line;
         std::getline(str, line);
@@ -50,21 +50,21 @@ public:
 
         m_data.clear();
 
-		/*  Cannot handle bogus escapes in the middle of a string \\
-		boost::tokenizer<boost::escaped_list_separator<char>> tk(line, boost::escaped_list_separator<char>('\\', ',', '\"'));
-		for (auto& cell : tk) {
-			m_data.push_back(cell);
-		}
-		*/
-
-		/* Cannot handle commas inside quote
-        while(std::getline(lineStream, cell, ',')) {
-			if (!cell.empty() && cell[0] == '"') {
-				cell = cell.substr(1, cell.length() - 2);
-			}
+        /*  Cannot handle bogus escapes in the middle of a string \\
+        boost::tokenizer<boost::escaped_list_separator<char>> tk(line, boost::escaped_list_separator<char>('\\', ',', '\"'));
+        for (auto& cell : tk) {
             m_data.push_back(cell);
         }
-		*/
+        */
+
+        /* Cannot handle commas inside quote
+        while(std::getline(lineStream, cell, ',')) {
+            if (!cell.empty() && cell[0] == '"') {
+                cell = cell.substr(1, cell.length() - 2);
+            }
+            m_data.push_back(cell);
+        }
+        */
     }
 private:
     std::vector<std::string> m_data;

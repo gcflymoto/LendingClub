@@ -16,5 +16,3 @@ using namespace lc;
 
 const std::string AccountsOpenLast24Months::sqlite_type = "INT";
 const std::string AccountsOpenLast24Months::name = "acc_open_past_24mths";
-const std::string AccountsOpenLast24Months::query = "(acc_open_past_24mths <= ?)";
-const std::string AccountsOpenLast24Months::named_query = "(acc_open_past_24mths <= :acc_open_past_24mths)";

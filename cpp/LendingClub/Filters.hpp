@@ -20,12 +20,13 @@ Created on July 27, 2014
 #include "Loan.hpp"
 #include "AccountsOpenPast24Months.hpp"
 #include "AmountRequested.hpp"
+#include "StubFilter.hpp"
 
 namespace lc {
 
-	boost::any construct_filter(const LCLoan::LoanType filter_type, 
-								const Arguments& args,
-								unsigned* current = nullptr) 
+	boost::any construct_filter_any(const LCLoan::LoanType filter_type, 
+								    const Arguments& args,
+								    unsigned* current = nullptr) 
 	{
 		boost::any any;
 		switch(filter_type) {
@@ -40,6 +41,22 @@ namespace lc {
 		};
 		return any;
 	}
+
+    void construct_filter(const LCLoan::LoanType filter_type,
+                          const Arguments& args,
+                         std::vector<Filter*>::iterator& it,
+                         unsigned* current = nullptr)
+    {
+        switch (filter_type) {
+        case LCLoan::ACC_OPEN_PAST_24MTHS:
+            (*it) = new AccountsOpenLast24Months(args, current);
+        case LCLoan::FUNDED_AMNT:
+            (*it) = new AmountRequested(args, current);
+        default:
+            assert(filter_type < LCLoan::SIZE);
+        };
+    }
+
 };
 
 #endif // __LC_FILTERS_HPP__

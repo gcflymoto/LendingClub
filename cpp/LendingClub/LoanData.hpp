@@ -44,9 +44,10 @@ public:
             _removed_expired_loans(0)
     {
         // Create each of the filters and use its conversion utility for normalizing the data
+        auto filter_begin_it = _filters.begin();
         for (auto& filter_type : conversion_filters) {
             _filters.resize(filter_type+1);
-            _filters[filter_type] = construct_filter(filter_type, args);
+            construct_filter(filter_type, args, filter_begin_it + filter_type);
         }
 
         _now = boost::posix_time::second_clock::local_time(); //use the clock 
@@ -263,7 +264,8 @@ public:
 
 private:
         const Arguments&						_args;
-        std::vector<boost::any>					_filters;
+        //std::vector<boost::any>				_filters;
+        std::vector<Filter*>					_filters;
         const int								_worker_idx;
         unsigned								_row;
         unsigned								_skipped_loans;

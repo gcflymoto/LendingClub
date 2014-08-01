@@ -21,30 +21,32 @@ namespace lc {
 
 static const int DEFAULT_ACCOUNTS_OPEN_PAST_24_MONTHS = 0;
 
-class AccountsOpenLast24Months : public Filter<LCLoan::ACC_OPEN_PAST_24MTHS> {
+class AccountsOpenLast24Months : public Filter {
 public:
     static const std::string sqlite_type;
     static const std::string name;
-    static const std::string query;
-    static const std::string named_query;
 
-	AccountsOpenLast24Months(const Arguments& args, unsigned* current = nullptr) :
-	Filter("AccountsOpenLast24Months", args) {
-		static const std::vector<unsigned>* options = create_range(0, 25, 5);
-		Filter::initialize(options, current);
-	}
+    AccountsOpenLast24Months(const Arguments& args, unsigned* current = nullptr) :
+    Filter("AccountsOpenLast24Months", args) {
+        static const std::vector<unsigned>* options = create_range(0, 25, 5);
+        Filter::initialize(options, current);
+    }
 
-	unsigned convert(const std::string& raw_data) {
-		if (raw_data.empty()) {
-			return DEFAULT_ACCOUNTS_OPEN_PAST_24_MONTHS;
-		} else {
-			return boost::lexical_cast<unsigned>(raw_data);
-		}
-	}
+    unsigned convert(const std::string& raw_data) {
+        if (raw_data.empty()) {
+            return DEFAULT_ACCOUNTS_OPEN_PAST_24_MONTHS;
+        } else {
+            return boost::lexical_cast<unsigned>(raw_data);
+        }
+    }
 
-	inline bool apply(const LCLoan& loan) {
-		return (loan.acc_open_past_24mths <= get_current());
-	}
+    static bool static_apply(const Filter& self, const LCLoan& loan) {
+        return (loan.acc_open_past_24mths <= self.get_current());
+    }
+
+    inline bool apply(const LCLoan& loan) {
+        return (loan.acc_open_past_24mths <= get_current());
+    }
 };
 
 };

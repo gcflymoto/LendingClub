@@ -19,22 +19,25 @@ Created on July 28, 2014
 
 namespace lc {
 
-class AmountRequested : public Filter<LCLoan::FUNDED_AMNT> {
+class AmountRequested : public Filter {
 public:
     static const std::string sqlite_type;
     static const std::string name;
     static const std::string query;
     static const std::string named_query;
 
-	AmountRequested(const Arguments& args, unsigned* current = nullptr) :
-	Filter("AmountRequested", args) {
-		static const std::vector<unsigned>* options = create_range(5000, 30000, 5000);
-		Filter::initialize(options, current);
-	}
+    AmountRequested(const Arguments& args, unsigned* current = nullptr) :
+    Filter("AmountRequested", args) {
+        static const std::vector<unsigned>* options = create_range(5000, 30000, 5000);
+        Filter::initialize(options, current);
+    }
 
-	inline bool apply(const LCLoan& loan) {
-		return (loan.funded_amnt <= get_current());
-	}
+    static bool static_apply(const Filter& self, const LCLoan& loan) {
+        return (loan.funded_amnt <= self.get_current());
+    }
+    inline bool apply(const LCLoan& loan) {
+        return (loan.funded_amnt <= get_current());
+    }
 };
 
 };
