@@ -102,8 +102,7 @@ public:
                 m  >>= 1;
             }
             v.push_back(m);
-        
-            int k = 0;
+
             std::vector<FilterValue> set;
             for(int k = 0, end = v.size(); k < end; ++k) {
                 if (v[k]) {
