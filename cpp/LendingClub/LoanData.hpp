@@ -44,10 +44,10 @@ public:
             _removed_expired_loans(0)
     {
         // Create each of the filters and use its conversion utility for normalizing the data
-        auto filter_begin_it = _filters.begin();
         for (auto& filter_type : conversion_filters) {
             _filters.resize(filter_type+1);
-            construct_filter(filter_type, args, filter_begin_it + filter_type);
+            std::vector<Filter*>::iterator filter_it = _filters.begin() + filter_type;
+            construct_filter(filter_type, args, filter_it);
         }
 
         _now = boost::posix_time::second_clock::local_time(); //use the clock 
@@ -69,7 +69,7 @@ public:
         if (boost::filesystem::exists(stats_file_path)) {
             info_msg("Initializing from " + stats_file_path.string());
             
-            io::CSVReader<12, io::trim_chars<' ', '\t'>, io::double_quote_escape<',', '\"'>, io::throw_on_overflow, io::single_line_comment<'N'> > in(stats_file_path.string().c_str());
+            io::CSVReader<12, io::trim_chars<' ', '\t'>, io::double_quote_escape<',', '\"'>, io::throw_on_overflow, io::single_line_comment<'N','L','\0'> > in(stats_file_path.string().c_str());
             in.read_header(io::ignore_extra_column, "acc_open_past_24mths", "funded_amnt", "loan_status", "issue_d", "term", "installment", "int_rate", "total_pymnt", "out_prncp", "out_prncp_inv", "total_rec_int", "total_rec_prncp");
 
             std::map<std::string, std::string> raw_loan;

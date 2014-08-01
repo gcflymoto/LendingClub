@@ -34,10 +34,11 @@ public:
     {
         // Create each of the filters and use its conversion utility for normalizing the data
         unsigned i = 0;
-        auto filter_begin_it = _filters.begin();
         for (auto& filter_type : conversion_filters) {
             //_filters[i++] = construct_filter(filter_type, args);
-            construct_filter(filter_type, args, filter_begin_it + i++);
+            std::vector<Filter*>::iterator filter_it = _filters.begin() + i;
+            construct_filter(filter_type, args, filter_it);
+            ++i;
         }
     }
         

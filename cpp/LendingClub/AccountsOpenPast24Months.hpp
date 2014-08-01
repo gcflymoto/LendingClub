@@ -32,7 +32,7 @@ public:
         Filter::initialize(options, current);
     }
 
-    unsigned convert(const std::string& raw_data) {
+    virtual unsigned convert(const std::string& raw_data) {
         if (raw_data.empty()) {
             return DEFAULT_ACCOUNTS_OPEN_PAST_24_MONTHS;
         } else {
