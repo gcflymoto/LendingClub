@@ -195,8 +195,8 @@ public:
                   
     virtual bool normalize_loan_data(const std::map<std::string, std::string>& raw_loan, LCLoan& loan)
     {
-        loan.acc_open_past_24mths = boost::any_cast<AccountsOpenLast24Months>(_filters[LCLoan::ACC_OPEN_PAST_24MTHS]).convert(raw_loan.at("acc_open_past_24mths"));
-        loan.funded_amnt = boost::any_cast<AmountRequested>(_filters[LCLoan::FUNDED_AMNT]).convert(raw_loan.at("funded_amnt"));
+        loan.acc_open_past_24mths = _filters[LCLoan::ACC_OPEN_PAST_24MTHS]->convert(raw_loan.at("acc_open_past_24mths"));
+        loan.funded_amnt = _filters[LCLoan::FUNDED_AMNT]->convert(raw_loan.at("funded_amnt"));
 
         loan.loan_status = raw_loan.at("loan_status");
         loan.issue_datetime = boost::gregorian::date(boost::gregorian::from_simple_string(raw_loan.at("issue_d")));		
