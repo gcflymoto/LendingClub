@@ -67,8 +67,8 @@ public:
         }
     }
 
-    unsigned convert(const std::string& str_data) {
-        return boost::lexical_cast<unsigned>(str_data.c_str());
+    virtual unsigned convert(const std::string& raw_data) {
+        return boost::lexical_cast<unsigned>(raw_data.c_str());
     }
 
     inline const FilterValue& get_current() const {
