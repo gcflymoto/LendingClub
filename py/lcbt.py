@@ -22,6 +22,8 @@ $ ./pypy-2.1/bin/pypy get-pip.py
 $ ./pypy-2.1/bin/pip install pygments
 $ ./pypy-2.1/bin/pip install zmqpy
 $ ./pypy-2.1/bin/pip install pyzmq
+
+C:\Users\gczajkow\boost\boost_1_53_0>.\b2 toolset=msvc-12.0 install --prefix=C:\Users\gczajkow\boost\boost_1_53_0.release
 """
 import sys
 import os
