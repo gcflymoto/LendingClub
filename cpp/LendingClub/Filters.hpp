@@ -44,8 +44,8 @@ namespace lc {
 
     void construct_filter(const LCLoan::LoanType filter_type,
                           const Arguments& args,
-                         std::vector<Filter*>::iterator& it,
-                         unsigned* current = nullptr)
+                          std::vector<Filter*>::iterator it,
+                          unsigned* current = nullptr)
     {
         switch (filter_type) {
         case LCLoan::ACC_OPEN_PAST_24MTHS:
