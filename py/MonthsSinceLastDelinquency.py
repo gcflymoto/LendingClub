@@ -9,12 +9,10 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-
-
-import Filter
-import LoanEnum
+import LoanEnum, Filter
 
 DEFAULT_MTHS_SINCE_LAST_DELINQ = 61
+
 
 class MonthsSinceLastDelinquency(Filter.Filter):
     """

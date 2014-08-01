@@ -47,6 +47,3 @@ LOAN_ENUM_lost = 29
 LOAN_ENUM_defaulted = 30
 
 LOAN_ENUM_SIZE = 31
-
-LOAN_ENUM_default_data = [0] * LOAN_ENUM_SIZE
-

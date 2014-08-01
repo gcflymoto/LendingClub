@@ -9,7 +9,6 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-
 import sys
 import platform
 import time

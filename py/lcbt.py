@@ -23,7 +23,6 @@ $ ./pypy-2.1/bin/pip install pygments
 $ ./pypy-2.1/bin/pip install zmqpy
 $ ./pypy-2.1/bin/pip install pyzmq
 """
-
 import sys
 import os
 import random
@@ -40,29 +39,10 @@ from argparse import RawDescriptionHelpFormatter
 from multiprocessing import Process, cpu_count
 from multiprocessing import Queue as MultiProcessingQueue
 
-import StubFilter
-import AccountsOpenPast24Months
-import AmountRequested
-import AnnualIncome
-import CreditGrade
-import DebtToIncomeRatio
-import Delinquencies
-import EarliestCreditLine
-import EmploymentLength
-import HomeOwnership
-import IncomeValidated
-import InquiriesLast6Months
-import LoanPurpose
-import MonthsSinceLastDelinquency
-import PublicRecordsOnFile
-import RevolvingLineUtilization
-import State
-import TotalCreditLines
-import WordsInDescription
-
-import LoanData
-import Filter
-import utilities
+import AccountsOpenPast24Months, AmountRequested, Delinquencies, MonthsSinceLastDelinquency, DebtToIncomeRatio, \
+    HomeOwnership, LoanPurpose, IncomeValidated, PublicRecordsOnFile, EarliestCreditLine, CreditGrade, EmploymentLength, \
+    InquiriesLast6Months, AnnualIncome, TotalCreditLines, LoanData, SqliteLoanData, \
+    RevolvingLineUtilization, State, WordsInDescription, utilities, StubFilter
 from LoanEnum import *
 
 BackTestFilters = {
@@ -339,7 +319,7 @@ class ParallelGATest(GATest):
                 # sys.stderr.write("results[%d]=%s\n" % (citizen_idx, result))
                 self.population[citizen_idx]['result'] = result
             results_count += new_results_count
-        self.info_msg('Calculate complete')
+        self.debug_msg('Calculate complete')
 
 
 class ZmqGATest(GATest):
@@ -429,39 +409,42 @@ class LCBT:
             #print(filter_idx, lc_filter.name)
             self.filters[filter_idx] = lc_filter(args)
 
-        # Generate the Sqlite Query
-        self.sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join([lc_filter.query for lc_filter in self.filters if lc_filter.query])
-        #print(self.sql_query)
+        if args.sqlite:
+            self.test = self.test_sqlite
+            # Generate the Sqlite Query
+            self.sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join([lc_filter.query for lc_filter in self.filters if lc_filter.query])
+            #print(self.sql_query)
 
-        self.named_sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join([lc_filter.named_query for lc_filter in self.filters if lc_filter.query])
+            self.named_sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join([lc_filter.named_query for lc_filter in self.filters if lc_filter.query])
 
-        """
-        This ends up being slower
-        SELECT * FROM table1 WHERE rowid IN
-         (SELECT rowid FROM table1 WHERE a=5
-           INTERSECT SELECT rowid FROM table1 WHERE b=11);
-        """
-        # http://www.sqlite.org/cvstrac/wiki?p=PerformanceTuning
-        self.expanded_query = "SELECT Id FROM Loans WHERE Id IN\n (" + '\n INTERSECT '.join(['SELECT Id from Loans WHERE %s' % lc_filter.query for lc_filter in self.filters if lc_filter.query]) + ')'
-        #print(self.expanded_query)
+            """
+            This ends up being a lot slower
+            SELECT * FROM table1 WHERE rowid IN
+             (SELECT rowid FROM table1 WHERE a=5
+               INTERSECT SELECT rowid FROM table1 WHERE b=11);
+            """
+            # http://www.sqlite.org/cvstrac/wiki?p=PerformanceTuning
+            self.expanded_query = "SELECT Id FROM Loans WHERE Id IN\n (" + '\n INTERSECT '.join(['SELECT Id from Loans WHERE %s' % lc_filter.query for lc_filter in self.filters if lc_filter.query]) + ')'
+            #print(self.expanded_query)
 
-        self.loan_data = LoanData.LCLoanData(conversion_filters, args, worker_idx)
+            self.loan_data = SqliteLoanData.SqliteLCLoanData(conversion_filters, args, worker_idx)
+        else:
+            self.test = self.test_python
+            self.loan_data = LoanData.LCLoanData(conversion_filters, args, worker_idx)
+
         self.args = args
         self.worker_idx = worker_idx
 
     def initialize(self):
         self.loan_data.initialize()
 
-    """
-    def test(self, filters):
+    def test_python(self, filters):
         self.filters = filters
         invested = [loan for loan in self.loan_data.loans if self.consider(loan)]
 
         return self.loan_data.get_nar(invested)
-    """
 
-
-    def test(self, filters):
+    def test_sqlite(self, filters):
         #print(self.sql_query)
         params = tuple(lc_filter.get_current() for lc_filter in filters if '?' in lc_filter.query)
         #print([type(param) for param in params])
@@ -599,14 +582,14 @@ class ZmqLCBT(LCBT):
                 sys.exit(-1)
 
 def zmq_worker(worker_idx, args):
-    random.seed(args.random_seed)
+    random.seed(args.seed)
     lcbt = ZmqLCBT(ConversionFilters, args, worker_idx)
     lcbt.initialize()
     lcbt.setup_zmq()
     lcbt.run()
 
 def mp_worker(worker_idx, args, work_queue, response_queue):
-    random.seed(args.random_seed)
+    random.seed(args.seed)
     lcbt = ParallelLCBT(ConversionFilters, args, worker_idx, work_queue, response_queue)
     lcbt.start()
 
@@ -646,21 +629,22 @@ USAGE
     parser.add_argument('-V', '--version', action='version', version=program_version_message)
     parser.add_argument('-g', '--grades', default='ABCDEF',
                         help="String with the allowed credit grades [default: %(default)s]")
-    parser.add_argument('-s', '--random_seed', default=100, help="Random Number Generator Seed [default: %(default)s]")
+    parser.add_argument('-s', '--seed', default=100, help="Random Number Generator Seed [default: %(default)s]")
     parser.add_argument('-d', '--data',
                         default="https://www.lendingclub.com/fileDownload.action?file=LoanStatsNew.csv&type=gen",
-                        help="Download path for the Data file [default: %(default)s]")
+                        help="Download path for the notes data file [default: %(default)s]")
     parser.add_argument('-l', '--stats', default="LoanStatsNew.csv",
                         help="Input Loan Stats CSV file [default: %(default)s]")
     parser.add_argument('-c', '--csvresults', default="lc_best.csv",
                         help="Output best results CSV file [default: %(default)s]")
     parser.add_argument('-p', '--population_size', default=512, type=int, help="population size [default: %(default)s]")
-    parser.add_argument('-i', '--iterations', default=4096, type=int, help="iterations [default: %(default)s]")
+    parser.add_argument('-i', '--iterations', default=4096, type=int, help="how many Genetic Algorithm iterations to perform [default: %(default)s]")
     parser.add_argument('-e', '--elite_rate', default=0.05, type=float, help="elite rate [default: %(default)s]")
     parser.add_argument('-m', '--mutation_rate', default=0.05, type=float, help="mutation rate [default: %(default)s]")
     parser.add_argument('-k', '--check', default=False, action='store_true', help="checking mode: open the CSV results file and filter the loans into a separate file [default: %(default)s]")
-    parser.add_argument('-z', '--zmq', default=False, action='store_true', help="Use zmq libraries for multi-processing [default: %(default)s]")
     parser.add_argument('-r', '--checkresults', default="LoanStatsNewFiltered.csv", help="file name for the filtered results used during checking mode [default: %(default)s]")
+    parser.add_argument('-z', '--zmq', default=False, action='store_true', help="Use zmq libraries for multi-processing [default: %(default)s]")
+    parser.add_argument('-q', '--sqlite', default=1, type=int, help="Use sqlite as the core processing engine for the backtesting [default: %(default)s]")
     parser.add_argument('-f', '--fitness_sort_size', default=1000, type=int,
                         help="number of loans to limit the fitness sort size, the larger the longer and more optimal solution [default: %(default)s]")
     parser.add_argument('-y', '--young_loans_in_days', default=3 * 30, type=int,
@@ -678,7 +662,7 @@ USAGE
     else:
         enable_zmq = False
 
-    random.seed(args.random_seed)
+    random.seed(args.seed)
 
     if os.path.exists(args.stats):
         sys.stdout.write("Using %s as the data file\n" % args.stats)

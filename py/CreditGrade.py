@@ -1,11 +1,6 @@
 """
 Created on May 30, 2013
 
-@author: gczajkow
-"""
-"""
-Created on May 30, 2013
-
 @author:     Gregory Czajkowski
 
 @copyright:  2013 Freedom. All rights reserved.
@@ -14,9 +9,7 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-
-import Filter
-import LoanEnum
+import LoanEnum, Filter
 
 
 class CreditGrade(Filter.Filter):

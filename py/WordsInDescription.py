@@ -9,10 +9,9 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-
+import re
 import Filter
 import LoanEnum
-import re
 
 
 class WordsInDescription(Filter.Filter):

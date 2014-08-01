@@ -9,16 +9,13 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-
-
-import Filter
-import LoanEnum
+import LoanEnum, Filter
 
 
 class DebtToIncomeRatio(Filter.Filter):
     """
     """
-    sqlite_type = "REAL"
+    sqlite_type = "INT"
     name = "dti"
     query = "(dti <= ?)"
     named_query = "(dti <= :dti)"
@@ -26,12 +23,17 @@ class DebtToIncomeRatio(Filter.Filter):
         """
         Constructor
         """
-        options = [float(p) for p in range(10, 35, 5)]
+        options = [float(p) for p in range(10*100, 35*100, 5*100)]
 
         Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
-        return float(raw_data[:-1]) if raw_data[-1] == '%' else float(raw_data)
+        # Convert DTI 19.48 into 1948
+        raw_value = float(raw_data[:-1]) if raw_data[-1] == '%' else float(raw_data)
+        return int(raw_value * 100)
+
+    def __str__(self):
+        return str(float(self.get_current()) / 100)
 
     def apply(self, loan, debt_to_income_ratio=LoanEnum.LOAN_ENUM_debt_to_income_ratio):
         return loan[debt_to_income_ratio] <= self.get_current()

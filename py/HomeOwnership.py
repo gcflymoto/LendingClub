@@ -9,9 +9,7 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-
-import Filter
-import LoanEnum
+import LoanEnum, Filter
 
 
 class HomeOwnership(Filter.Filter):

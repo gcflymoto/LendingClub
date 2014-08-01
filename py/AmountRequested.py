@@ -9,16 +9,14 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-
-import Filter
-import LoanEnum
+import LoanEnum, Filter
 
 
 class AmountRequested(Filter.Filter):
     """
     classdocs
     """
-    sqlite_type = "REAL"
+    sqlite_type = "INT"
     name = "funded_amnt"
     query = "(funded_amnt <= ?)"
     named_query = "(funded_amnt <= :funded_amnt)"
@@ -26,7 +24,7 @@ class AmountRequested(Filter.Filter):
         """
         Constructor
         """
-        options = [float(n) for n in range(5000, 30000, 5000)]
+        options = [n for n in range(5000, 30000, 5000)]
 
         Filter.Filter.__init__(self, args, options, current)
 

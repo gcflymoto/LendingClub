@@ -9,10 +9,7 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-
-
 import itertools
-import sys
 
 
 class Filter(object):
@@ -52,15 +49,13 @@ class Filter(object):
         #else:
         #    self.current = None
         #return self.current is not None
-        self.current = (self.current + 1) % self.size_plus_one
-
-        return self.current != self.size
 
         # #
         # # Switched to an algorithm which uses an index that is out of bounds as None
         # #
-        # self.current = (self.current + 1) % (self.size + 1)
-        # return self.current != self.size
+        self.current = (self.current + 1) % self.size_plus_one
+
+        return (self.current != self.size)
 
     def power_set(self, options):
         # http://docs.python.org/2/library/itertools.html#recipes
@@ -71,7 +66,7 @@ class Filter(object):
 
     def power_bitset(self, options):
         l = self.power_set(options)
-        # No we need to sum up each individual set_tupple
+        # Now we need to sum up each individual set_tupple
         return [sum(set_tupple) for set_tupple in l]
 
     def increment(self, filters):
@@ -93,8 +88,7 @@ class Filter(object):
         for lc_filter in filters:
             if not lc_filter.next():
                 continue
-            else:
-                return lc_filter
+            return lc_filter
         return None
 
     def get_current(self):
@@ -104,7 +98,7 @@ class Filter(object):
         return self.__class__.__name__
 
     def get_details(self):
-        return self.get_name() + '=' + str(self.get_current())
+        return self.get_name() + '=' + self.get_string_value()
 
     def get_string_value(self):
         return str(self.get_current())

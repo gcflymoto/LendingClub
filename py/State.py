@@ -16,9 +16,7 @@ Created on May 30, 2013
   * CA, AZ, FL, GA, IL, MD, MO, NV,
   */
 """
-
-import Filter
-import LoanEnum
+import LoanEnum, Filter
 
 
 class State(Filter.Filter):
