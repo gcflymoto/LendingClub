@@ -17,22 +17,25 @@ Created on July 28, 2014
 #include "Loan.hpp"
 #include "Utilities.hpp"
 
-namespace lc {
+namespace lc
+{
 
 static const int DEFAULT_ACCOUNTS_OPEN_PAST_24_MONTHS = 0;
 
-class AccountsOpenLast24Months : public Filter {
+class AccountsOpenLast24Months : public Filter
+{
 public:
     static const std::string sqlite_type;
     static const std::string name;
 
-    AccountsOpenLast24Months(const Arguments& args, unsigned* current = nullptr) :
-    Filter("AccountsOpenLast24Months", args) {
+    AccountsOpenLast24Months(const Arguments& args, unsigned* current = nullptr) : Filter("AccountsOpenLast24Months", args)
+    {
         static const std::vector<unsigned>* options = create_range(0, 25, 5);
         Filter::initialize(options, current);
     }
 
-    virtual unsigned convert(const std::string& raw_data) {
+    virtual unsigned convert(const std::string& raw_data)
+    {
         if (raw_data.empty()) {
             return DEFAULT_ACCOUNTS_OPEN_PAST_24_MONTHS;
         } else {
@@ -40,12 +43,14 @@ public:
         }
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan) {
-        return (loan.acc_open_past_24mths <= self.get_current());
+    static bool static_apply(const Filter& self, const LCLoan& loan)
+    {
+        return (loan.acc_open_past_24mths <= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan) {
-        return (loan.acc_open_past_24mths <= get_current());
+    inline bool apply(const LCLoan& loan)
+    {
+        return (loan.acc_open_past_24mths <= get_value());
     }
 };
 

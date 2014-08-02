@@ -1,5 +1,7 @@
 LoanStatsNew.csv*
 lcbt
+lc_best.csv
+
 *.py[cod]
 
 # C extensions

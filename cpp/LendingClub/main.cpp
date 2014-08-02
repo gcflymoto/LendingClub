@@ -46,13 +46,13 @@ int lcmain(int argc, char* argv[])
 	conversion_filters.push_back(LCLoan::ACC_OPEN_PAST_24MTHS);
 	conversion_filters.push_back(LCLoan::FUNDED_AMNT);
 
-	auto lcbt = LCBT(conversion_filters, args, -1);
+	LCBT lcbt(conversion_filters, args, -1);
 	lcbt.initialize();
 
-    std::vector<LCLoan::LoanType> backtest_filters = conversion_filters;
+  std::vector<LCLoan::LoanType> backtest_filters = conversion_filters;
 
-    auto ga_test = GATest(backtest_filters, lcbt, args);
-    ga_test.run();
+  GATest ga_test(backtest_filters, lcbt, args);
+  ga_test.run();
 
 	return 0;
 }

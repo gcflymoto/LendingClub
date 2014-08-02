@@ -17,7 +17,8 @@ Created on July 27, 2014
 #include <string>
 #include <chrono>
 #include <cmath>
-#include <iostream>
+#include <fstream>
+#include <iomanip>
 #include <boost/any.hpp>
 #include "LCBT.hpp"
 
@@ -133,11 +134,11 @@ public:
 
         std::cout << "Best Filter: " << filters << '\n';
 
-        std::cout << "[iteration " << (_iteration + 1) << '/' << _iterations << _iteration_time.count() / (_iteration + 1);
-        std::cout << "sec/iter] Matched " << best_results.num_loans << '/' << _lcbt.total_loans() << " loans ";
-        std::cout << "(" << best_results.loans_per_month << "/mo.) test at " << best_results.expected_apy << "% APY. ";
-        std::cout << best_results.num_defaulted << " loans defaulted (" << best_results.pct_defaulted << "%, $";
-        std::cout << best_results.avg_default_loss << " avg log) " << best_results.net_apy << "% net APY\n";
+        std::cout << "[iteration " << (_iteration + 1) << '/' << _iterations << ' ' << std::setprecision(4) << _iteration_time.count() / (_iteration + 1);
+        std::cout << " sec/iter] Matched " << best_results.num_loans << '/' << _lcbt.total_loans() << " loans ";
+        std::cout << "(" << best_results.loans_per_month << "/mo.) test at " << std::setprecision(4) << best_results.expected_apy << "% APY. ";
+        std::cout << std::setprecision(4) << best_results.num_defaulted << " loans defaulted (" << best_results.pct_defaulted << "%, $";
+        std::cout << best_results.avg_default_loss << " avg loss) " << best_results.net_apy << "% net APY\n";
     }
 
     void mate()

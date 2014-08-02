@@ -36,12 +36,14 @@ struct FilterValue {
 };
 */
 
-namespace lc {
+namespace lc
+{
 
 typedef unsigned FilterValue;
 typedef boost::program_options::variables_map Arguments;
 
-class Filter {
+class Filter
+{
 public:
     Filter(const std::string& name, const Arguments& args) :
         _args(args),
@@ -56,7 +58,8 @@ public:
     //virtual bool apply(const LCLoan& loan) = 0;
     virtual ~Filter() = 0;
 
-    void initialize(const std::vector<FilterValue>* options, unsigned* current) {
+    void initialize(const std::vector<FilterValue>* options, unsigned* current)
+    {
         _options = options;
         _size = options->size();
         _size_plus_one = _size + 1;
@@ -70,33 +73,46 @@ public:
 
     virtual bool apply(const LCLoan& loan) = 0;
 
-    virtual unsigned convert(const std::string& raw_data) {
+    virtual unsigned convert(const std::string& raw_data)
+    {
         return boost::lexical_cast<unsigned>(raw_data.c_str());
     }
 
-    inline const FilterValue& get_current() const {
+    inline const FilterValue& get_value() const
+    {
         return (*_options)[_current];
     }
 
-    inline void set_current(const unsigned current) {
+    inline unsigned get_current() const
+    {
+        return _current;
+    }
+   
+    inline void set_current(const unsigned current)
+    {
+        assert(current < _size);
         _current = current;
     }
 
-    std::string get_string_value() const {
+    std::string get_string_value() const
+    {
         const FilterValue& val = get_current();
         return boost::lexical_cast<std::string>(val);
     }
 
-    size_t get_count() {
+    size_t get_count()
+    {
         return _size;
     }
 
-    bool next() {
+    bool next()
+    {
         _current = (_current + 1) % _size_plus_one;
         return (_current != _size);
     }
 
-    std::vector<std::vector<FilterValue>> power_set(const std::vector<FilterValue>& options) {
+    std::vector<std::vector<FilterValue>> power_set(const std::vector<FilterValue>& options)
+    {
         std::vector<std::vector<FilterValue>> result;
         std::vector<unsigned> v;
         size_t n = options.size();
@@ -120,7 +136,8 @@ public:
         }
     }
 
-    std::vector<FilterValue> power_bitset(const std::vector<FilterValue>& options) {
+    std::vector<FilterValue> power_bitset(const std::vector<FilterValue>& options)
+    {
         auto l = power_set(options);
 
         // Now we need to sum up each individual set_tupple
@@ -138,7 +155,8 @@ public:
         return result;
     }
 
-    Filter* increment(std::vector<Filter>& filters) {
+    Filter* increment(std::vector<Filter>& filters)
+    {
         for (auto& filter : filters) {
             if (!filter.next()) {
                 continue;
@@ -148,11 +166,13 @@ public:
         return nullptr;
     }
 
-    std::string get_name() {
+    std::string get_name()
+    {
         return _name;
     }	
     
-    std::string get_details() {
+    std::string get_details()
+    {
         return get_name() + "=" + get_string_value();
     }
 

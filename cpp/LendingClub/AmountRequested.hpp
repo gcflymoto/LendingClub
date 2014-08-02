@@ -17,26 +17,31 @@ Created on July 28, 2014
 #include "Loan.hpp"
 #include "Utilities.hpp"
 
-namespace lc {
+namespace lc
+{
 
-class AmountRequested : public Filter {
+class AmountRequested : public Filter
+{
 public:
     static const std::string sqlite_type;
     static const std::string name;
     static const std::string query;
     static const std::string named_query;
 
-    AmountRequested(const Arguments& args, unsigned* current = nullptr) :
-    Filter("AmountRequested", args) {
+    AmountRequested(const Arguments& args, unsigned* current = nullptr) : Filter("AmountRequested", args)
+    {
         static const std::vector<unsigned>* options = create_range(5000, 30000, 5000);
         Filter::initialize(options, current);
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan) {
-        return (loan.funded_amnt <= self.get_current());
+    static bool static_apply(const Filter& self, const LCLoan& loan)
+    {
+        return (loan.funded_amnt <= self.get_value());
     }
-    inline bool apply(const LCLoan& loan) {
-        return (loan.funded_amnt <= get_current());
+    
+    inline bool apply(const LCLoan& loan)
+    {
+        return (loan.funded_amnt <= get_value());
     }
 };
 

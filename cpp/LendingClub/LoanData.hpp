@@ -294,7 +294,7 @@ public:
             }
 
             loan_return.expected_apy = rate / loan_return.num_loans;
-            loan_return.pct_defaulted = 100 * defaulted / loan_return.num_loans;
+            loan_return.pct_defaulted = 100.0 * defaulted / loan_return.num_loans;
             loan_return.avg_default_loss = (defaulted > 0) ? (lost / defaulted) : 0.0;
             loan_return.loans_per_month = per_month;
             loan_return.num_defaulted = defaulted;
