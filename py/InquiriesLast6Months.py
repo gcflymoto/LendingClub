@@ -34,4 +34,4 @@ class InquiriesLast6Months(Filter.Filter):
         return int(raw_data) if raw_data else DEFAULT_INQ_LAST_6_MONTHS
 
     def apply(self, loan, inq_last_6mths=LoanEnum.LOAN_ENUM_inq_last_6mths):
-        return loan[inq_last_6mths] <= self.get_current()
+        return loan[inq_last_6mths] <= self.get_value()

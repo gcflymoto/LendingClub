@@ -35,7 +35,7 @@ class RevolvingLineUtilization(Filter.Filter):
         return int(raw_data * 100)
 
     def __str__(self):
-        return str(float(self.get_current()) / 100)
+        return str(float(self.get_value()) / 100)
 
     def apply(self, loan, revol_utilization=LoanEnum.LOAN_ENUM_revol_utilization):
-        return loan[revol_utilization] <= self.get_current()
+        return loan[revol_utilization] <= self.get_value()

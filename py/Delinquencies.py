@@ -46,7 +46,7 @@ class Delinquencies(Filter.Filter):
             return 1 << 11
 
     def __str__(self):
-        current = self.get_current()
+        current = self.get_value()
 
         delinq_list = []
         for i in range(12):
@@ -55,4 +55,4 @@ class Delinquencies(Filter.Filter):
         return str(tuple(delinq_list))
 
     def apply(self, loan, delinq_2yrs=LoanEnum.LOAN_ENUM_delinq_2yrs):
-        return (loan[delinq_2yrs] & self.get_current()) > 0
+        return (loan[delinq_2yrs] & self.get_value()) > 0

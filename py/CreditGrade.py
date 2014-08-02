@@ -80,7 +80,7 @@ class CreditGrade(Filter.Filter):
         return self.conversion_table[str(str_grades)]
 
     def __str__(self):
-        return self.reverse_table[self.get_current()]
+        return self.reverse_table[self.get_value()]
 
     def apply(self, loan, grade=LoanEnum.LOAN_ENUM_grade):
-        return (loan[grade] & self.get_current()) > 0
+        return (loan[grade] & self.get_value()) > 0

@@ -46,4 +46,4 @@ class LoanPurpose(Filter.Filter):
         return str(l)
 
     def apply(self, loan, purpose=LoanEnum.LOAN_ENUM_purpose):
-        return (loan[purpose] & self.get_current()) > 0
+        return (loan[purpose] & self.get_value()) > 0

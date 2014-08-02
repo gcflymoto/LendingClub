@@ -34,4 +34,4 @@ class WordsInDescription(Filter.Filter):
         return len([word_maybe for word_maybe in word_re(raw_data) if word_maybe not in ".,!?;%#\$&-()_"])
 
     def apply(self, loan, desc_word_count=LoanEnum.LOAN_ENUM_desc_word_count):
-        return loan[desc_word_count] >= self.get_current()
+        return loan[desc_word_count] >= self.get_value()

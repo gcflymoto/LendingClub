@@ -34,7 +34,7 @@ class HomeOwnership(Filter.Filter):
         return conversion_table[str(raw_data)]
 
     def __str__(self):
-        return self.reverse_table[self.current]
+        return self.reverse_table[self.get_value()]
 
     def apply(self, loan, home_ownership=LoanEnum.LOAN_ENUM_home_ownership):
-        return loan[home_ownership] != self.get_current()
+        return loan[home_ownership] != self.get_value()

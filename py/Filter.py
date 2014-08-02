@@ -33,7 +33,7 @@ class Filter(object):
         return float(str_data)
 
     def __str__(self):
-        return str(self.get_current())
+        return str(self.get_value())
 
     def get_count(self):
         return self.size
@@ -91,8 +91,11 @@ class Filter(object):
             return lc_filter
         return None
 
-    def get_current(self):
+    def get_value(self):
         return self.options[self.current]
+
+    def get_current(self):
+        return self.current
 
     def set_current(self, current):
         self.current = current
@@ -104,4 +107,4 @@ class Filter(object):
         return self.get_name() + '=' + self.get_string_value()
 
     def get_string_value(self):
-        return str(self.get_current())
+        return str(self.get_value())

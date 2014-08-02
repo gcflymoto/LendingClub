@@ -32,4 +32,4 @@ class AnnualIncome(Filter.Filter):
         return int(raw_data[0]) if raw_data else 0
 
     def apply(self, loan, annual_income=LoanEnum.LOAN_ENUM_annual_income):
-        return loan[annual_income] <= self.get_current()
+        return loan[annual_income] <= self.get_value()

@@ -34,4 +34,4 @@ class MonthsSinceLastDelinquency(Filter.Filter):
         return int(raw_data) if raw_data else DEFAULT_MTHS_SINCE_LAST_DELINQ
 
     def apply(self, loan, mths_since_last_delinq=LoanEnum.LOAN_ENUM_mths_since_last_delinq):
-        return loan[mths_since_last_delinq] >= self.get_current()
+        return loan[mths_since_last_delinq] >= self.get_value()

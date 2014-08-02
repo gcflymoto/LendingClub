@@ -34,4 +34,4 @@ class TotalCreditLines(Filter.Filter):
         return int(raw_data) if raw_data else DEFAULT_TOTAL_ACCOUNTS
 
     def apply(self, loan, total_acc=LoanEnum.LOAN_ENUM_total_acc):
-        return loan[total_acc] <= self.get_current()
+        return loan[total_acc] <= self.get_value()

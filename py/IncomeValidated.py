@@ -35,11 +35,11 @@ class IncomeValidated(Filter.Filter):
             return 0
 
     def __str__(self):
-        current = self.get_current()
+        current = self.get_value()
         if current:
             return 'income validated'
         else:
             return 'income unvalidated'
 
     def apply(self, loan, income_validated=LoanEnum.LOAN_ENUM_income_validated):
-        return loan[income_validated] != self.get_current()
+        return loan[income_validated] != self.get_value()
