@@ -2,6 +2,7 @@
 #include <thread>
 #include <boost/program_options.hpp>
 #include "LCBT.hpp"
+#include "LCGA.hpp"
 
 using namespace lc;
 using namespace std;
@@ -45,8 +46,13 @@ int lcmain(int argc, char* argv[])
 	conversion_filters.push_back(LCLoan::ACC_OPEN_PAST_24MTHS);
 	conversion_filters.push_back(LCLoan::FUNDED_AMNT);
 
-	LCBT lcbt = LCBT(conversion_filters, args, -1);
+	auto lcbt = LCBT(conversion_filters, args, -1);
 	lcbt.initialize();
+
+    std::vector<LCLoan::LoanType> backtest_filters = conversion_filters;
+
+    auto ga_test = GATest(backtest_filters, lcbt, args);
+    ga_test.run();
 
 	return 0;
 }

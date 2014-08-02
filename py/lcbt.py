@@ -130,13 +130,17 @@ class GATest:
         self.lcbt = lcbt
         self.args = args
 
-        csv_field_names = []
         for _ in range(self.args.population_size):
-            filters = [lc_filter(args) for lc_filter in backtest_filters.values()]
-            for lc_filter in filters:
-                csv_field_names.append(lc_filter.get_name())
-                lc_filter.current = random.randint(0, lc_filter.get_count() - 1)
+            filters  = []
+            for backtest_filter in backtest_filters:
+                lc_filter = backtest_filter(args)
+                lc_filter.set_current(random.randint(0, lc_filter.get_count() - 1))
+                filters.append(lc_filter)
             self.population.append(dict(filters=filters))
+
+        csv_field_names = []
+        for lc_filter in self.population[0]["filters"]:
+            csv_field_names.append(lc_filter.get_name())
 
         csv_field_names.extend([
             'expected_apy',

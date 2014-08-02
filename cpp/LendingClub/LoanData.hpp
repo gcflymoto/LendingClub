@@ -14,6 +14,7 @@ Created on July 28, 2014
 #define __LC_LOANDATA_HPP__
 
 #include <cmath>
+#include <cstdlib>
 #include <vector>
 #include <string>
 #include <map>
@@ -63,6 +64,40 @@ public:
 
     virtual void mid_stage_initialization() {}
 
+    struct RawLoan
+    {
+        std::string acc_open_past_24mths;
+        std::string funded_amnt;
+        std::string loan_status;
+        std::string issue_d;
+        std::string term;
+        std::string installment;
+        std::string int_rate;
+        std::string total_pymnt;
+        std::string out_prncp;
+        std::string out_prncp_inv;
+        std::string total_rec_int;
+        std::string total_rec_prncp;
+
+        std::string to_str() const 
+        {
+            std::string str;
+            str += "acc_open_past_24mths=" + acc_open_past_24mths + ',';
+            str += "funded_amnt=" + funded_amnt + ',';
+            str += "loan_status=" + loan_status + ',';
+            str += "issue_d=" + issue_d + ',';
+            str += "term=" + term + ',';
+            str += "installment=" + installment + ',';
+            str += "int_rate=" + int_rate + ',';
+            str += "total_pymnt=" + total_pymnt + ',';
+            str += "out_prncp=" + out_prncp + ',';
+            str += "out_prncp_inv=" + out_prncp_inv + ',';
+            str += "total_rec_int=" + total_rec_int + ',';
+            str += "total_rec_prncp=" + total_rec_prncp;
+            return str;
+        }
+    };
+
     virtual void initialize() 
     {
         boost::filesystem::path stats_file_path = _args["stats"].as<std::string>();
@@ -72,21 +107,21 @@ public:
             io::CSVReader<12, io::trim_chars<' ', '\t'>, io::double_quote_escape<',', '\"'>, io::throw_on_overflow, io::single_line_comment<'N','L','\0'> > in(stats_file_path.string().c_str());
             in.read_header(io::ignore_extra_column, "acc_open_past_24mths", "funded_amnt", "loan_status", "issue_d", "term", "installment", "int_rate", "total_pymnt", "out_prncp", "out_prncp_inv", "total_rec_int", "total_rec_prncp");
 
-            std::map<std::string, std::string> raw_loan;
+            RawLoan raw_loan;
 
             while (in.read_row(
-                raw_loan["acc_open_past_24mths"],
-                raw_loan["funded_amnt"],
-                raw_loan["loan_status"],
-                raw_loan["issue_d"],
-                raw_loan["term"],
-                raw_loan["installment"], 
-                raw_loan["int_rate"],
-                raw_loan["total_pymnt"],
-                raw_loan["out_prncp"],
-                raw_loan["out_prncp_inv"],
-                raw_loan["total_rec_int"],
-                raw_loan["total_rec_prncp"])) {
+                raw_loan.acc_open_past_24mths,
+                raw_loan.funded_amnt,
+                raw_loan.loan_status,
+                raw_loan.issue_d,
+                raw_loan.term,
+                raw_loan.installment, 
+                raw_loan.int_rate,
+                raw_loan.total_pymnt,
+                raw_loan.out_prncp,
+                raw_loan.out_prncp_inv,
+                raw_loan.total_rec_int,
+                raw_loan.total_rec_prncp)) {
 
                 bool parsed_row_ok = check_loan(raw_loan);
                 if (!parsed_row_ok) {
@@ -103,36 +138,36 @@ public:
                 }
             }
 
+            info_msg("Initializing from " + stats_file_path.string() + " done.");
+
         } else {
             info_msg("error: " + stats_file_path.string() + " not found");
             exit(-1);
         }
     }
 
-    virtual bool check_loan(std::map<std::string, std::string>& loan) {
+    virtual bool check_loan(RawLoan& loan)
+    {
         // SKip loans without a loan status or funded amount
-        auto loan_status_it = loan.find("loan_status");
-        if ((loan_status_it == loan.end()) || ((*loan_status_it).second.empty())) {
-                ++_skipped_loans;
-                return false;
+        if (loan.loan_status.empty()) {
+            ++_skipped_loans;
+            return false;
         }
 
-        auto funded_amnt_it = loan.find("funded_amnt");
-        if ((funded_amnt_it == loan.end()) || ((*funded_amnt_it).second.empty())) {
-                ++_skipped_loans;
-                return false;
+        if (loan.funded_amnt.empty()) {
+            ++_skipped_loans;
+            return false;
         }
 
-        auto issue_d_it = loan.find("issue_d");
-        if ((issue_d_it == loan.end()) || ((*issue_d_it).second.empty())) {
-                ++_skipped_loans;
-                return false;
+        if (loan.issue_d.empty()) {
+            ++_skipped_loans;
+            return false;
         }
 
         // Only look at loans with a valid issue date
-        boost::gregorian::date issue_d(boost::gregorian::from_simple_string(loan["issue_d"]));		
+        boost::gregorian::date issue_d(boost::gregorian::from_simple_string(loan.issue_d));		
         if (issue_d.is_not_a_date()) {
-            info_msg("Skipping loan, did not find issue_d:" + map_to_str(loan));
+            info_msg("Skipping loan, did not find issue_d:" + loan.to_str());
             ++_skipped_loans;
             return false;
         }
@@ -147,74 +182,39 @@ public:
         }
 
         // Ignore loans that didn't event start
-        if ((loan["loan_status"] == "Removed") || (loan["loan_status"] == "Expired")) {
+        if ((loan.loan_status == "Removed") || (loan.loan_status == "Expired")) {
             ++_removed_expired_loans;
             return false;
         }
         return true;
     }
-
-    LoanReturn get_nar(std::vector<unsigned> invested)
-    {
-        unsigned defaulted = 0, per_month = 0;
-        double profit = 0.0, principal = 0.0, lost = 0.0, rate = 0.0;
-
-        for(auto idx : invested) {
-            profit += _loans[idx].profit;
-            principal += _loans[idx].principal;
-            lost += _loans[idx].lost;
-            defaulted += _loans[idx].defaulted;
-            rate += _loans[idx].int_rate;
-            // Count loan volume
-            if ((_loans[idx].issue_datetime.year() == _last_date_for_full_month_for_volume.year()) &&
-                (_loans[idx].issue_datetime.month() == _last_date_for_full_month_for_volume.month())) {
-                ++per_month;
-            }
-        }
-
-        LoanReturn loan_return;
-        loan_return.num_loans = invested.size();
-
-        if (loan_return.num_loans > 0) {
-
-            if (principal == 0.0) {
-                loan_return.net_apy = 0.0;
-            } else {
-                // Calculate the Net APR
-                loan_return.net_apy = 100.0 * (pow(1.0 + profit / principal, 12) - 1.0);
-            }
-
-            loan_return.expected_apy = rate / loan_return.num_loans;
-            loan_return.pct_defaulted = 100 * defaulted / loan_return.num_loans;
-            loan_return.avg_default_loss = (defaulted > 0) ? (lost / defaulted) : 0.0;
-            loan_return.loans_per_month = per_month;
-            loan_return.num_defaulted = defaulted;
-        }
-        return loan_return;
-    }
                   
-    virtual bool normalize_loan_data(const std::map<std::string, std::string>& raw_loan, LCLoan& loan)
+    virtual bool normalize_loan_data(const RawLoan& raw_loan, LCLoan& loan)
     {
-        loan.acc_open_past_24mths = _filters[LCLoan::ACC_OPEN_PAST_24MTHS]->convert(raw_loan.at("acc_open_past_24mths"));
-        loan.funded_amnt = _filters[LCLoan::FUNDED_AMNT]->convert(raw_loan.at("funded_amnt"));
+        loan.acc_open_past_24mths = _filters[LCLoan::ACC_OPEN_PAST_24MTHS]->convert(raw_loan.acc_open_past_24mths);
+        loan.funded_amnt = _filters[LCLoan::FUNDED_AMNT]->convert(raw_loan.funded_amnt);
 
-        loan.loan_status = raw_loan.at("loan_status");
-        loan.issue_datetime = boost::gregorian::date(boost::gregorian::from_simple_string(raw_loan.at("issue_d")));		
-        std::string trimmed = raw_loan.at("term");
-        boost::trim(trimmed);
-        std::vector<std::string> term_split;
-        boost::split(term_split, trimmed, boost::is_any_of(" "));
-        loan.number_of_payments = boost::lexical_cast<unsigned>(term_split[0]);
-        loan.installment = boost::lexical_cast<double>(raw_loan.at("installment"));
+        loan.loan_status = raw_loan.loan_status;
+        loan.issue_datetime = boost::gregorian::date(boost::gregorian::from_simple_string(raw_loan.issue_d));		
 
-        trimmed = raw_loan.at("int_rate");
-        boost::trim(trimmed);
-        loan.int_rate = boost::lexical_cast<double>(trimmed.substr(0, trimmed.length() - 1));
-        loan.total_pymnt = boost::lexical_cast<double>(raw_loan.at("total_pymnt"));
-        loan.out_prncp = boost::lexical_cast<double>(raw_loan.at("out_prncp"));
-        loan.out_prncp_inv = boost::lexical_cast<double>(raw_loan.at("out_prncp_inv"));
-        double total_received_interest = boost::lexical_cast<double>(raw_loan.at("total_rec_int"));
-        double total_received_principal = boost::lexical_cast<double>(raw_loan.at("total_rec_prncp"));
+        if (raw_loan.term == " 36 months") {
+            loan.number_of_payments = 36;
+        }
+        else if (raw_loan.term == " 60 months") {
+            loan.number_of_payments = 60;
+        } else {
+            assert(0); // Unknown number of payments
+        }
+
+        loan.installment = strtod(raw_loan.installment.c_str(), nullptr);
+
+        std::size_t found = raw_loan.int_rate.find_first_not_of(" ");
+        loan.int_rate = strtod(raw_loan.int_rate.substr(found, raw_loan.int_rate.length() - 1 - found).c_str(), nullptr);
+        loan.total_pymnt = strtod(raw_loan.total_pymnt.c_str(), nullptr);
+        loan.out_prncp = strtod(raw_loan.out_prncp.c_str(), nullptr);
+        loan.out_prncp_inv = strtod(raw_loan.out_prncp_inv.c_str(), nullptr);
+        double total_received_interest = strtod(raw_loan.total_rec_int.c_str(), nullptr);
+        double total_received_principal = strtod(raw_loan.total_rec_prncp.c_str(), nullptr);
 
         double defaulted_amount = 0.0;
         if ((loan.loan_status == "Charged Off") || (loan.loan_status == "Default")) {
@@ -260,6 +260,56 @@ public:
         loan.principal = loan_principal;
         loan.lost = loan_lost;
         return true;
+    }
+
+    LoanReturn get_nar(const std::vector<unsigned>& invested)
+    {
+        unsigned defaulted = 0, per_month = 0;
+        double profit = 0.0, principal = 0.0, lost = 0.0, rate = 0.0;
+
+        for (auto idx : invested) {
+            profit += _loans[idx].profit;
+            principal += _loans[idx].principal;
+            lost += _loans[idx].lost;
+            defaulted += _loans[idx].defaulted;
+            rate += _loans[idx].int_rate;
+            // Count loan volume
+            if ((_loans[idx].issue_datetime.year() == _last_date_for_full_month_for_volume.year()) &&
+                (_loans[idx].issue_datetime.month() == _last_date_for_full_month_for_volume.month())) {
+                ++per_month;
+            }
+        }
+
+        LoanReturn loan_return;
+        loan_return.num_loans = invested.size();
+
+        if (loan_return.num_loans > 0) {
+
+            if (principal == 0.0) {
+                loan_return.net_apy = 0.0;
+            }
+            else {
+                // Calculate the Net APR
+                loan_return.net_apy = 100.0 * (pow(1.0 + profit / principal, 12) - 1.0);
+            }
+
+            loan_return.expected_apy = rate / loan_return.num_loans;
+            loan_return.pct_defaulted = 100 * defaulted / loan_return.num_loans;
+            loan_return.avg_default_loss = (defaulted > 0) ? (lost / defaulted) : 0.0;
+            loan_return.loans_per_month = per_month;
+            loan_return.num_defaulted = defaulted;
+        }
+        return loan_return;
+    }
+
+    const std::vector<LCLoan>& get_loans() const 
+    {
+        return _loans;
+    }
+
+    unsigned total_loans() const
+    {
+        return _loans.size();
     }
 
 private:

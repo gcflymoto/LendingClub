@@ -90,8 +90,13 @@
     <ClInclude Include="AmountRequested.hpp" />
     <ClInclude Include="csv.h" />
     <ClInclude Include="CSV.hpp" />
+    <ClInclude Include="FastDelegate.h" />
+    <ClInclude Include="FastDelegate2011.h" />
+    <ClInclude Include="FastDelegateBind.h" />
+    <ClInclude Include="FastFunc.hpp" />
     <ClInclude Include="Filter.hpp" />
     <ClInclude Include="Filters.hpp" />
+    <ClInclude Include="LCGA.hpp" />
     <ClInclude Include="LCBT.hpp" />
     <ClInclude Include="LoanData.hpp" />
     <ClInclude Include="Loan.hpp" />
@@ -101,7 +106,7 @@
     <ClInclude Include="Utilities.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AccountsOpenLast24Months.cpp" />
+    <ClCompile Include="AccountsOpenPast24Months.cpp" />
     <ClCompile Include="LendingClub.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp" />

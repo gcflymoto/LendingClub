@@ -94,6 +94,9 @@ class Filter(object):
     def get_current(self):
         return self.options[self.current]
 
+    def set_current(self, current):
+        self.current = current
+
     def get_name(self):
         return self.__class__.__name__
 

@@ -21,6 +21,7 @@ Created on July 27, 2014
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
+#include "Loan.hpp"
 
 /*
 union FilterUnion {
@@ -67,12 +68,18 @@ public:
         }
     }
 
+    virtual bool apply(const LCLoan& loan) = 0;
+
     virtual unsigned convert(const std::string& raw_data) {
         return boost::lexical_cast<unsigned>(raw_data.c_str());
     }
 
     inline const FilterValue& get_current() const {
         return (*_options)[_current];
+    }
+
+    inline void set_current(const unsigned current) {
+        _current = current;
     }
 
     std::string get_string_value() const {
