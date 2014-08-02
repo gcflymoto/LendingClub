@@ -17,6 +17,7 @@ Created on July 27, 2014
 #include <string>
 #include <chrono>
 #include <cmath>
+#include <iostream>
 #include <boost/any.hpp>
 #include "LCBT.hpp"
 
@@ -36,7 +37,7 @@ public:
             _iteration_time(0)
     {
         unsigned population_size = args["population_size"].as<unsigned>();
-        unsigned _iterations = _args["iterations"].as<unsigned>();
+        _iterations = _args["iterations"].as<unsigned>();
 
         for (unsigned i = 0; i < population_size; ++i) {
             std::vector<Filter*> filters(backtest_filters.size());
