@@ -10,10 +10,10 @@ Created on July 28, 2014
 @contact:    gregczajkowski at yahoo.com
 */
 
-#include "AccountsOpenPast24Months.hpp"
+#include "AmountRequested.hpp"
 
 using namespace lc;
 
-const std::string AccountsOpenLast24Months::sqlite_type = "INT";
-const std::string AccountsOpenLast24Months::csv_name = "acc_open_past_24mths";
-const std::string AccountsOpenLast24Months::name = "AmountRequested";
+const std::string AmountRequested::sqlite_type = "INT";
+const std::string AmountRequested::csv_name = "funded_amnt";
+const std::string AmountRequested::name = "AmountRequested";

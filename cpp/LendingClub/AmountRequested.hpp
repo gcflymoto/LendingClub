@@ -24,11 +24,10 @@ class AmountRequested : public Filter
 {
 public:
     static const std::string sqlite_type;
+    static const std::string csv_name;
     static const std::string name;
-    static const std::string query;
-    static const std::string named_query;
 
-    AmountRequested(const Arguments& args, unsigned* current = nullptr) : Filter("AmountRequested", args)
+    AmountRequested(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
     {
         static const std::vector<unsigned>* options = create_range(5000, 30000, 5000);
         Filter::initialize(options, current);
