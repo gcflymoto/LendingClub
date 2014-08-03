@@ -38,6 +38,7 @@ public:
             _iteration_time(0)
     {
         unsigned population_size = args["population_size"].as<unsigned>();
+        _population.reserve(population_size);
         _iterations = _args["iterations"].as<unsigned>();
 
         for (unsigned i = 0; i < population_size; ++i) {
@@ -160,7 +161,7 @@ public:
                 filters[j]->set_current(_population[partner].second[j]->get_current());
 
                 // Mutate! Once in a blue moon
-                if (!(rand() % mutation_possibility)) {
+                if (!randint(0, mutation_possibility)) {
                     auto& lc_filter = filters[j];
                     lc_filter->set_current(randint(0, lc_filter->get_count() - 1));
                 }
