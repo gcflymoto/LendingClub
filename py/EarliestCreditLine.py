@@ -42,7 +42,7 @@ class EarliestCreditLine(Filter.Filter):
             return DEFAULT_EARLIEST_CREDIT_LINE
 
     def __str__(self):
-        return str(float(self.get_current()) / self.multiplier)
+        return str(float(self.get_value()) / self.multiplier)
 
     def apply(self, loan, earliest_credit_line=LoanEnum.LOAN_ENUM_earliest_credit_line):
-        return loan[earliest_credit_line] >= self.get_current()
+        return loan[earliest_credit_line] >= self.get_value()

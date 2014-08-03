@@ -34,4 +34,4 @@ class AccountsOpenLast24Months(Filter.Filter):
         return int(raw_data) if raw_data else DEFAULT_ACCOUNTS_OPEN_PAST_24_MONTHS
 
     def apply(self, loan, acc_open_past_24mths=LoanEnum.LOAN_ENUM_acc_open_past_24mths):
-        return loan[acc_open_past_24mths] <= self.get_current()
+        return loan[acc_open_past_24mths] <= self.get_value()

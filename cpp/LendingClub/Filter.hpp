@@ -49,8 +49,6 @@ public:
         _args(args),
         _options(NULL),
         _name(name),
-        _size(0),
-        _size_plus_one(0),
         _current(0)
     {
     }
@@ -61,13 +59,11 @@ public:
     void initialize(const std::vector<FilterValue>* options, unsigned* current)
     {
         _options = options;
-        _size = options->size();
-        _size_plus_one = _size + 1;
         if (nullptr == current) {
-            _current = _size;
+            _current = options->size();
         } else {
             _current = *current;
-            assert(_current < _size);
+            assert(_current < options->size());
         }
     }
 
@@ -90,7 +86,7 @@ public:
    
     inline void set_current(const unsigned current)
     {
-        assert(current < _size);
+        assert(current < _options->size());
         _current = current;
     }
 
@@ -102,13 +98,14 @@ public:
 
     size_t get_count()
     {
-        return _size;
+        return _options->size();
     }
 
     bool next()
     {
-        _current = (_current + 1) % _size_plus_one;
-        return (_current != _size);
+        size_t size = _options->size();
+        _current = (_current + 1) % (size+1);
+        return (_current != size);
     }
 
     std::vector<std::vector<FilterValue>> power_set(const std::vector<FilterValue>& options)
@@ -179,9 +176,7 @@ public:
 protected:
     const Arguments& _args;
     const std::vector<FilterValue>* _options;
-    std::string _name;
-    size_t _size;
-    size_t _size_plus_one;
+    const std::string& _name;
     unsigned _current;
 };
 

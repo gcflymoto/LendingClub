@@ -33,7 +33,7 @@ class DebtToIncomeRatio(Filter.Filter):
         return int(raw_value * 100)
 
     def __str__(self):
-        return str(float(self.get_current()) / 100)
+        return str(float(self.get_value()) / 100)
 
     def apply(self, loan, debt_to_income_ratio=LoanEnum.LOAN_ENUM_debt_to_income_ratio):
-        return loan[debt_to_income_ratio] <= self.get_current()
+        return loan[debt_to_income_ratio] <= self.get_value()

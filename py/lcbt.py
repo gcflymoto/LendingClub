@@ -250,7 +250,7 @@ class GATest:
                 # Mate with 20% of population
                 partner = random.randint(0, mate_size)
 
-                filters[j].current = self.population[partner]['filters'][j].current
+                filters[j].set_current(self.population[partner]['filters'][j].get_current())
 
                 # Mutate! Once in a blue moon
                 if not random.randint(0, 1.0 / self.args.mutation_rate):
@@ -452,7 +452,7 @@ class LCBT:
 
     def test_sqlite(self, filters):
         #print(self.sql_query)
-        params = tuple(lc_filter.get_current() for lc_filter in filters if '?' in lc_filter.query)
+        params = tuple(lc_filter.get_value() for lc_filter in filters if '?' in lc_filter.query)
         #print([type(param) for param in params])
         self.loan_data.cursor.execute(self.sql_query, params)
         invested = [self.loan_data.loans[row[0]] for row in self.loan_data.cursor.fetchall()]

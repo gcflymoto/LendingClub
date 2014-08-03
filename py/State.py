@@ -63,4 +63,4 @@ class State(Filter.Filter):
         return str(l)
 
     def apply(self, loan, addr_state=LoanEnum.LOAN_ENUM_addr_state):
-        return (loan[addr_state] & self.get_current()) > 0
+        return (loan[addr_state] & self.get_value()) > 0

@@ -39,7 +39,7 @@ class EmploymentLength(Filter.Filter):
         return int(raw_data[0]) + 1
 
     def __str__(self):
-        current = self.get_current()
+        current = self.get_value()
         if current == 0:
             return '< 1 year'
         elif current == 10:
@@ -49,4 +49,4 @@ class EmploymentLength(Filter.Filter):
         return '%d years' % current
 
     def apply(self, loan, emp_length=LoanEnum.LOAN_ENUM_emp_length):
-        return loan[emp_length] <= self.get_current()
+        return loan[emp_length] <= self.get_value()

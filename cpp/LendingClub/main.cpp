@@ -42,6 +42,8 @@ int lcmain(int argc, char* argv[])
 		return 1;
 	}
 
+    srand(args["seed"].as<unsigned>());
+
 	std::vector<LCLoan::LoanType> conversion_filters;
 	conversion_filters.push_back(LCLoan::ACC_OPEN_PAST_24MTHS);
 	conversion_filters.push_back(LCLoan::FUNDED_AMNT);
@@ -49,10 +51,10 @@ int lcmain(int argc, char* argv[])
 	LCBT lcbt(conversion_filters, args, -1);
 	lcbt.initialize();
 
-  std::vector<LCLoan::LoanType> backtest_filters = conversion_filters;
+    std::vector<LCLoan::LoanType> backtest_filters = conversion_filters;
 
-  GATest ga_test(backtest_filters, lcbt, args);
-  ga_test.run();
+    GATest ga_test(backtest_filters, lcbt, args);
+    ga_test.run();
 
 	return 0;
 }
