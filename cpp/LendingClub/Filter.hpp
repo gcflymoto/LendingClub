@@ -96,7 +96,7 @@ public:
 
     std::string get_string_value() const
     {
-        const FilterValue& val = get_current();
+        const FilterValue& val = get_value();
         return boost::lexical_cast<std::string>(val);
     }
 
