@@ -26,6 +26,7 @@ namespace lc
 {
 
 class GATest {
+    typedef std::vector<std::pair<LoanReturn, std::vector<Filter*>>> PopulationType;
 public:
     GATest(
             const std::vector<LCLoan::LoanType>& backtest_filters,
@@ -39,19 +40,26 @@ public:
     {
         unsigned population_size = args["population_size"].as<unsigned>();
         _population.reserve(population_size);
+        _mate_population.reserve(population_size);
         _iterations = _args["iterations"].as<unsigned>();
 
         for (unsigned i = 0; i < population_size; ++i) {
             std::vector<Filter*> filters(backtest_filters.size());
+            std::vector<Filter*> mate_filters(backtest_filters.size());
             // Create each of the filters and use its conversion utility for normalizing the data
             unsigned j = 0;
             for (auto& filter_type : backtest_filters) {
                 std::vector<Filter*>::iterator filter_it = filters.begin() + j;
                 construct_filter(filter_type, args, filter_it);
                 (*filter_it)->set_current(randint(0, (*filter_it)->get_count() - 1));
+
+                std::vector<Filter*>::iterator mate_filter_it = mate_filters.begin() + j;
+                construct_filter(filter_type, args, mate_filter_it);
+
                 ++j;
             }
             _population.push_back(std::make_pair(LoanReturn(), filters));
+            _mate_population.push_back(std::make_pair(LoanReturn(), mate_filters));
         }
 
         assert(population_size > 0);
@@ -142,17 +150,31 @@ public:
         std::cout << best_results.avg_default_loss << " avg loss) " << best_results.net_apy << "% net APY\n";
     }
 
+    void copy_population(const PopulationType& from, PopulationType& to)
+    {
+        unsigned i = 0;
+        for (auto& lc_pair : from) {
+            unsigned j = 0;
+            for (auto& lc_filter : lc_pair.second) {
+                to[i].second[j]->set_current(lc_filter->get_current());
+                ++j;
+            }
+
+            ++i;
+        }
+    }
+
     void mate()
     {
         // Save the elite
         auto num_elite = boost::numeric_cast<unsigned>(_args["elite_rate"].as<double>() * _population.size());
-        auto final_population = _population;
         auto mate_size = boost::numeric_cast<unsigned>(std::floor(_population.size() / 5.0));
         auto mutation_possibility = boost::numeric_cast<unsigned>(1.0 / _args["mutation_rate"].as<double>());
+        copy_population(_population, _mate_population);
 
         for (size_t i = num_elite; i < _population.size(); ++i) {
 
-            auto& filters = final_population[i].second;
+            auto& filters = _mate_population[i].second;
 
             for (size_t j = 0; j < filters.size(); ++j) {
                 // Mate with 20 % of population
@@ -168,13 +190,14 @@ public:
             }
         }
 
-        _population = final_population;
+        copy_population(_mate_population, _population);
     }
 
     LCBT&                                                       _lcbt;
     const Arguments&						                    _args;
     std::vector<Filter*>					                    _filters;
-    std::vector<std::pair<LoanReturn, std::vector<Filter*>>>    _population;
+    PopulationType                                              _population;
+    PopulationType                                              _mate_population;
     unsigned                                                    _iteration;
     unsigned                                                    _iterations;
     std::chrono::duration<double>                               _iteration_time;

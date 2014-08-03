@@ -89,5 +89,8 @@
     <ClCompile Include="AccountsOpenPast24Months.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AmountRequested.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

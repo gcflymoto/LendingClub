@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AccountsOpenPast24Months.cpp" />
+    <ClCompile Include="AmountRequested.cpp" />
     <ClCompile Include="LendingClub.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp" />
