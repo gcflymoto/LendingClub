@@ -131,6 +131,7 @@ public:
             }
             result.push_back(set);
         }
+        return result;
     }
 
     std::vector<FilterValue> power_bitset(const std::vector<FilterValue>& options)
