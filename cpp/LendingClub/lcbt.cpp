@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     int s = 0;
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
-    CPU_SET(0, &cpuset); /* Run only on the first CPU. */
+    CPU_SET(0, &cpuset);
 
     pthread_t thread = pthread_self();
 

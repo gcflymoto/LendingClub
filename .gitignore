@@ -1,6 +1,8 @@
 LoanStatsNew.csv*
 lcbt
 lc_best.csv
+*.gcda
+*.o
 
 *.py[cod]
 
