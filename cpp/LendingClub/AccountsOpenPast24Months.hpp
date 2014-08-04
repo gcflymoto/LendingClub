@@ -20,8 +20,6 @@ Created on July 28, 2014
 namespace lc
 {
 
-static const int DEFAULT_ACCOUNTS_OPEN_PAST_24_MONTHS = 0;
-
 class AccountsOpenLast24Months : public Filter
 {
 public:
@@ -37,11 +35,7 @@ public:
 
     virtual unsigned convert(const std::string& raw_data)
     {
-        if (raw_data.empty()) {
-            return DEFAULT_ACCOUNTS_OPEN_PAST_24_MONTHS;
-        } else {
-            return boost::lexical_cast<unsigned>(raw_data);
-        }
+        return (raw_data.empty()) ? 0 : boost::lexical_cast<unsigned>(raw_data);
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)

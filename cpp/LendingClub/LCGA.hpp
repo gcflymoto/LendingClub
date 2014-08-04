@@ -109,12 +109,12 @@ public:
         {
             unsigned a_fit = 0;
             if (a.first.num_loans >= config_fitness_sort_num_loans) {
-                a_fit = boost::numeric_cast<unsigned>(a.first.net_apy * 100);
+                a_fit = boost::numeric_cast<unsigned>(a.first.net_apy * 1000);
             }
 
             unsigned b_fit = 0;
             if (b.first.num_loans >= config_fitness_sort_num_loans) {
-                b_fit = boost::numeric_cast<unsigned>(b.first.net_apy * 100);
+                b_fit = boost::numeric_cast<unsigned>(b.first.net_apy * 1000);
             }
 
             return b_fit < a_fit;

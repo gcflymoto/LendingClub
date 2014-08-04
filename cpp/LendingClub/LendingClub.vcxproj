@@ -88,6 +88,8 @@
   <ItemGroup>
     <ClInclude Include="AccountsOpenPast24Months.hpp" />
     <ClInclude Include="AmountRequested.hpp" />
+    <ClInclude Include="AnnualIncome.hpp" />
+    <ClInclude Include="CreditGrade.hpp" />
     <ClInclude Include="csv.h" />
     <ClInclude Include="CSV.hpp" />
     <ClInclude Include="FastDelegate.h" />
@@ -108,6 +110,8 @@
   <ItemGroup>
     <ClCompile Include="AccountsOpenPast24Months.cpp" />
     <ClCompile Include="AmountRequested.cpp" />
+    <ClCompile Include="AnnualIncome.cpp" />
+    <ClCompile Include="CreditGrade.cpp" />
     <ClCompile Include="LendingClub.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp" />

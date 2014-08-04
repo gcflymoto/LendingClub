@@ -72,6 +72,12 @@
     <ClInclude Include="LCGA.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AnnualIncome.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreditGrade.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -90,6 +96,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AmountRequested.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnnualIncome.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreditGrade.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
