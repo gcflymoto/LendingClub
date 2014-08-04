@@ -29,7 +29,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    AccountsOpenPast24Months(const Arguments& args, unsigned* current = nullptr) : Filter(AccountsOpenPast24Months::name, args)
+    AccountsOpenPast24Months(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
     {
         static const std::vector<unsigned>* options = create_range(0, 25, 5);
         Filter::initialize(options, current);
