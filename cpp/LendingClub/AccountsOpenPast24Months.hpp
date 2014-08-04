@@ -20,14 +20,14 @@ Created on July 28, 2014
 namespace lc
 {
 
-class AccountsOpenLast24Months : public Filter
+class AccountsOpenPast24Months : public Filter
 {
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
     static const std::string name;
 
-    AccountsOpenLast24Months(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    AccountsOpenPast24Months(const Arguments& args, unsigned* current = nullptr) : Filter(AccountsOpenPast24Months::name, args)
     {
         static const std::vector<unsigned>* options = create_range(0, 25, 5);
         Filter::initialize(options, current);

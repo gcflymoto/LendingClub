@@ -25,21 +25,21 @@ Created on July 27, 2014
 namespace lc {
 
 	boost::any construct_filter_any(const LCLoan::LoanType filter_type, 
-								    const Arguments& args,
-								    unsigned* current = nullptr) 
+                                  const Arguments& args,
+                                  unsigned* current = nullptr) 
 	{
-		boost::any any;
-		switch(filter_type) {
-		case LCLoan::ACC_OPEN_PAST_24MTHS:
-			any = AccountsOpenLast24Months(args, current);
-			break;
-		case LCLoan::FUNDED_AMNT:
-			any = AmountRequested(args, current);
-			break;
-		default:
-			assert(filter_type < LCLoan::SIZE);
-		};
-		return any;
+      boost::any any;
+      switch(filter_type) {
+      case LCLoan::ACC_OPEN_PAST_24MTHS:
+          any = AccountsOpenPast24Months(args, current);
+          break;
+      case LCLoan::FUNDED_AMNT:
+          any = AmountRequested(args, current);
+          break;
+      default:
+          assert(filter_type < LCLoan::SIZE);
+      };
+      return any;
 	}
 
     void construct_filter(const LCLoan::LoanType filter_type,
@@ -49,7 +49,7 @@ namespace lc {
     {
         switch (filter_type) {
         case LCLoan::ACC_OPEN_PAST_24MTHS:
-            (*it) = new AccountsOpenLast24Months(args, current);
+            (*it) = new AccountsOpenPast24Months(args, current);
             break;
         case LCLoan::FUNDED_AMNT:
             (*it) = new AmountRequested(args, current);
