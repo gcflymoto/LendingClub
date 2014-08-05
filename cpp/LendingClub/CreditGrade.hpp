@@ -29,7 +29,7 @@ public:
 
     CreditGrade(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
     {
-        static std::vector<unsigned> options;
+        static std::vector<FilterValue> options;
 
         if (_converation_table.empty()) {
             _converation_table["A"] = 1 << 0;
@@ -55,7 +55,7 @@ public:
                 for (size_t j = 0; j < num_grades; ++j) {
                     if ((j + 1) <= num_grades) {
                         std::string grades = all_grades.substr(j, i);
-                        unsigned grades_bit_value = 0;
+                        FilterValue grades_bit_value = 0;
                         for (auto grade : grades) {
                             grades_bit_value += _converation_table[std::string(1, grade)];
                         }
@@ -70,7 +70,7 @@ public:
         Filter::initialize(&options, current);
     }
 
-    virtual unsigned convert(const std::string& raw_data)
+    virtual FilterValue convert(const std::string& raw_data)
     {
         return _converation_table[raw_data];
     }
@@ -91,8 +91,8 @@ public:
     }
 
 private:
-    static std::map<std::string, unsigned>   _converation_table;
-    static std::map<unsigned, std::string>   _reverse_table;
+    static std::map<std::string, FilterValue>   _converation_table;
+    static std::map<FilterValue, std::string>   _reverse_table;
 };
 
 };

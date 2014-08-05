@@ -39,7 +39,7 @@ struct FilterValue {
 namespace lc
 {
 
-typedef unsigned FilterValue;
+typedef unsigned long long FilterValue;
 typedef boost::program_options::variables_map Arguments;
 
 class Filter
@@ -69,9 +69,9 @@ public:
 
     virtual bool apply(const LCLoan& loan) = 0;
 
-    virtual unsigned convert(const std::string& raw_data)
+    virtual FilterValue convert(const std::string& raw_data)
     {
-        return boost::lexical_cast<unsigned>(raw_data.c_str());
+        return (raw_data.empty()) ? 0 : boost::numeric_cast<FilterValue>(boost::lexical_cast<double>(raw_data.c_str()));
     }
 
     inline const FilterValue& get_value() const
@@ -111,22 +111,14 @@ public:
     std::vector<std::vector<FilterValue>> power_set(const std::vector<FilterValue>& options)
     {
         std::vector<std::vector<FilterValue>> result;
-        std::vector<unsigned> v;
         size_t n = options.size();
         assert(n < 31);
     
         for(unsigned i = 0, pow2n = 1 << n; i < pow2n; ++i) {
-            unsigned m = i;
-            while (m > 1) {
-                v.push_back(m % 2);
-                m  >>= 1;
-            }
-            v.push_back(m);
-
             std::vector<FilterValue> set;
-            for(int k = 0, end = v.size(); k < end; ++k) {
-                if (v[k]) {
-                    set.push_back(options[k]);
+            for(int j = 0, end = options.size(); j < end; ++j) {
+                if (i & (1 << j)) {
+                    set.push_back(options[j]);
                 }
             }
             result.push_back(set);
@@ -143,7 +135,7 @@ public:
 
         unsigned idx = 0;
         for (auto set_tupple : l) {
-            unsigned sum = 0;
+            FilterValue sum = 0;
             for (auto v : set_tupple) {
                 sum += v;
             }

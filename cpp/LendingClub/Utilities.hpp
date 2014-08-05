@@ -19,8 +19,8 @@ Created on July 28, 2014
 #include <string>
 
 namespace lc {
-	const std::vector<unsigned>* create_range(const unsigned start, const unsigned stop, const unsigned step);
-	std::string map_to_str(const std::map<std::string, std::string>& m);
+    const std::vector<unsigned long long>* create_range(const unsigned start, const unsigned stop, const unsigned step);
+    std::string map_to_str(const std::map<std::string, std::string>& m);
 
     // Returns random number a <= N <= b
     unsigned randint(const unsigned a, const unsigned b);

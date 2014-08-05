@@ -29,13 +29,8 @@ public:
 
     AccountsOpenPast24Months(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
     {
-        static const std::vector<unsigned>* options = create_range(0, 25, 5);
+        static const std::vector<FilterValue>* options = create_range(0, 25, 5);
         Filter::initialize(options, current);
-    }
-
-    virtual unsigned convert(const std::string& raw_data)
-    {
-        return (raw_data.empty()) ? 0 : boost::lexical_cast<unsigned>(raw_data);
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)

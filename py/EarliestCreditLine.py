@@ -13,8 +13,6 @@ import datetime
 import Filter
 import LoanEnum
 
-DEFAULT_EARLIEST_CREDIT_LINE = 0
-
 
 class EarliestCreditLine(Filter.Filter):
     """
@@ -39,7 +37,7 @@ class EarliestCreditLine(Filter.Filter):
             raw_value = (self.now - self.datetime.strptime(raw_data, "%Y-%m-%d %H:%M")).total_seconds()
             return int(raw_value)
         else:
-            return DEFAULT_EARLIEST_CREDIT_LINE
+            return 0
 
     def __str__(self):
         return str(float(self.get_value()) / self.multiplier)

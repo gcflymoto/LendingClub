@@ -150,13 +150,13 @@ public:
         std::cout << best_results.avg_default_loss << " avg loss) " << best_results.net_apy << "% net APY\n";
     }
 
-    void copy_population(const PopulationType& from, PopulationType& to)
+    void copy_population(const PopulationType& from_population, PopulationType& to_population)
     {
         unsigned i = 0;
-        for (auto& lc_pair : from) {
+        for (auto& lc_pair : from_population) {
             unsigned j = 0;
             for (auto& lc_filter : lc_pair.second) {
-                to[i].second[j]->set_current(lc_filter->get_current());
+                to_population[i].second[j]->set_current(lc_filter->get_current());
                 ++j;
             }
 

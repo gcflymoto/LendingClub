@@ -10,8 +10,8 @@ Created on July 28, 2014
 @contact:    gregczajkowski at yahoo.com
 */
 
-#ifndef __LC_ANNUAL_INCOME_HPP__
-#define __LC_ANNUAL_INCOME_HPP__
+#ifndef __LC_TOTAL_CREDIT_LINES_HPP__
+#define __LC_TOTAL_CREDIT_LINES_HPP__
 
 #include "Filter.hpp"
 #include "Loan.hpp"
@@ -20,30 +20,30 @@ Created on July 28, 2014
 namespace lc
 {
 
-class AnnualIncome : public Filter
+class TotalCreditLines : public Filter
 {
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
     static const std::string name;
 
-    AnnualIncome(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    TotalCreditLines(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
     {
-        static const std::vector<FilterValue>* options = create_range(0, 300000, 25000);
+        static const std::vector<FilterValue>* options = create_range(10, 40, 10);
         Filter::initialize(options, current);
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)
     {
-        return (loan.annual_income <= self.get_value());
+        return (loan.total_acc <= self.get_value());
     }
 
     inline bool apply(const LCLoan& loan)
     {
-        return (loan.annual_income <= get_value());
+        return (loan.total_acc <= get_value());
     }
 };
 
 };
 
-#endif // __LC_ANNUAL_INCOME_HPP__
+#endif // __LC_TOTAL_CREDIT_LINES_HPP__

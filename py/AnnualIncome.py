@@ -28,8 +28,8 @@ class AnnualIncome(Filter.Filter):
 
         Filter.Filter.__init__(self, args, options, current)
 
-    def convert(self, raw_data):
-        return int(raw_data[0]) if raw_data else 0
+    def convert(self, str_data):
+        return int(float(str_data)) if str_data else 0
 
     def apply(self, loan, annual_income=LoanEnum.LOAN_ENUM_annual_income):
         return loan[annual_income] <= self.get_value()

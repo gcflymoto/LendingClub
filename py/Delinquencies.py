@@ -11,8 +11,6 @@ Created on May 30, 2013
 """
 import LoanEnum, Filter
 
-DEFAULT_DELINQUENCIES_LAST_2YEARS = 0
-
 
 class Delinquencies(Filter.Filter):
     """
@@ -26,19 +24,19 @@ class Delinquencies(Filter.Filter):
         Constructor
         """
         options = [
-            1 << 0,  # 0
-            1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,  # 0, 1-3
-            1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,  # 0, 1-3, 4
-            1 << 1 | 1 << 2 | 1 << 3,  # 1-3
-            1 << 1 | 1 << 2 | 1 << 3 | 1 << 4,  # 1-3, 4
-            1 << 4,  # 4
+            1 << 0,                                      # 0
+            1 << 0 | 1 << 1 | 1 << 2 | 1 << 3,           # 0-3
+            1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4,  # 0-4
+            1 << 1 | 1 << 2 | 1 << 3,                    # 1-3
+            1 << 1 | 1 << 2 | 1 << 3 | 1 << 4,           # 1-4
+            1 << 4,                                      # 4
             1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 11,  # 5 - 11
         ]
 
         Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
-        delinq = int(raw_data) if raw_data else DEFAULT_DELINQUENCIES_LAST_2YEARS
+        delinq = int(raw_data) if raw_data else 0
 
         if delinq <= 11:
             return 1 << delinq
@@ -46,11 +44,11 @@ class Delinquencies(Filter.Filter):
             return 1 << 11
 
     def __str__(self):
-        current = self.get_value()
+        value = self.get_value()
 
         delinq_list = []
         for i in range(12):
-            if ((1 << i) & current) > 0:
+            if ((1 << i) & value) > 0:
                 delinq_list.append(i)
         return str(tuple(delinq_list))
 

@@ -35,8 +35,8 @@ class IncomeValidated(Filter.Filter):
             return 0
 
     def __str__(self):
-        current = self.get_value()
-        if current:
+        value = self.get_value()
+        if value:
             return 'income validated'
         else:
             return 'income unvalidated'

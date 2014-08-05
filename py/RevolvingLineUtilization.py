@@ -11,8 +11,6 @@ Created on May 30, 2013
 """
 import LoanEnum, Filter
 
-DEFAULT_REVOLING_UTILIZATION = 0.0
-
 
 class RevolvingLineUtilization(Filter.Filter):
     """
@@ -31,8 +29,7 @@ class RevolvingLineUtilization(Filter.Filter):
         Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
-        raw_data = float(raw_data[:-1]) if raw_data else DEFAULT_REVOLING_UTILIZATION
-        return int(raw_data * 100)
+        return int((float(raw_data[:-1]) if raw_data else 0.0) * 100)
 
     def __str__(self):
         return str(float(self.get_value()) / 100)

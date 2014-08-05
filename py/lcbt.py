@@ -117,6 +117,7 @@ class ProfileGuidedOptimization(object):
 
 class GATest:
     population = []
+    mate_population = []
 
     def __init__(self, backtest_filters, lcbt, args):
         """
@@ -132,11 +133,17 @@ class GATest:
 
         for _ in range(self.args.population_size):
             filters  = []
-            for backtest_filter in backtest_filters:
+            mate_filters = []
+            for backtest_filter in backtest_filters.values():
                 lc_filter = backtest_filter(args)
                 lc_filter.set_current(random.randint(0, lc_filter.get_count() - 1))
                 filters.append(lc_filter)
+
+                mate_filter = backtest_filter(args)
+                mate_filters.append(mate_filter)
+
             self.population.append(dict(filters=filters))
+            self.mate_population.append(dict(filters=mate_filters))
 
         csv_field_names = []
         for lc_filter in self.population[0]["filters"]:
@@ -235,10 +242,17 @@ class GATest:
 
         self.csvwriter.writerow(best_results)
 
+    def copy_population(self, from_population, to_population):
+        for i in range(len(self.population)):
+            for j in range(len(self.population[i]['filters'])):
+                to_population[i]['filters'][j].set_current(from_population[i]['filters'][j].get_current())
+
     def mate(self):
         # Save the elite
         num_elite = int(self.args.elite_rate * self.args.population_size)
-        final_population = self.population[:]
+
+        self.copy_population(self.population, self.mate_population)
+        final_population = self.mate_population
 
         mate_size = math.floor(self.args.population_size / 5.0)
 
@@ -256,7 +270,8 @@ class GATest:
                 if not random.randint(0, 1.0 / self.args.mutation_rate):
                     lc_filter = filters[j]
                     lc_filter.current = random.randint(0, lc_filter.get_count() - 1)
-        self.population = final_population
+
+        self.copy_population(final_population, self.population)
 
     def debug_msg(self, msg):
         if self.args.verbose:
@@ -662,6 +677,10 @@ USAGE
 
     # Process arguments
     args = parser.parse_args()
+
+    if (args.population_size < args.workers):
+        args.workers = 1
+        enable_workers = 0
 
     if args.workers > 0 and args.zmq:
         enable_zmq = utilities.check_for_zmqpy() or utilities.check_for_pyzmq()

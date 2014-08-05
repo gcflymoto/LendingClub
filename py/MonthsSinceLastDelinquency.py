@@ -11,8 +11,6 @@ Created on May 30, 2013
 """
 import LoanEnum, Filter
 
-DEFAULT_MTHS_SINCE_LAST_DELINQ = 61
-
 
 class MonthsSinceLastDelinquency(Filter.Filter):
     """
@@ -31,7 +29,7 @@ class MonthsSinceLastDelinquency(Filter.Filter):
         Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
-        return int(raw_data) if raw_data else DEFAULT_MTHS_SINCE_LAST_DELINQ
+        return int(raw_data) if raw_data else 61
 
     def apply(self, loan, mths_since_last_delinq=LoanEnum.LOAN_ENUM_mths_since_last_delinq):
         return loan[mths_since_last_delinq] >= self.get_value()

@@ -30,7 +30,7 @@ class Filter(object):
             self.current = current
 
     def convert(self, str_data):
-        return float(str_data)
+        return int(str_data) if str_data else 0
 
     def __str__(self):
         return str(self.get_value())

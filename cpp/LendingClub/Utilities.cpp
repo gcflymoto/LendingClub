@@ -1,10 +1,10 @@
 #include "Utilities.hpp"
 
-const std::vector<unsigned>* lc::create_range(const unsigned start, const unsigned stop, const unsigned step)
+const std::vector<unsigned long long>* lc::create_range(const unsigned start, const unsigned stop, const unsigned step)
 {
     assert(start <= stop);
 
-    std::vector<unsigned>* result = new std::vector<unsigned>;
+    std::vector<unsigned long long>* result = new std::vector<unsigned long long>;
 
     for (unsigned idx = start; idx < stop; idx += step) {
         result->push_back(idx);

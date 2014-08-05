@@ -29,7 +29,7 @@ class LoanPurpose(Filter.Filter):
                               moving=1 << 8, wedding=1 << 9, house=1 << 10, medical=1 << 11, major_purchase=1 << 12,
                               renewable_energy=1 << 13)
 
-        self.conversion_table = purpose_bitmap.copy()
+        self.conversion_table = purpose_bitmap
 
         options = self.power_bitset(purpose_bitmap.values())
 
@@ -40,10 +40,11 @@ class LoanPurpose(Filter.Filter):
 
     def __str__(self):
         l = []
+        value = self.get_value()
         for key, val in self.conversion_table.items():
-            if val & self.current > 0:
+            if val & value > 0:
                 l.append(key)
-        return str(l)
+        return ','.join(l)
 
     def apply(self, loan, purpose=LoanEnum.LOAN_ENUM_purpose):
         return (loan[purpose] & self.get_value()) > 0

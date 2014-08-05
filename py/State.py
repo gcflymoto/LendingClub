@@ -40,7 +40,7 @@ class State(Filter.Filter):
                             TX=1 << 42, UT=1 << 43, VA=1 << 44, VT=1 << 45, WA=1 << 46, WI=1 << 47, WV=1 << 48,
                             WY=1 << 49, NULL=1 << 50)
 
-        self.conversion_table = state_bitmap.copy()
+        self.conversion_table = state_bitmap
 
         options = self.power_bitset([state_bitmap[state] for state in ["CA", "AZ", "FL", "GA", "IL", "MD", "MO", "NV", "TX", "NY"]])
 
@@ -56,11 +56,12 @@ class State(Filter.Filter):
         return self.conversion_table[raw_data] if raw_data else self.conversion_table["NULL"]
 
     def __str__(self):
+        value = self.get_value()
         l = []
         for key, val in self.conversion_table.items():
-            if val & self.current > 0:
+            if val & value > 0:
                 l.append(key)
-        return str(l)
+        return ','.join(l)
 
     def apply(self, loan, addr_state=LoanEnum.LOAN_ENUM_addr_state):
         return (loan[addr_state] & self.get_value()) > 0

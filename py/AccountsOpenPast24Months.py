@@ -28,8 +28,5 @@ class AccountsOpenLast24Months(Filter.Filter):
 
         Filter.Filter.__init__(self, args, options, current)
 
-    def convert(self, raw_data):
-        return int(raw_data) if raw_data else 0
-
     def apply(self, loan, acc_open_past_24mths=LoanEnum.LOAN_ENUM_acc_open_past_24mths):
         return loan[acc_open_past_24mths] <= self.get_value()

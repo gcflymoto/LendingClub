@@ -29,7 +29,7 @@ public:
 
     AmountRequested(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
     {
-        static const std::vector<unsigned>* options = create_range(5000, 30000, 5000);
+        static const std::vector<FilterValue>* options = create_range(5000, 30000, 5000);
         Filter::initialize(options, current);
     }
 
