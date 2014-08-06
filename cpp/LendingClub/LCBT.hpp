@@ -45,24 +45,11 @@ public:
         _test_filters = &test_filters;
 
         for (auto& loan : _loan_data.get_loans()) {
-            if (consider(loan)) {
+            if (_test_filters->apply(loan)) {
                 _invested.push_back(loan.rowid);
             }
         }
         return _loan_data.get_nar(_invested);
-    }
-
-    bool consider(const LCLoan& loan) 
-    {
-        return _test_filters->apply(loan);
-        /*
-        for (auto& lc_filter : *_test_filters) {
-            if (!lc_filter->apply(loan)) {
-                return false;
-            }
-        }        
-        return true;
-        */
     }
 
     void debug_msg(const std::string& msg) 

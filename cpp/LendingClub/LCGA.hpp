@@ -54,7 +54,7 @@ public:
 
         std::vector<std::string> csv_field_names; 
         auto& lc_filters = _population[0].second;
-        for (size_t i = 0, size = lc_filters.size(); i < size; ++i) {
+        for (size_t i = lc_filters.begin(), end = lc_filters.end(); i != end; ++i) {
             _csv_file << lc_filters.get_name(i) << ',';
         }
 
@@ -123,7 +123,7 @@ public:
         std::string filters = "";
         
         auto& lc_filters = _population[0].second;
-        for (size_t i = 0, size = lc_filters.size(); i < size; ++i) {
+        for (size_t i = lc_filters.begin(), end = lc_filters.end(); i != end; ++i) {
             auto filter_name = lc_filters.get_name(i);
             auto filter_val_str = lc_filters.get_string_value(i);
             _csv_file << filter_val_str << ',';
@@ -143,7 +143,7 @@ public:
     {
         unsigned i = 0;
         for (auto& lc_pair : from_population) {
-            for (size_t j = 0, size = lc_pair.second.size(); j < size; ++j) {
+            for (size_t j = lc_pair.second.begin(), end = lc_pair.second.end(); j != end; ++j) {
                 to_population[i].second.set_current(j, lc_pair.second.get_current(j));
             }
             ++i;
@@ -162,7 +162,7 @@ public:
 
             auto& lc_filters = _mate_population[i].second;
 
-            for (size_t j = 0, size = lc_filters.size(); j < size; ++j) {
+            for (size_t j = lc_filters.begin(), end = lc_filters.end(); j != end; ++j) {
                 // Mate with 20 % of population
                 auto partner = randint(0, mate_size);
 

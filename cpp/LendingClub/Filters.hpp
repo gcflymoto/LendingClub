@@ -401,7 +401,11 @@ public:
         return 0;
     }
 
-    size_t size() const 
+    size_t begin() const{
+        return static_cast<size_t>(LCLoan::ACC_OPEN_PAST_24MTHS);
+    }
+
+    size_t end() const 
     { 
         return static_cast<size_t>(LCLoan::LOAN_STATUS);
     }
