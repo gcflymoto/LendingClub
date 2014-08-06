@@ -20,17 +20,27 @@ Created on July 28, 2014
 namespace lc
 {
 
-class AccountsOpenPast24Months : public Filter
+class AccountsOpenPast24Months : public Filter<AccountsOpenPast24Months>
 {
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
     static const std::string name;
 
-    AccountsOpenPast24Months(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    AccountsOpenPast24Months(const Arguments& args, unsigned* current = nullptr) : Filter<AccountsOpenPast24Months>(name, args)
     {
         static const std::vector<FilterValue>* options = create_range(0, 25, 5);
         Filter::initialize(options, current);
+    }
+
+    inline FilterValue convert(const std::string& raw_data)
+    {
+        return (raw_data.empty()) ? 0 : boost::lexical_cast<FilterValue>(raw_data.c_str());
+    }
+
+    const std::string get_string_value() const
+    {
+        return boost::lexical_cast<std::string>(get_value());
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)
@@ -38,7 +48,7 @@ public:
         return (loan.acc_open_past_24mths <= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan)
+    inline bool apply(const LCLoan& loan) const
     {
         return (loan.acc_open_past_24mths <= get_value());
     }

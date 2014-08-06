@@ -20,14 +20,14 @@ Created on July 28, 2014
 namespace lc
 {
 
-class CreditGrade : public Filter
+class CreditGrade : public Filter<CreditGrade>
 {
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
     static const std::string name;
 
-    CreditGrade(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    CreditGrade(const Arguments& args, unsigned* current = nullptr) : Filter<CreditGrade>(name, args)
     {
         static std::vector<FilterValue> options;
 
@@ -70,9 +70,14 @@ public:
         Filter::initialize(&options, current);
     }
 
-    virtual FilterValue convert(const std::string& raw_data)
+    inline FilterValue convert(const std::string& raw_data)
     {
         return _converation_table[raw_data];
+    }
+
+    const std::string get_string_value() const
+    {
+        return _reverse_table[get_value()];
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)
@@ -80,14 +85,9 @@ public:
         return ((loan.grade & self.get_value()) > 0);
     }
 
-    inline bool apply(const LCLoan& loan)
+    inline bool apply(const LCLoan& loan) const
     {
         return ((loan.grade & get_value()) > 0);
-    }
-
-    std::string get_string_value() const
-    {
-        return _reverse_table[get_value()];
     }
 
 private:

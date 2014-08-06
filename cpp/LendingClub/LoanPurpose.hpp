@@ -20,14 +20,14 @@ Created on July 28, 2014
 namespace lc
 {
 
-class LoanPurpose : public Filter
+class LoanPurpose : public Filter<LoanPurpose>
 {
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
     static const std::string name;
 
-    LoanPurpose(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    LoanPurpose(const Arguments& args, unsigned* current = nullptr) : Filter<LoanPurpose>(name, args)
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {
@@ -56,24 +56,14 @@ public:
         Filter::initialize(&options, current);
     }
 
-    virtual FilterValue convert(const std::string& raw_data)
+    inline FilterValue convert(const std::string& raw_data)
     {
         auto it = _conversion_table.find(raw_data);
         assert(it != _conversion_table.end());
         return (it->second);
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
-    {
-        return ((loan.purpose & self.get_value()) > 0);
-    }
-
-    inline bool apply(const LCLoan& loan)
-    {
-        return ((loan.purpose & get_value()) > 0);
-    }
-
-    std::string get_string_value() const
+    const std::string get_string_value() const
     {
         auto value = get_value();
         std::string result;
@@ -89,6 +79,17 @@ public:
             return result.substr(0, result.length() - 1);
         }
     }
+
+    static bool static_apply(const Filter& self, const LCLoan& loan)
+    {
+        return ((loan.purpose & self.get_value()) > 0);
+    }
+
+    inline bool apply(const LCLoan& loan) const
+    {
+        return ((loan.purpose & get_value()) > 0);
+    }
+
 private:
     static std::map<std::string, FilterValue>   _conversion_table;
 };

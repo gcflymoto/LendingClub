@@ -20,20 +20,20 @@ Created on July 28, 2014
 namespace lc
 {
 
-    class EmploymentLength : public Filter
+class EmploymentLength : public Filter<EmploymentLength>
 {
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
     static const std::string name;
 
-    EmploymentLength(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    EmploymentLength(const Arguments& args, unsigned* current = nullptr) : Filter<EmploymentLength>(name, args)
     {
         static const std::vector<FilterValue>* options = create_range(0, 12, 1);
         Filter::initialize(options, current);
     }
 
-    virtual FilterValue convert(const std::string& raw_data)
+    inline FilterValue convert(const std::string& raw_data)
     {
         if (raw_data == "n/a") {
             return 0;
@@ -50,17 +50,7 @@ public:
         }
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
-    {
-        return (loan.emp_length <= self.get_value());
-    }
-
-    inline bool apply(const LCLoan& loan)
-    {
-        return (loan.emp_length <= get_value());
-    }
-
-    std::string get_string_value() const
+    const std::string get_string_value() const
     {
         auto value = static_cast<unsigned>(get_value());
         if (value == 0) {
@@ -71,10 +61,20 @@ public:
         }
         else if (value == 1) {
             return "1 year";
-        } 
+        }
         else {
             return std::string('0' + value, 1) + " years";
         }
+    }
+
+    static bool static_apply(const Filter& self, const LCLoan& loan)
+    {
+        return (loan.emp_length <= self.get_value());
+    }
+
+    inline bool apply(const LCLoan& loan) const
+    {
+        return (loan.emp_length <= get_value());
     }
 };
 

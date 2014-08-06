@@ -20,14 +20,14 @@ Created on July 28, 2014
 namespace lc
 {
 
-class MonthsSinceLastDelinquency : public Filter
+class MonthsSinceLastDelinquency : public Filter<MonthsSinceLastDelinquency>
 {
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
     static const std::string name;
 
-    MonthsSinceLastDelinquency(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    MonthsSinceLastDelinquency(const Arguments& args, unsigned* current = nullptr) : Filter<MonthsSinceLastDelinquency>(name, args)
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {
@@ -38,9 +38,14 @@ public:
         Filter::initialize(&options, current);
     }
 
-    virtual FilterValue convert(const std::string& raw_data)
+    inline FilterValue convert(const std::string& raw_data)
     {
         return (raw_data.empty()) ? 61 : boost::lexical_cast<FilterValue>(raw_data.c_str());
+    }
+
+    const std::string get_string_value() const
+    {
+        return boost::lexical_cast<std::string>(get_value());
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)
@@ -48,7 +53,7 @@ public:
         return (loan.mths_since_last_delinq >= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan)
+    inline bool apply(const LCLoan& loan) const
     {
         return (loan.mths_since_last_delinq >= get_value());
     }

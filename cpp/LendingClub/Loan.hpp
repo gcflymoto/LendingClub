@@ -43,8 +43,8 @@ struct LCLoan {
         ADDR_STATE = 16,
         TOTAL_ACC = 17,
         DESC_WORD_COUNT = 18,
-        LOAN_STATUS = 19,
         // These enums are only used for conversions
+        LOAN_STATUS = 19,
         ISSUE_DATETIME = 20,
         NUMBER_OF_PAYMENTS = 21,
         INSTALLMENT = 22,

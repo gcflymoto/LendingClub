@@ -44,32 +44,10 @@ int lcmain(int argc, char* argv[])
 
     srand(args["seed"].as<unsigned>());
 
-    std::vector<LCLoan::LoanType> conversion_filters;
-    conversion_filters.push_back(LCLoan::ACC_OPEN_PAST_24MTHS);
-    conversion_filters.push_back(LCLoan::FUNDED_AMNT);
-    conversion_filters.push_back(LCLoan::ANNUAL_INCOME);
-    conversion_filters.push_back(LCLoan::GRADE);
-    conversion_filters.push_back(LCLoan::DEBT_TO_INCOME_RATIO);
-    conversion_filters.push_back(LCLoan::DELINQ_2YRS);
-    conversion_filters.push_back(LCLoan::EARLIEST_CREDIT_LINE);
-    conversion_filters.push_back(LCLoan::EMP_LENGTH);
-    conversion_filters.push_back(LCLoan::HOME_OWNERSHIP);
-    conversion_filters.push_back(LCLoan::INCOME_VALIDATED);
-    conversion_filters.push_back(LCLoan::INQ_LAST_6MTHS);
-    conversion_filters.push_back(LCLoan::PURPOSE);
-    conversion_filters.push_back(LCLoan::MTHS_SINCE_LAST_DELINQ);
-    conversion_filters.push_back(LCLoan::PUB_REC);
-    conversion_filters.push_back(LCLoan::REVOL_UTILIZATION);
-    conversion_filters.push_back(LCLoan::ADDR_STATE);
-    conversion_filters.push_back(LCLoan::TOTAL_ACC);
-    conversion_filters.push_back(LCLoan::DESC_WORD_COUNT);
-
-    LCBT lcbt(conversion_filters, args, -1);
+    LCBT lcbt(args, -1);
     lcbt.initialize();
 
-    std::vector<LCLoan::LoanType> backtest_filters = conversion_filters;
-
-    GATest ga_test(backtest_filters, lcbt, args);
+    GATest ga_test(lcbt, args);
     ga_test.run();
 
     return 0;

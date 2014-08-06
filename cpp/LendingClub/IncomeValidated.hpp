@@ -20,50 +20,39 @@ Created on July 28, 2014
 namespace lc
 {
 
-    class IncomeValidated : public Filter
+class IncomeValidated : public Filter<IncomeValidated>
+{
+public:
+    static const std::string sqlite_type;
+    static const std::string csv_name;
+    static const std::string name;
+
+    IncomeValidated(const Arguments& args, unsigned* current = nullptr) : Filter<IncomeValidated>(name, args)
     {
-    public:
-        static const std::string sqlite_type;
-        static const std::string csv_name;
-        static const std::string name;
+        static const std::vector<FilterValue>* options = create_range(0, 2, 1);
+        Filter::initialize(options, current);
+    }
 
-        IncomeValidated(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
-        {
-            static const std::vector<FilterValue>* options = create_range(0, 2, 1);
-            Filter::initialize(options, current);
-        }
+    inline FilterValue convert(const std::string& raw_data)
+    {
+        return (raw_data == "TRUE") ? 1 : 0;
+    }
 
-        virtual FilterValue convert(const std::string& raw_data)
-        {
-            if (raw_data == "TRUE") {
-                return 1;
-            }
-            else {
-                return 0;
-            }
-        }
+    const std::string get_string_value() const
+    {
+        return (get_value() ? "income validated" : "income unvalidated");
+    }
 
-        static bool static_apply(const Filter& self, const LCLoan& loan)
-        {
-            return (loan.income_validated != self.get_value());
-        }
+    static bool static_apply(const Filter& self, const LCLoan& loan)
+    {
+        return (loan.income_validated != self.get_value());
+    }
 
-        inline bool apply(const LCLoan& loan)
-        {
-            return (loan.income_validated != get_value());
-        }
-
-        std::string get_string_value() const
-        {
-            auto value = get_value();
-            if (value == 0) {
-                return "income validated";
-            }
-            else {
-                return "income unvalidated";
-            }
-        }
-    };
+    inline bool apply(const LCLoan& loan) const
+    {
+        return (loan.income_validated != get_value());
+    }
+};
 
 };
 

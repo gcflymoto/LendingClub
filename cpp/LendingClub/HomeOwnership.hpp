@@ -20,20 +20,20 @@ Created on July 28, 2014
 namespace lc
 {
 
-class HomeOwnership : public Filter
+class HomeOwnership : public Filter<HomeOwnership>
 {
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
     static const std::string name;
 
-    HomeOwnership(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    HomeOwnership(const Arguments& args, unsigned* current = nullptr) : Filter<HomeOwnership>(name, args)
     {
         static const std::vector<FilterValue>* options = create_range(0, 6, 1);
         Filter::initialize(options, current);
     }
 
-    virtual FilterValue convert(const std::string& raw_data)
+    inline FilterValue convert(const std::string& raw_data)
     {
         if (raw_data == "MORTGAGE") {
             return 0;
@@ -55,17 +55,7 @@ public:
         }
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
-    {
-        return (loan.home_ownership != self.get_value());
-    }   
-
-    inline bool apply(const LCLoan& loan)
-    {
-        return (loan.home_ownership != get_value());
-    }
-
-    std::string get_string_value() const
+    const std::string get_string_value() const
     {
         auto value = get_value();
         switch (value)
@@ -83,6 +73,16 @@ public:
         default:
             return "NULL";
         }
+    }
+
+    static bool static_apply(const Filter& self, const LCLoan& loan)
+    {
+        return (loan.home_ownership != self.get_value());
+    }   
+
+    inline bool apply(const LCLoan& loan) const
+    {
+        return (loan.home_ownership != get_value());
     }
 };
 

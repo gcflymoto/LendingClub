@@ -19,17 +19,16 @@ Created on July 27, 2014
 #include <cmath>
 #include <fstream>
 #include <iomanip>
-#include <boost/any.hpp>
 #include "LCBT.hpp"
+#include "Filters.hpp"
 
 namespace lc 
 {
 
 class GATest {
-    typedef std::vector<std::pair<LoanReturn, std::vector<Filter*>>> PopulationType;
+    typedef std::vector<std::pair<LoanReturn, Filters>> PopulationType;
 public:
     GATest(
-            const std::vector<LCLoan::LoanType>& backtest_filters,
             LCBT& lcbt,
             const Arguments& args
             ) :
@@ -44,22 +43,9 @@ public:
         _iterations = _args["iterations"].as<unsigned>();
 
         for (unsigned i = 0; i < population_size; ++i) {
-            std::vector<Filter*> filters(backtest_filters.size());
-            std::vector<Filter*> mate_filters(backtest_filters.size());
-            // Create each of the filters and use its conversion utility for normalizing the data
-            unsigned j = 0;
-            for (auto& filter_type : backtest_filters) {
-                std::vector<Filter*>::iterator filter_it = filters.begin() + j;
-                construct_filter(filter_type, args, filter_it);
-                (*filter_it)->set_current(randint(0, (*filter_it)->get_count() - 1));
-
-                std::vector<Filter*>::iterator mate_filter_it = mate_filters.begin() + j;
-                construct_filter(filter_type, args, mate_filter_it);
-
-                ++j;
-            }
-            _population.push_back(std::make_pair(LoanReturn(), filters));
-            _mate_population.push_back(std::make_pair(LoanReturn(), mate_filters));
+            bool randomize = true;
+            _population.push_back(std::make_pair(LoanReturn(), Filters(args, randomize)));
+            _mate_population.push_back(std::make_pair(LoanReturn(), Filters(args, randomize)));
         }
 
         assert(population_size > 0);
@@ -67,8 +53,9 @@ public:
         _csv_file.open(args["csvresults"].as<std::string>().c_str());
 
         std::vector<std::string> csv_field_names; 
-        for (auto& lc_filter : _population[0].second) {
-            _csv_file << lc_filter->get_name() << ',';
+        auto& lc_filters = _population[0].second;
+        for (size_t i = 0, size = lc_filters.size(); i < size; ++i) {
+            _csv_file << lc_filters.get_name(i) << ',';
         }
 
         _csv_file << "expected_apy,num_loans,num_defaulted,pct_defaulted,avg_default_loss,net_apy\n";
@@ -105,7 +92,7 @@ public:
     {
         net_apy_cmp(unsigned config_fitness_sort_num_loans) : config_fitness_sort_num_loans(config_fitness_sort_num_loans) {}
 
-        inline bool operator() (const std::pair<LoanReturn, std::vector<Filter*>>& a, const std::pair<LoanReturn, std::vector<Filter*>>& b)
+        inline bool operator() (const std::pair<LoanReturn, Filters>& a, const std::pair<LoanReturn, Filters>& b)
         {
             unsigned a_fit = 0;
             if (a.first.num_loans >= config_fitness_sort_num_loans) {
@@ -134,9 +121,11 @@ public:
         auto best_results = _population[0].first;
 
         std::string filters = "";
-        for (auto& lc_filter : _population[0].second) {
-            auto filter_name = lc_filter->get_name();
-            auto filter_val_str = lc_filter->get_string_value();
+        
+        auto& lc_filters = _population[0].second;
+        for (size_t i = 0, size = lc_filters.size(); i < size; ++i) {
+            auto filter_name = lc_filters.get_name(i);
+            auto filter_val_str = lc_filters.get_string_value(i);
             _csv_file << filter_val_str << ',';
             filters += filter_name + '=' + filter_val_str + ',';
         }
@@ -154,12 +143,9 @@ public:
     {
         unsigned i = 0;
         for (auto& lc_pair : from_population) {
-            unsigned j = 0;
-            for (auto& lc_filter : lc_pair.second) {
-                to_population[i].second[j]->set_current(lc_filter->get_current());
-                ++j;
+            for (size_t j = 0, size = lc_pair.second.size(); j < size; ++j) {
+                to_population[i].second.set_current(j, lc_pair.second.get_current(j));
             }
-
             ++i;
         }
     }
@@ -174,18 +160,17 @@ public:
 
         for (size_t i = num_elite; i < _population.size(); ++i) {
 
-            auto& filters = _mate_population[i].second;
+            auto& lc_filters = _mate_population[i].second;
 
-            for (size_t j = 0; j < filters.size(); ++j) {
+            for (size_t j = 0, size = lc_filters.size(); j < size; ++j) {
                 // Mate with 20 % of population
                 auto partner = randint(0, mate_size);
 
-                filters[j]->set_current(_population[partner].second[j]->get_current());
+                lc_filters.set_current(j, _population[partner].second.get_current(j));
 
                 // Mutate! Once in a blue moon
                 if (!randint(0, mutation_possibility)) {
-                    auto& lc_filter = filters[j];
-                    lc_filter->set_current(randint(0, lc_filter->get_count() - 1));
+                    lc_filters.set_current(j, randint(0, lc_filters.get_count(j) - 1));
                 }
             }
         }
@@ -195,7 +180,6 @@ public:
 
     LCBT&                                                       _lcbt;
     const Arguments&						                    _args;
-    std::vector<Filter*>					                    _filters;
     PopulationType                                              _population;
     PopulationType                                              _mate_population;
     unsigned                                                    _iteration;

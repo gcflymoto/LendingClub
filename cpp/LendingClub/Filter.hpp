@@ -42,6 +42,7 @@ namespace lc
 typedef unsigned long long FilterValue;
 typedef boost::program_options::variables_map Arguments;
 
+template <class Derived>
 class Filter
 {
 public:
@@ -53,8 +54,7 @@ public:
     {
     }
 
-    //virtual bool apply(const LCLoan& loan) = 0;
-    virtual ~Filter() = 0;
+    //virtual ~Filter() = 0;
 
     void initialize(const std::vector<FilterValue>* options, unsigned* current)
     {
@@ -67,12 +67,21 @@ public:
         }
     }
 
-    virtual bool apply(const LCLoan& loan) = 0;
-
-    virtual FilterValue convert(const std::string& raw_data)
+    /*
+    inline bool apply(const LCLoan& loan)
     {
-        return (raw_data.empty()) ? 0 : boost::numeric_cast<FilterValue>(boost::lexical_cast<double>(raw_data.c_str()));
+        return static_cast<Derived *>(this)->apply(loan);
     }
+
+    inline FilterValue convert(const std::string& raw_data)
+    {
+        return static_cast<Derived *>(this)->convert(raw_data);
+    }
+    inline std::string get_string_value() const
+    {
+        return static_cast<Derived *>(this)->get_string_value();
+    }
+    */
 
     inline const FilterValue& get_value() const
     {
@@ -84,19 +93,14 @@ public:
         return _current;
     }
    
-    inline void set_current(const unsigned current)
+    inline unsigned set_current(const unsigned current)
     {
         assert(current < _options->size());
         _current = current;
+        return _current;
     }
 
-    std::string get_string_value() const
-    {
-        const FilterValue& val = get_value();
-        return boost::lexical_cast<std::string>(val);
-    }
-
-    size_t get_count()
+    size_t get_count() const
     {
         return _options->size();
     }
@@ -156,14 +160,14 @@ public:
         return nullptr;
     }
 
-    std::string get_name()
+    const std::string get_name() const
     {
         return _name;
     }	
     
-    std::string get_details()
+    const std::string get_details() const
     {
-        return get_name() + "=" + get_string_value();
+        return get_name() + "=" + static_cast<const Derived *>(this)->get_string_value();
     }
 
 protected:
@@ -172,8 +176,6 @@ protected:
     const std::string& _name;
     unsigned _current;
 };
-
-inline Filter::~Filter() {}  // defined even though it's pure virtual; it's faster this way; trust me
 
 };
 

@@ -39,70 +39,392 @@ Created on July 27, 2014
 
 namespace lc {
 
-    void construct_filter(const LCLoan::LoanType filter_type,
-                          const Arguments& args,
-                          std::vector<Filter*>::iterator& it,
-                          unsigned* current = nullptr)
+class Filters {
+public:
+    Filters(const Arguments& args, const bool randomize = false) :
+        acc_open_past_24mths(args),
+        funded_amnt(args),
+        annual_inc(args),
+        grade(args),
+        dti(args),
+        delinq_2yrs(args),
+        earliest_cr_line(args),
+        emp_length(args),
+        home_ownership(args),
+        is_inc_v(args),
+        inq_last_6mths(args),
+        purpose(args),
+        mths_since_last_delinq(args),
+        pub_rec(args),
+        revol_util(args),
+        addr_state(args),
+        total_acc(args),
+        desc(args)
     {
-        switch (filter_type) {
-        case LCLoan::ACC_OPEN_PAST_24MTHS:
-            (*it) = new AccountsOpenPast24Months(args, current);
-            break;
-        case LCLoan::FUNDED_AMNT:
-            (*it) = new AmountRequested(args, current);
-            break;
-        case LCLoan::ANNUAL_INCOME:
-            (*it) = new AnnualIncome(args, current);
-            break;
-        case LCLoan::GRADE:
-            (*it) = new CreditGrade(args, current);
-            break;
-        case LCLoan::DEBT_TO_INCOME_RATIO:
-            (*it) = new DebtToIncomeRatio(args, current);
-            break;
-        case LCLoan::DELINQ_2YRS:
-            (*it) = new Delinquencies(args, current);
-            break;
-        case LCLoan::EARLIEST_CREDIT_LINE:
-            (*it) = new EarliestCreditLine(args, current);
-            break;
-        case LCLoan::EMP_LENGTH:
-            (*it) = new EmploymentLength(args, current);
-            break;
-        case LCLoan::HOME_OWNERSHIP:
-            (*it) = new HomeOwnership(args, current);
-            break;
-        case LCLoan::INCOME_VALIDATED:
-            (*it) = new IncomeValidated(args, current);
-            break;
-        case LCLoan::INQ_LAST_6MTHS:
-            (*it) = new InqueriesLast6Months(args, current);
-            break;
-        case LCLoan::PURPOSE:
-            (*it) = new LoanPurpose(args, current);
-            break;
-        case LCLoan::MTHS_SINCE_LAST_DELINQ:
-            (*it) = new MonthsSinceLastDelinquency(args, current);
-            break;
-        case LCLoan::PUB_REC:
-            (*it) = new PublicRecordsOnFile(args, current);
-            break;
-        case LCLoan::REVOL_UTILIZATION:
-            (*it) = new RevolvingLineUtilization(args, current);
-            break;
-        case LCLoan::ADDR_STATE:
-            (*it) = new State(args, current);
-            break;
-        case LCLoan::TOTAL_ACC:
-            (*it) = new TotalCreditLines(args, current);
-            break;
-        case LCLoan::DESC_WORD_COUNT:
-            (*it) = new WordsInDescription(args, current);
-            break;
-        default:
-            assert(filter_type < LCLoan::SIZE);
-        };
+        if (randomize) {
+            acc_open_past_24mths.set_current(randint(0, acc_open_past_24mths.get_count() - 1));
+            funded_amnt.set_current(randint(0, funded_amnt.get_count() - 1));
+            annual_inc.set_current(randint(0, annual_inc.get_count() - 1));
+            grade.set_current(randint(0, grade.get_count() - 1));
+            dti.set_current(randint(0, dti.get_count() - 1));
+            delinq_2yrs.set_current(randint(0, delinq_2yrs.get_count() - 1));
+            earliest_cr_line.set_current(randint(0, earliest_cr_line.get_count() - 1));
+            emp_length.set_current(randint(0, emp_length.get_count() - 1));
+            home_ownership.set_current(randint(0, home_ownership.get_count() - 1));
+            is_inc_v.set_current(randint(0, is_inc_v.get_count() - 1));
+            inq_last_6mths.set_current(randint(0, inq_last_6mths.get_count() - 1));
+            purpose.set_current(randint(0, purpose.get_count() - 1));
+            mths_since_last_delinq.set_current(randint(0, mths_since_last_delinq.get_count() - 1));
+            pub_rec.set_current(randint(0, pub_rec.get_count() - 1));
+            revol_util.set_current(randint(0, revol_util.get_count() - 1));
+            addr_state.set_current(randint(0, addr_state.get_count() - 1));
+            total_acc.set_current(randint(0, total_acc.get_count() - 1));
+            desc.set_current(randint(0, desc.get_count() - 1));
+        }        
     }
+    Filters& operator = (const Filters& a) {
+        // Only defined to make the compiler happy. Never should be used.
+        assert(0);
+        return (*this);
+    }
+
+    bool apply(const LCLoan& loan) const
+    {
+        if (!acc_open_past_24mths.apply(loan))
+            return false;
+        if (!funded_amnt.apply(loan))
+            return false;
+        if (!annual_inc.apply(loan))
+            return false;
+        if (!grade.apply(loan))
+            return false;
+        if (!dti.apply(loan))
+            return false;
+        if (!delinq_2yrs.apply(loan))
+            return false;
+        if (!earliest_cr_line.apply(loan))
+            return false;
+        if (!emp_length.apply(loan))
+            return false;
+        if (!home_ownership.apply(loan))
+            return false;
+        if (!is_inc_v.apply(loan))
+            return false;
+        if (!inq_last_6mths.apply(loan))
+            return false;
+        if (!purpose.apply(loan))
+            return false;
+        if (!mths_since_last_delinq.apply(loan))
+            return false;
+        if (!pub_rec.apply(loan))
+            return false;
+        if (!revol_util.apply(loan))
+            return false;
+        if (!addr_state.apply(loan))
+            return false;
+        if (!total_acc.apply(loan))
+            return false;
+        if (!desc.apply(loan))
+            return false;
+        return true;
+    }
+
+    const std::string get_string_value(size_t i) const
+    {
+        switch (static_cast<LCLoan::LoanType>(i)) {
+        case LCLoan::ACC_OPEN_PAST_24MTHS:
+            return acc_open_past_24mths.get_string_value();
+        case LCLoan::FUNDED_AMNT:
+            return funded_amnt.get_string_value();
+        case LCLoan::ANNUAL_INCOME:
+            return annual_inc.get_string_value();
+        case LCLoan::GRADE:
+            return grade.get_string_value();
+        case LCLoan::DEBT_TO_INCOME_RATIO:
+            return dti.get_string_value();
+        case LCLoan::DELINQ_2YRS:
+            return delinq_2yrs.get_string_value();
+        case LCLoan::EARLIEST_CREDIT_LINE:
+            return earliest_cr_line.get_string_value();
+        case LCLoan::EMP_LENGTH:
+            return emp_length.get_string_value();
+        case LCLoan::HOME_OWNERSHIP:
+            return home_ownership.get_string_value();
+        case LCLoan::INCOME_VALIDATED:
+            return is_inc_v.get_string_value();
+        case LCLoan::INQ_LAST_6MTHS:
+            return inq_last_6mths.get_string_value();
+        case LCLoan::PURPOSE:
+            return purpose.get_string_value();
+        case LCLoan::MTHS_SINCE_LAST_DELINQ:
+            return mths_since_last_delinq.get_string_value();
+        case LCLoan::PUB_REC:
+            return pub_rec.get_string_value();
+        case LCLoan::REVOL_UTILIZATION:
+            return revol_util.get_string_value();
+        case LCLoan::ADDR_STATE:
+            return addr_state.get_string_value();
+        case LCLoan::TOTAL_ACC:
+            return total_acc.get_string_value();
+        case LCLoan::DESC_WORD_COUNT:
+            return desc.get_string_value();
+        default:
+            assert(0);
+        };
+        return std::string();
+    }
+
+    const std::string get_name(size_t i) const
+    {
+        switch (static_cast<LCLoan::LoanType>(i)) {
+        case LCLoan::ACC_OPEN_PAST_24MTHS:
+            return acc_open_past_24mths.get_name();
+        case LCLoan::FUNDED_AMNT:
+            return funded_amnt.get_name();
+        case LCLoan::ANNUAL_INCOME:
+            return annual_inc.get_name();
+        case LCLoan::GRADE:
+            return grade.get_name();
+        case LCLoan::DEBT_TO_INCOME_RATIO:
+            return dti.get_name();
+        case LCLoan::DELINQ_2YRS:
+            return delinq_2yrs.get_name();
+        case LCLoan::EARLIEST_CREDIT_LINE:
+            return earliest_cr_line.get_name();
+        case LCLoan::EMP_LENGTH:
+            return emp_length.get_name();
+        case LCLoan::HOME_OWNERSHIP:
+            return home_ownership.get_name();
+        case LCLoan::INCOME_VALIDATED:
+            return is_inc_v.get_name();
+        case LCLoan::INQ_LAST_6MTHS:
+            return inq_last_6mths.get_name();
+        case LCLoan::PURPOSE:
+            return purpose.get_name();
+        case LCLoan::MTHS_SINCE_LAST_DELINQ:
+            return mths_since_last_delinq.get_name();
+        case LCLoan::PUB_REC:
+            return pub_rec.get_name();
+        case LCLoan::REVOL_UTILIZATION:
+            return revol_util.get_name();
+        case LCLoan::ADDR_STATE:
+            return addr_state.get_name();
+        case LCLoan::TOTAL_ACC:
+            return total_acc.get_name();
+        case LCLoan::DESC_WORD_COUNT:
+            return desc.get_name();
+        default:
+            assert(0);
+        };
+        return std::string();
+    }
+
+    const std::string get_details(size_t i) const
+    {
+        switch (static_cast<LCLoan::LoanType>(i)) {
+        case LCLoan::ACC_OPEN_PAST_24MTHS:
+            return acc_open_past_24mths.get_details();
+        case LCLoan::FUNDED_AMNT:
+            return funded_amnt.get_details();
+        case LCLoan::ANNUAL_INCOME:
+            return annual_inc.get_details();
+        case LCLoan::GRADE:
+            return grade.get_details();
+        case LCLoan::DEBT_TO_INCOME_RATIO:
+            return dti.get_details();
+        case LCLoan::DELINQ_2YRS:
+            return delinq_2yrs.get_details();
+        case LCLoan::EARLIEST_CREDIT_LINE:
+            return earliest_cr_line.get_details();
+        case LCLoan::EMP_LENGTH:
+            return emp_length.get_details();
+        case LCLoan::HOME_OWNERSHIP:
+            return home_ownership.get_details();
+        case LCLoan::INCOME_VALIDATED:
+            return is_inc_v.get_details();
+        case LCLoan::INQ_LAST_6MTHS:
+            return inq_last_6mths.get_details();
+        case LCLoan::PURPOSE:
+            return purpose.get_details();
+        case LCLoan::MTHS_SINCE_LAST_DELINQ:
+            return mths_since_last_delinq.get_details();
+        case LCLoan::PUB_REC:
+            return pub_rec.get_details();
+        case LCLoan::REVOL_UTILIZATION:
+            return revol_util.get_details();
+        case LCLoan::ADDR_STATE:
+            return addr_state.get_details();
+        case LCLoan::TOTAL_ACC:
+            return total_acc.get_details();
+        case LCLoan::DESC_WORD_COUNT:
+            return desc.get_details();
+        default:
+            assert(0);
+        };
+        return std::string();
+    }
+
+    unsigned get_current(size_t i) const
+    {
+        switch (static_cast<LCLoan::LoanType>(i)) {
+        case LCLoan::ACC_OPEN_PAST_24MTHS:
+            return acc_open_past_24mths.get_current();
+        case LCLoan::FUNDED_AMNT:
+            return funded_amnt.get_current();
+        case LCLoan::ANNUAL_INCOME:
+            return annual_inc.get_current();
+        case LCLoan::GRADE:
+            return grade.get_current();
+        case LCLoan::DEBT_TO_INCOME_RATIO:
+            return dti.get_current();
+        case LCLoan::DELINQ_2YRS:
+            return delinq_2yrs.get_current();
+        case LCLoan::EARLIEST_CREDIT_LINE:
+            return earliest_cr_line.get_current();
+        case LCLoan::EMP_LENGTH:
+            return emp_length.get_current();
+        case LCLoan::HOME_OWNERSHIP:
+            return home_ownership.get_current();
+        case LCLoan::INCOME_VALIDATED:
+            return is_inc_v.get_current();
+        case LCLoan::INQ_LAST_6MTHS:
+            return inq_last_6mths.get_current();
+        case LCLoan::PURPOSE:
+            return purpose.get_current();
+        case LCLoan::MTHS_SINCE_LAST_DELINQ:
+            return mths_since_last_delinq.get_current();
+        case LCLoan::PUB_REC:
+            return pub_rec.get_current();
+        case LCLoan::REVOL_UTILIZATION:
+            return revol_util.get_current();
+        case LCLoan::ADDR_STATE:
+            return addr_state.get_current();
+        case LCLoan::TOTAL_ACC:
+            return total_acc.get_current();
+        case LCLoan::DESC_WORD_COUNT:
+            return desc.get_current();
+        default:
+            assert(0);
+        };
+        return 0;
+    }
+
+    unsigned set_current(size_t i, unsigned current)
+    {
+        switch (static_cast<LCLoan::LoanType>(i)) {
+
+        case LCLoan::ACC_OPEN_PAST_24MTHS:
+            return acc_open_past_24mths.set_current(current);
+        case LCLoan::FUNDED_AMNT:
+            return funded_amnt.set_current(current);
+        case LCLoan::ANNUAL_INCOME:
+            return annual_inc.set_current(current);
+        case LCLoan::GRADE:
+            return grade.set_current(current);
+        case LCLoan::DEBT_TO_INCOME_RATIO:
+            return dti.set_current(current);
+        case LCLoan::DELINQ_2YRS:
+            return delinq_2yrs.set_current(current);
+        case LCLoan::EARLIEST_CREDIT_LINE:
+            return earliest_cr_line.set_current(current);
+        case LCLoan::EMP_LENGTH:
+            return emp_length.set_current(current);
+        case LCLoan::HOME_OWNERSHIP:
+            return home_ownership.set_current(current);
+        case LCLoan::INCOME_VALIDATED:
+            return is_inc_v.set_current(current);
+        case LCLoan::INQ_LAST_6MTHS:
+            return inq_last_6mths.set_current(current);
+        case LCLoan::PURPOSE:
+            return purpose.set_current(current);
+        case LCLoan::MTHS_SINCE_LAST_DELINQ:
+            return mths_since_last_delinq.set_current(current);
+        case LCLoan::PUB_REC:
+            return pub_rec.set_current(current);
+        case LCLoan::REVOL_UTILIZATION:
+            return revol_util.set_current(current);
+        case LCLoan::ADDR_STATE:
+            return addr_state.set_current(current);
+        case LCLoan::TOTAL_ACC:
+            return total_acc.set_current(current);
+        case LCLoan::DESC_WORD_COUNT:
+            return desc.set_current(current);
+        default:
+            assert(0);
+        };
+        return 0;
+    }
+
+    unsigned get_count(size_t i)
+    {
+        switch (static_cast<LCLoan::LoanType>(i)) {
+
+        case LCLoan::ACC_OPEN_PAST_24MTHS:
+            return acc_open_past_24mths.get_count();
+        case LCLoan::FUNDED_AMNT:
+            return funded_amnt.get_count();
+        case LCLoan::ANNUAL_INCOME:
+            return annual_inc.get_count();
+        case LCLoan::GRADE:
+            return grade.get_count();
+        case LCLoan::DEBT_TO_INCOME_RATIO:
+            return dti.get_count();
+        case LCLoan::DELINQ_2YRS:
+            return delinq_2yrs.get_count();
+        case LCLoan::EARLIEST_CREDIT_LINE:
+            return earliest_cr_line.get_count();
+        case LCLoan::EMP_LENGTH:
+            return emp_length.get_count();
+        case LCLoan::HOME_OWNERSHIP:
+            return home_ownership.get_count();
+        case LCLoan::INCOME_VALIDATED:
+            return is_inc_v.get_count();
+        case LCLoan::INQ_LAST_6MTHS:
+            return inq_last_6mths.get_count();
+        case LCLoan::PURPOSE:
+            return purpose.get_count();
+        case LCLoan::MTHS_SINCE_LAST_DELINQ:
+            return mths_since_last_delinq.get_count();
+        case LCLoan::PUB_REC:
+            return pub_rec.get_count();
+        case LCLoan::REVOL_UTILIZATION:
+            return revol_util.get_count();
+        case LCLoan::ADDR_STATE:
+            return addr_state.get_count();
+        case LCLoan::TOTAL_ACC:
+            return total_acc.get_count();
+        case LCLoan::DESC_WORD_COUNT:
+            return desc.get_count();
+        default:
+            assert(0);
+        };
+        return 0;
+    }
+
+    size_t size() const 
+    { 
+        return static_cast<size_t>(LCLoan::LOAN_STATUS);
+    }
+
+    AccountsOpenPast24Months acc_open_past_24mths;
+    AmountRequested funded_amnt;
+    AnnualIncome annual_inc;
+    CreditGrade grade;
+    DebtToIncomeRatio dti;
+    Delinquencies delinq_2yrs;
+    EarliestCreditLine earliest_cr_line;
+    EmploymentLength emp_length;
+    HomeOwnership home_ownership;
+    IncomeValidated is_inc_v;
+    InqueriesLast6Months inq_last_6mths;
+    LoanPurpose purpose;
+    MonthsSinceLastDelinquency mths_since_last_delinq;
+    PublicRecordsOnFile pub_rec;
+    RevolvingLineUtilization revol_util;
+    State addr_state;
+    TotalCreditLines total_acc;
+    WordsInDescription desc;
+};
 
 };
 

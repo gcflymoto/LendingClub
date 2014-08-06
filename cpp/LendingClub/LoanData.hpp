@@ -32,11 +32,10 @@ namespace lc {
 class LCLoanData {
 public:
     LCLoanData(
-        const std::vector<LCLoan::LoanType>& conversion_filters,
         const Arguments& args,
         const int worker_idx) : 
             _args(args),
-            _filters(conversion_filters.size()),
+            _filters(args),
             _worker_idx(worker_idx),
             _row(0),
             _skipped_loans(0),
@@ -44,11 +43,13 @@ public:
             _removed_expired_loans(0)
     {
         // Create each of the filters and use its conversion utility for normalizing the data
+        /*
         for (auto& filter_type : conversion_filters) {
             _filters.resize(filter_type+1);
             std::vector<Filter*>::iterator filter_it = _filters.begin() + filter_type;
             construct_filter(filter_type, args, filter_it);
         }
+        */
 
         _now = boost::posix_time::second_clock::local_time(); //use the clock 
         boost::gregorian::date_duration delta(args["young_loans_in_days"].as<unsigned>() + 30);
@@ -227,24 +228,24 @@ public:
                   
     virtual bool normalize_loan_data(const RawLoan& raw_loan, LCLoan& loan)
     {
-        loan.acc_open_past_24mths = _filters[LCLoan::ACC_OPEN_PAST_24MTHS]->convert(raw_loan.acc_open_past_24mths);
-        loan.funded_amnt = _filters[LCLoan::FUNDED_AMNT]->convert(raw_loan.funded_amnt);
-        loan.annual_income = _filters[LCLoan::ANNUAL_INCOME]->convert(raw_loan.annual_inc);
-        loan.grade = _filters[LCLoan::GRADE]->convert(raw_loan.grade);
-        loan.debt_to_income_ratio = _filters[LCLoan::DEBT_TO_INCOME_RATIO]->convert(raw_loan.dti);
-        loan.delinq_2yrs = _filters[LCLoan::DELINQ_2YRS]->convert(raw_loan.delinq_2yrs);
-        loan.earliest_credit_line = _filters[LCLoan::EARLIEST_CREDIT_LINE]->convert(raw_loan.earliest_cr_line);
-        loan.emp_length = _filters[LCLoan::EMP_LENGTH]->convert(raw_loan.emp_length);
-        loan.home_ownership = _filters[LCLoan::HOME_OWNERSHIP]->convert(raw_loan.home_ownership);
-        loan.income_validated = _filters[LCLoan::INCOME_VALIDATED]->convert(raw_loan.is_inc_v);
-        loan.inq_last_6mths = _filters[LCLoan::INQ_LAST_6MTHS]->convert(raw_loan.inq_last_6mths);
-        loan.purpose = _filters[LCLoan::PURPOSE]->convert(raw_loan.purpose);
-        loan.mths_since_last_delinq = _filters[LCLoan::MTHS_SINCE_LAST_DELINQ]->convert(raw_loan.mths_since_last_delinq);
-        loan.pub_rec = _filters[LCLoan::PUB_REC]->convert(raw_loan.pub_rec);
-        loan.revol_utilization = _filters[LCLoan::REVOL_UTILIZATION]->convert(raw_loan.revol_util);
-        loan.addr_state = _filters[LCLoan::ADDR_STATE]->convert(raw_loan.addr_state);
-        loan.total_acc = _filters[LCLoan::TOTAL_ACC]->convert(raw_loan.total_acc);
-        loan.desc_word_count = _filters[LCLoan::DESC_WORD_COUNT]->convert(raw_loan.desc);
+        loan.acc_open_past_24mths = _filters.acc_open_past_24mths.convert(raw_loan.acc_open_past_24mths);
+        loan.funded_amnt = _filters.funded_amnt.convert(raw_loan.funded_amnt);
+        loan.annual_income = _filters.annual_inc.convert(raw_loan.annual_inc);
+        loan.grade = _filters.grade.convert(raw_loan.grade);
+        loan.debt_to_income_ratio = _filters.dti.convert(raw_loan.dti);
+        loan.delinq_2yrs = _filters.delinq_2yrs.convert(raw_loan.delinq_2yrs);
+        loan.earliest_credit_line = _filters.earliest_cr_line.convert(raw_loan.earliest_cr_line);
+        loan.emp_length = _filters.emp_length.convert(raw_loan.emp_length);
+        loan.home_ownership = _filters.home_ownership.convert(raw_loan.home_ownership);
+        loan.income_validated = _filters.is_inc_v.convert(raw_loan.is_inc_v);
+        loan.inq_last_6mths = _filters.inq_last_6mths.convert(raw_loan.inq_last_6mths);
+        loan.purpose = _filters.purpose.convert(raw_loan.purpose);
+        loan.mths_since_last_delinq = _filters.mths_since_last_delinq.convert(raw_loan.mths_since_last_delinq);
+        loan.pub_rec = _filters.pub_rec.convert(raw_loan.pub_rec);
+        loan.revol_utilization = _filters.revol_util.convert(raw_loan.revol_util);
+        loan.addr_state = _filters.addr_state.convert(raw_loan.addr_state);
+        loan.total_acc = _filters.total_acc.convert(raw_loan.total_acc);
+        loan.desc_word_count = _filters.desc.convert(raw_loan.desc);
 
         loan.loan_status = raw_loan.loan_status;
         loan.issue_datetime = boost::gregorian::date(boost::gregorian::from_simple_string(raw_loan.issue_d));		
@@ -366,8 +367,7 @@ public:
 
 private:
         const Arguments&						_args;
-        //std::vector<boost::any>				_filters;
-        std::vector<Filter*>					_filters;
+        Filters					                _filters;
         const int								_worker_idx;
         unsigned								_row;
         unsigned								_skipped_loans;

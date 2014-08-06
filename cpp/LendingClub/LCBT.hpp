@@ -24,14 +24,13 @@ namespace lc {
 class LCBT {
 public:
     LCBT(
-        const std::vector<LCLoan::LoanType>& conversion_filters,
-        const Arguments& args,
-        const int worker_idx) :
+         const Arguments& args,
+         const int worker_idx) :
             _args(args),
-            _filters(conversion_filters.size()),
+            _filters(args),
             _test_filters(nullptr),
             _worker_idx(worker_idx),
-            _loan_data(conversion_filters, args, worker_idx)
+            _loan_data(args, worker_idx)
     {
     }
         
@@ -40,7 +39,7 @@ public:
         _loan_data.initialize();
     }
 
-    LoanReturn test(std::vector<Filter*>& test_filters) 
+    LoanReturn test(Filters& test_filters) 
     {
         _invested.clear();
         _test_filters = &test_filters;
@@ -55,12 +54,15 @@ public:
 
     bool consider(const LCLoan& loan) 
     {
+        return _test_filters->apply(loan);
+        /*
         for (auto& lc_filter : *_test_filters) {
             if (!lc_filter->apply(loan)) {
                 return false;
             }
-        }
+        }        
         return true;
+        */
     }
 
     void debug_msg(const std::string& msg) 
@@ -76,9 +78,8 @@ public:
 
 private:
     const Arguments&						_args;
-    //std::vector<boost::any>			    _filters;
-    std::vector<Filter*>					_filters;
-    std::vector<Filter*>*                   _test_filters;
+    Filters                                 _filters;
+    Filters*                                _test_filters;
     const int								_worker_idx;
     LCLoanData								_loan_data;
     std::vector<unsigned>                   _invested;
