@@ -29,4 +29,4 @@ class AmountRequested(Filter.Filter):
         Filter.Filter.__init__(self, args, options, current)
 
     def apply(self, loan, funded_amnt=LoanEnum.LOAN_ENUM_funded_amnt):
-        return loan[funded_amnt] <= self.get_value()
+        return loan[funded_amnt] > self.get_value()

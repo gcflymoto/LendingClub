@@ -26,7 +26,7 @@ namespace lc
 {
 
 class GATest {
-    typedef std::vector<std::pair<LoanReturn, Filters>> PopulationType;
+    typedef std::vector<std::pair<LoanReturn, Filters>*> PopulationType;
 public:
     GATest(
             LCBT& lcbt,
@@ -44,8 +44,8 @@ public:
 
         for (unsigned i = 0; i < population_size; ++i) {
             bool randomize = true;
-            _population.push_back(std::make_pair(LoanReturn(), Filters(args, randomize)));
-            _mate_population.push_back(std::make_pair(LoanReturn(), Filters(args, randomize)));
+            _population.push_back(new std::pair<LoanReturn, Filters>(LoanReturn(), Filters(args, randomize)));
+            _mate_population.push_back(new std::pair<LoanReturn, Filters>(LoanReturn(), Filters(args, randomize)));
         }
 
         assert(population_size > 0);
@@ -53,7 +53,7 @@ public:
         _csv_file.open(args["csvresults"].as<std::string>().c_str());
 
         std::vector<std::string> csv_field_names; 
-        auto& lc_filters = _population[0].second;
+        auto& lc_filters = _population[0]->second;
         for (size_t i = lc_filters.begin(), end = lc_filters.end(); i != end; ++i) {
             _csv_file << lc_filters.get_name(i) << ',';
         }
@@ -84,7 +84,7 @@ public:
     void calculate_fitness()
     {
         for (auto& citizen : _population) {
-            citizen.first = _lcbt.test(citizen.second);
+            citizen->first = _lcbt.test(citizen->second);
         }
     }
 
@@ -92,16 +92,16 @@ public:
     {
         net_apy_cmp(unsigned config_fitness_sort_num_loans) : config_fitness_sort_num_loans(config_fitness_sort_num_loans) {}
 
-        inline bool operator() (const std::pair<LoanReturn, Filters>& a, const std::pair<LoanReturn, Filters>& b)
+        inline bool operator() (const std::pair<LoanReturn, Filters>* a, const std::pair<LoanReturn, Filters>* b)
         {
             unsigned a_fit = 0;
-            if (a.first.num_loans >= config_fitness_sort_num_loans) {
-                a_fit = boost::numeric_cast<unsigned>(a.first.net_apy * 1000);
+            if (a->first.num_loans >= config_fitness_sort_num_loans) {
+                a_fit = boost::numeric_cast<unsigned>(a->first.net_apy * 1000);
             }
 
             unsigned b_fit = 0;
-            if (b.first.num_loans >= config_fitness_sort_num_loans) {
-                b_fit = boost::numeric_cast<unsigned>(b.first.net_apy * 1000);
+            if (b->first.num_loans >= config_fitness_sort_num_loans) {
+                b_fit = boost::numeric_cast<unsigned>(b->first.net_apy * 1000);
             }
 
             return b_fit < a_fit;
@@ -118,11 +118,11 @@ public:
 
     void print_best() 
     {
-        auto best_results = _population[0].first;
+        auto& best_results = _population[0]->first;
 
         std::string filters = "";
         
-        auto& lc_filters = _population[0].second;
+        auto& lc_filters = _population[0]->second;
         for (size_t i = lc_filters.begin(), end = lc_filters.end(); i != end; ++i) {
             auto filter_name = lc_filters.get_name(i);
             auto filter_val_str = lc_filters.get_string_value(i);
@@ -143,8 +143,8 @@ public:
     {
         unsigned i = 0;
         for (auto& lc_pair : from_population) {
-            for (size_t j = lc_pair.second.begin(), end = lc_pair.second.end(); j != end; ++j) {
-                to_population[i].second.set_current(j, lc_pair.second.get_current(j));
+            for (size_t j = lc_pair->second.begin(), end = lc_pair->second.end(); j != end; ++j) {
+                to_population[i]->second.set_current(j, lc_pair->second.get_current(j));
             }
             ++i;
         }
@@ -160,13 +160,13 @@ public:
 
         for (size_t i = num_elite; i < _population.size(); ++i) {
 
-            auto& lc_filters = _mate_population[i].second;
+            auto& lc_filters = _mate_population[i]->second;
 
             for (size_t j = lc_filters.begin(), end = lc_filters.end(); j != end; ++j) {
                 // Mate with 20 % of population
                 auto partner = randint(0, mate_size);
 
-                lc_filters.set_current(j, _population[partner].second.get_current(j));
+                lc_filters.set_current(j, _population[partner]->second.get_current(j));
 
                 // Mutate! Once in a blue moon
                 if (!randint(0, mutation_possibility)) {

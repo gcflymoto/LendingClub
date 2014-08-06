@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="refactored to use CRTP and inline all functions">
+    <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/AmountRequested.py" afterPath="$PROJECT_DIR$/py/AmountRequested.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="LendingClub.iws" />
@@ -95,11 +96,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="lcbt.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="lcbt.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/py/lcbt.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.43312103" vertical-offset="7259" max-vertical-offset="12614">
+            <state vertical-scroll-proportion="0.0" vertical-offset="7259" max-vertical-offset="12614">
               <caret line="457" column="0" selection-start-line="457" selection-start-column="0" selection-end-line="457" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AmountRequested.cpp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cpp/LendingClub/AmountRequested.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="425">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AmountRequested.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/py/AmountRequested.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.5765864" vertical-offset="0" max-vertical-offset="914">
+              <caret line="31" column="34" selection-start-line="31" selection-start-column="34" selection-end-line="31" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -153,7 +174,6 @@
         <option value="$PROJECT_DIR$/cpp/LendingClub/Filters.hpp" />
         <option value="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.hpp" />
         <option value="$PROJECT_DIR$/cpp/LendingClub/Filter.hpp" />
-        <option value="$PROJECT_DIR$/py/AmountRequested.py" />
         <option value="$PROJECT_DIR$/py/WordsInDescription.py" />
         <option value="$PROJECT_DIR$/py/CreditGrade.py" />
         <option value="$PROJECT_DIR$/py/lcbt.py" />
@@ -175,6 +195,7 @@
         <option value="$PROJECT_DIR$/py/State.py" />
         <option value="$PROJECT_DIR$/py/LoanData.py" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/py/AmountRequested.py" />
       </list>
     </option>
   </component>
@@ -274,24 +295,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="cpp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LendingClub" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LendingClub" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cpp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LendingClub" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -573,7 +576,11 @@
       <created>1407340591958</created>
       <updated>1407340591958</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="bug fixes">
+      <created>1407342413011</created>
+      <updated>1407342413011</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -658,7 +665,8 @@
     <MESSAGE value="add missing files" />
     <MESSAGE value="add new filters" />
     <MESSAGE value="refactored to use CRTP and inline all functions" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored to use CRTP and inline all functions" />
+    <MESSAGE value="bug fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="bug fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -666,13 +674,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/py/CreditGrade.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1411" max-vertical-offset="1547">
-          <caret line="83" column="26" selection-start-line="83" selection-start-column="26" selection-end-line="83" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/py/AmountRequested.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="391" max-vertical-offset="493">
@@ -897,13 +898,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/py/AmountRequested.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="25" max-vertical-offset="646">
-          <caret line="31" column="50" selection-start-line="31" selection-start-column="50" selection-end-line="31" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/py/AccountsOpenPast24Months.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
@@ -1030,8 +1024,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/py/lcbt.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43312103" vertical-offset="7259" max-vertical-offset="12614">
+        <state vertical-scroll-proportion="0.0" vertical-offset="7259" max-vertical-offset="12614">
           <caret line="457" column="0" selection-start-line="457" selection-start-column="0" selection-end-line="457" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/LendingClub/AmountRequested.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="942">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/py/AmountRequested.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5765864" vertical-offset="0" max-vertical-offset="914">
+          <caret line="31" column="34" selection-start-line="31" selection-start-column="34" selection-end-line="31" selection-end-column="34" />
           <folding />
         </state>
       </provider>
