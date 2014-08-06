@@ -29,7 +29,7 @@ public:
 
     AnnualIncome(const Arguments& args, unsigned* current = nullptr) : Filter<AnnualIncome>(name, args)
     {
-        static const std::vector<FilterValue>* options = create_range(0, 300000, 25000);
+        static const std::vector<FilterValue>* options = create_range(25000, 110000, 10000);
         Filter::initialize(options, current);
     }
 

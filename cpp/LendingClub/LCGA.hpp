@@ -120,7 +120,7 @@ public:
             auto filter_name = lc_filters.get_name(i);
             auto filter_val_str = lc_filters.get_string_value(i);
             _csv_file << filter_val_str << ',';
-            filters += filter_name + '=' + filter_val_str + ',';
+            filters += filter_name + " is " + filter_val_str + ',';
         }
 
         std::cout << "Best Filter: " << filters << '\n';

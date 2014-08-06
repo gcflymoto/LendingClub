@@ -221,7 +221,7 @@ class GATest:
             filter_name = lc_filter.get_name()
             filter_val_str = str(lc_filter)
             best_results[filter_name] = filter_val_str
-            filters += filter_name + '=' + filter_val_str + ','
+            filters += filter_name + ' is ' + filter_val_str + ','
 
         # Replace the last ',' with a newline
         sys.stdout.write('Best Filter: ' + filters[:-1] + '\n')
