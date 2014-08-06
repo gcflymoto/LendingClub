@@ -94,17 +94,10 @@ public:
 
         inline bool operator() (const std::pair<LoanReturn, Filters>* a, const std::pair<LoanReturn, Filters>* b)
         {
-            unsigned a_fit = 0;
-            if (a->first.num_loans >= config_fitness_sort_num_loans) {
-                a_fit = boost::numeric_cast<unsigned>(a->first.net_apy * 1000);
-            }
+            double a_fit = (a->first.num_loans >= config_fitness_sort_num_loans) ? a->first.net_apy : 0.0;
+            double b_fit = (b->first.num_loans >= config_fitness_sort_num_loans) ? b->first.net_apy : 0.0;
 
-            unsigned b_fit = 0;
-            if (b->first.num_loans >= config_fitness_sort_num_loans) {
-                b_fit = boost::numeric_cast<unsigned>(b->first.net_apy * 1000);
-            }
-
-            return b_fit < a_fit;
+            return a_fit < b_fit;
         }
 
         unsigned config_fitness_sort_num_loans;
