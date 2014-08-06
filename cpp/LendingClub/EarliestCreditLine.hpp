@@ -51,16 +51,15 @@ public:
             return 0;
         }
         else {
-            std::stringstream ss(raw_data);
-            boost::posix_time::ptime raw_time;
-            ss >> raw_time;
+            boost::posix_time::ptime raw_time(boost::gregorian::from_simple_string(raw_data));
             return (now - raw_time).total_seconds();
         }
     }
 
     const std::string get_string_value() const
     {
-        return boost::lexical_cast<std::string>(boost::numeric_cast<double>(get_value()) / multiplier);
+        boost::posix_time::time_duration td = boost::posix_time::seconds(static_cast<long>(get_value()));       
+        return boost::posix_time::to_simple_string(now - td);
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)
