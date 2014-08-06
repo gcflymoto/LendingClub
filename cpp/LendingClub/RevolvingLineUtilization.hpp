@@ -48,7 +48,7 @@ public:
 
     const std::string get_string_value() const
     {
-        return boost::lexical_cast<std::string>(boost::numeric_cast<double>(get_value()) / 100);
+        return "<=" + boost::lexical_cast<std::string>(boost::numeric_cast<double>(get_value()) / 100);
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)

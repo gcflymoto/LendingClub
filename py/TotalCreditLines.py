@@ -28,5 +28,8 @@ class TotalCreditLines(Filter.Filter):
 
         Filter.Filter.__init__(self, args, options, current)
 
+    def __str__(self):
+        return '<=' + str(self.get_value())
+
     def apply(self, loan, total_acc=LoanEnum.LOAN_ENUM_total_acc):
         return loan[total_acc] <= self.get_value()

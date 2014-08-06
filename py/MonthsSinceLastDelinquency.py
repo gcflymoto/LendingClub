@@ -31,5 +31,8 @@ class MonthsSinceLastDelinquency(Filter.Filter):
     def convert(self, raw_data):
         return int(raw_data) if raw_data else 61
 
+    def __str__(self):
+        return '>=' + str(self.get_value())
+
     def apply(self, loan, mths_since_last_delinq=LoanEnum.LOAN_ENUM_mths_since_last_delinq):
         return loan[mths_since_last_delinq] >= self.get_value()

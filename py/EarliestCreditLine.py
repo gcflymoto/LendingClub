@@ -28,7 +28,7 @@ class EarliestCreditLine(Filter.Filter):
         """
         Constructor
         """
-        options = [1 * self.multiplier, 5 * self.multiplier, 10 * self.multiplier, 20 * self.multiplier, 30 * self.multiplier, 40 * self.multiplier]
+        options = [1 * self.multiplier, 5 * self.multiplier, 10 * self.multiplier]
 
         Filter.Filter.__init__(self, args, options, current)
 
@@ -40,7 +40,7 @@ class EarliestCreditLine(Filter.Filter):
             return 0
 
     def __str__(self):
-        return str(float(self.get_value()) / self.multiplier)
+        return '>=' + str(float(self.get_value()) / self.multiplier)
 
     def apply(self, loan, earliest_credit_line=LoanEnum.LOAN_ENUM_earliest_credit_line):
         return loan[earliest_credit_line] >= self.get_value()

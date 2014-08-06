@@ -33,5 +33,8 @@ class WordsInDescription(Filter.Filter):
     def convert(self, raw_data, word_re=re.compile(r"[\w']+|[.,!?;%#\$&\-\(\)_]").findall):
         return len([word_maybe for word_maybe in word_re(raw_data) if word_maybe not in ".,!?;%#\$&-()_"])
 
+    def __str__(self):
+        return '>=' + str(self.get_value())
+
     def apply(self, loan, desc_word_count=LoanEnum.LOAN_ENUM_desc_word_count):
         return loan[desc_word_count] >= self.get_value()

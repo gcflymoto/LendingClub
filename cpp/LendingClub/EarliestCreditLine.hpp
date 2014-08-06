@@ -38,9 +38,9 @@ public:
             options.push_back(1 * multiplier);
             options.push_back(5 * multiplier);
             options.push_back(10 * multiplier);
-            options.push_back(20 * multiplier);
-            options.push_back(30 * multiplier);
-            options.push_back(40 * multiplier);
+            //options.push_back(20 * multiplier);
+            //options.push_back(30 * multiplier);
+            //options.push_back(40 * multiplier);
         }
         Filter::initialize(&options, current);
     }

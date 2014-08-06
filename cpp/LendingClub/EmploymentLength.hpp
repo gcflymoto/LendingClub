@@ -59,6 +59,9 @@ public:
         else if (value == 11) {
             return "10+ years";
         }
+        else if (value == 10) {
+            return "10 years";
+        }
         else if (value == 1) {
             return "1 year";
         }

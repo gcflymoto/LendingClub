@@ -40,7 +40,7 @@ public:
 
     const std::string get_string_value() const
     {
-        return boost::lexical_cast<std::string>(get_value());
+        return "<=" + boost::lexical_cast<std::string>(get_value());
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)

@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="redo population class for faster sorting">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.cpp" />
+    <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/AccountsOpenPast24Months.py" afterPath="$PROJECT_DIR$/py/AccountsOpenPast24Months.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/AmountRequested.py" afterPath="$PROJECT_DIR$/py/AmountRequested.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AnnualIncome.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AnnualIncome.hpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/AnnualIncome.py" afterPath="$PROJECT_DIR$/py/AnnualIncome.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/DebtToIncomeRatio.py" afterPath="$PROJECT_DIR$/py/DebtToIncomeRatio.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/EarliestCreditLine.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/EarliestCreditLine.hpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/EarliestCreditLine.py" afterPath="$PROJECT_DIR$/py/EarliestCreditLine.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/EmploymentLength.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/EmploymentLength.hpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/InquiriesLast6Months.py" afterPath="$PROJECT_DIR$/py/InquiriesLast6Months.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/MonthsSinceLastDelinquency.py" afterPath="$PROJECT_DIR$/py/MonthsSinceLastDelinquency.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/RevolvingLineUtilization.py" afterPath="$PROJECT_DIR$/py/RevolvingLineUtilization.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/TotalCreditLines.py" afterPath="$PROJECT_DIR$/py/TotalCreditLines.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/WordsInDescription.py" afterPath="$PROJECT_DIR$/py/WordsInDescription.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="LendingClub.iws" />
@@ -31,7 +42,7 @@
         <entry file="file://$PROJECT_DIR$/py/RevolvingLineUtilization.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="748">
-              <caret line="31" column="51" selection-start-line="31" selection-start-column="50" selection-end-line="31" selection-end-column="51" />
+              <caret line="34" column="22" selection-start-line="34" selection-start-column="22" selection-end-line="34" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -40,8 +51,8 @@
       <file leaf-file-name="TotalCreditLines.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/py/TotalCreditLines.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
-              <caret line="23" column="11" selection-start-line="23" selection-start-column="11" selection-end-line="23" selection-end-column="11" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="697">
+              <caret line="31" column="43" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -60,28 +71,28 @@
       <file leaf-file-name="WordsInDescription.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/py/WordsInDescription.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="697">
-              <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="748">
+              <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AmountRequested.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="AmountRequested.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/py/AmountRequested.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
-              <caret line="31" column="35" selection-start-line="31" selection-start-column="35" selection-end-line="31" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.595186" vertical-offset="0" max-vertical-offset="914">
+              <caret line="32" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DebtToIncomeRatio.py" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/py/DebtToIncomeRatio.py">
+      <file leaf-file-name="HomeOwnership.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/py/HomeOwnership.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6509847" vertical-offset="0" max-vertical-offset="914">
-              <caret line="35" column="49" selection-start-line="35" selection-start-column="49" selection-end-line="35" selection-end-column="49" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="782">
+              <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -97,11 +108,21 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="InquiriesLast6Months.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/py/InquiriesLast6Months.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="697">
+              <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="MonthsSinceLastDelinquency.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/py/MonthsSinceLastDelinquency.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="697">
-              <caret line="34" column="63" selection-start-line="34" selection-start-column="63" selection-end-line="34" selection-end-column="63" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="748">
+              <caret line="34" column="18" selection-start-line="34" selection-start-column="18" selection-end-line="34" selection-end-column="18" />
               <folding />
             </state>
           </provider>
@@ -112,16 +133,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="663">
               <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="InquiriesLast6Months.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/py/InquiriesLast6Months.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
-              <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -175,28 +186,28 @@
         <option value="$PROJECT_DIR$/cpp/LendingClub/Filters.hpp" />
         <option value="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.hpp" />
         <option value="$PROJECT_DIR$/cpp/LendingClub/Filter.hpp" />
-        <option value="$PROJECT_DIR$/py/WordsInDescription.py" />
         <option value="$PROJECT_DIR$/py/CreditGrade.py" />
         <option value="$PROJECT_DIR$/py/lcbt.py" />
         <option value="$PROJECT_DIR$/py/Delinquencies.py" />
-        <option value="$PROJECT_DIR$/py/EarliestCreditLine.py" />
         <option value="$PROJECT_DIR$/py/EmploymentLength.py" />
         <option value="$PROJECT_DIR$/py/HomeOwnership.py" />
         <option value="$PROJECT_DIR$/py/IncomeValidated.py" />
-        <option value="$PROJECT_DIR$/py/AccountsOpenPast24Months.py" />
-        <option value="$PROJECT_DIR$/py/InquiriesLast6Months.py" />
-        <option value="$PROJECT_DIR$/py/MonthsSinceLastDelinquency.py" />
         <option value="$PROJECT_DIR$/py/PublicRecordsOnFile.py" />
-        <option value="$PROJECT_DIR$/py/TotalCreditLines.py" />
-        <option value="$PROJECT_DIR$/py/Filter.py" />
-        <option value="$PROJECT_DIR$/py/AnnualIncome.py" />
-        <option value="$PROJECT_DIR$/py/RevolvingLineUtilization.py" />
         <option value="$PROJECT_DIR$/py/LoanPurpose.py" />
         <option value="$PROJECT_DIR$/py/State.py" />
         <option value="$PROJECT_DIR$/py/LoanData.py" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/py/DebtToIncomeRatio.py" />
+        <option value="$PROJECT_DIR$/py/Filter.py" />
+        <option value="$PROJECT_DIR$/py/AnnualIncome.py" />
         <option value="$PROJECT_DIR$/py/AmountRequested.py" />
+        <option value="$PROJECT_DIR$/py/AccountsOpenPast24Months.py" />
+        <option value="$PROJECT_DIR$/py/DebtToIncomeRatio.py" />
+        <option value="$PROJECT_DIR$/py/EarliestCreditLine.py" />
+        <option value="$PROJECT_DIR$/py/InquiriesLast6Months.py" />
+        <option value="$PROJECT_DIR$/py/MonthsSinceLastDelinquency.py" />
+        <option value="$PROJECT_DIR$/py/RevolvingLineUtilization.py" />
+        <option value="$PROJECT_DIR$/py/TotalCreditLines.py" />
+        <option value="$PROJECT_DIR$/py/WordsInDescription.py" />
       </list>
     </option>
   </component>
@@ -589,7 +600,11 @@
       <created>1407352326312</created>
       <updated>1407352326312</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="bug fixes">
+      <created>1407353967509</created>
+      <updated>1407353967509</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -674,9 +689,9 @@
     <MESSAGE value="add missing files" />
     <MESSAGE value="add new filters" />
     <MESSAGE value="refactored to use CRTP and inline all functions" />
-    <MESSAGE value="bug fixes" />
     <MESSAGE value="redo population class for faster sorting" />
-    <option name="LAST_COMMIT_MESSAGE" value="redo population class for faster sorting" />
+    <MESSAGE value="bug fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="bug fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -873,24 +888,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/py/AccountsOpenPast24Months.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
-          <caret line="29" column="0" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/py/StubFilter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="578">
           <caret line="24" column="19" selection-start-line="24" selection-start-column="19" selection-end-line="24" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/py/AnnualIncome.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="697">
-          <caret line="31" column="35" selection-start-line="31" selection-start-column="35" selection-end-line="31" selection-end-column="35" />
         </state>
       </provider>
     </entry>
@@ -910,33 +911,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/py/Filter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1972">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43424037" vertical-offset="93" max-vertical-offset="1003">
-          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/py/lcbt.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="7259" max-vertical-offset="12614">
-          <caret line="457" column="0" selection-start-line="457" selection-start-column="0" selection-end-line="457" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cpp/LendingClub/AmountRequested.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="942">
@@ -945,10 +919,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/py/Delinquencies.py">
+    <entry file="file://$PROJECT_DIR$/py/lcbt.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="140" max-vertical-offset="1054">
-          <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="12614">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.875" vertical-offset="93" max-vertical-offset="1003">
+          <caret line="9" column="22" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/py/Filter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1972">
+          <caret line="36" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/py/AccountsOpenPast24Months.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="697">
+          <caret line="31" column="43" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/py/AnnualIncome.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="748">
+          <caret line="35" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -961,10 +970,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/py/DebtToIncomeRatio.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="765">
+          <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/py/Delinquencies.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="140" max-vertical-offset="1054">
+          <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/py/EarliestCreditLine.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="850">
-          <caret line="35" column="20" selection-start-line="35" selection-start-column="20" selection-end-line="35" selection-end-column="20" />
+          <caret line="42" column="22" selection-start-line="42" selection-start-column="22" selection-end-line="42" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -985,6 +1010,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/py/IncomeValidated.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="867">
+          <caret line="39" column="36" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/py/InquiriesLast6Months.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
@@ -993,10 +1026,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/py/IncomeValidated.py">
+    <entry file="file://$PROJECT_DIR$/py/MonthsSinceLastDelinquency.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="867">
-          <caret line="39" column="36" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="36" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="748">
+          <caret line="34" column="18" selection-start-line="34" selection-start-column="18" selection-end-line="34" selection-end-column="18" />
           <folding />
         </state>
       </provider>
@@ -1009,18 +1042,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/py/MonthsSinceLastDelinquency.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="697">
-          <caret line="34" column="63" selection-start-line="34" selection-start-column="63" selection-end-line="34" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/py/RevolvingLineUtilization.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="748">
-          <caret line="31" column="51" selection-start-line="31" selection-start-column="50" selection-end-line="31" selection-end-column="51" />
+          <caret line="34" column="22" selection-start-line="34" selection-start-column="22" selection-end-line="34" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -1035,32 +1060,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/py/TotalCreditLines.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
-          <caret line="23" column="11" selection-start-line="23" selection-start-column="11" selection-end-line="23" selection-end-column="11" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="697">
+          <caret line="31" column="43" selection-start-line="31" selection-start-column="43" selection-end-line="31" selection-end-column="43" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/py/WordsInDescription.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="697">
-          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="748">
+          <caret line="34" column="0" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/py/AmountRequested.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
-          <caret line="31" column="35" selection-start-line="31" selection-start-column="35" selection-end-line="31" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/py/DebtToIncomeRatio.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6509847" vertical-offset="0" max-vertical-offset="914">
-          <caret line="35" column="49" selection-start-line="35" selection-start-column="49" selection-end-line="35" selection-end-column="49" />
+        <state vertical-scroll-proportion="0.595186" vertical-offset="0" max-vertical-offset="914">
+          <caret line="32" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
           <folding />
         </state>
       </provider>

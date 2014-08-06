@@ -28,5 +28,8 @@ class InquiriesLast6Months(Filter.Filter):
 
         Filter.Filter.__init__(self, args, options, current)
 
+    def __str__(self):
+        return '<=' + str(self.get_value())
+
     def apply(self, loan, inq_last_6mths=LoanEnum.LOAN_ENUM_inq_last_6mths):
         return loan[inq_last_6mths] <= self.get_value()
