@@ -88,45 +88,122 @@ public:
         return (*this);
     }
 
-    bool apply(const LCLoan& loan) const
+    bool apply(LCLoan& loan)
     {
-        if (!acc_open_past_24mths.apply(loan))
+        if (!acc_open_past_24mths.apply(loan)) {
+            acc_open_past_24mths.inc_filtered();
             return false;
-        if (!funded_amnt.apply(loan))
+        }
+            
+        if (!funded_amnt.apply(loan)) {
+            funded_amnt.inc_filtered();
             return false;
-        if (!annual_inc.apply(loan))
+        }
+            
+        if (!annual_inc.apply(loan)) {
+            annual_inc.inc_filtered();
             return false;
-        if (!grade.apply(loan))
+        }
+            
+        if (!grade.apply(loan)) {
+            grade.inc_filtered();
             return false;
-        if (!dti.apply(loan))
+        }
+            
+        if (!dti.apply(loan)) {
+            dti.inc_filtered();
             return false;
-        if (!delinq_2yrs.apply(loan))
+        }
+            
+        if (!delinq_2yrs.apply(loan)) {
+            delinq_2yrs.inc_filtered();
             return false;
-        if (!earliest_cr_line.apply(loan))
+        }
+            
+        if (!earliest_cr_line.apply(loan)) {
+            earliest_cr_line.inc_filtered();
             return false;
-        if (!emp_length.apply(loan))
+        }
+            
+        if (!emp_length.apply(loan)) {
+            emp_length.inc_filtered();
             return false;
-        if (!home_ownership.apply(loan))
+        }
+
+            
+        if (!home_ownership.apply(loan)) {
+            home_ownership.inc_filtered();
             return false;
-        if (!is_inc_v.apply(loan))
+        }
+            
+        if (!is_inc_v.apply(loan)) {
+            is_inc_v.inc_filtered();
             return false;
-        if (!inq_last_6mths.apply(loan))
+        }
+            
+        if (!inq_last_6mths.apply(loan)) {
+            inq_last_6mths.inc_filtered();
             return false;
-        if (!purpose.apply(loan))
+        }
+            
+        if (!purpose.apply(loan)) {
+            purpose.inc_filtered();
             return false;
-        if (!mths_since_last_delinq.apply(loan))
+        }
+            
+        if (!mths_since_last_delinq.apply(loan)) {
+            mths_since_last_delinq.inc_filtered();
             return false;
-        if (!pub_rec.apply(loan))
+        }
+            
+        if (!pub_rec.apply(loan)) {
+            pub_rec.inc_filtered();
             return false;
-        if (!revol_util.apply(loan))
+        }
+            
+        if (!revol_util.apply(loan)) {
+            revol_util.inc_filtered();
             return false;
-        if (!addr_state.apply(loan))
+        }
+            
+        if (!addr_state.apply(loan)) {
+            addr_state.inc_filtered();
             return false;
-        if (!total_acc.apply(loan))
+        }
+            
+        if (!total_acc.apply(loan)) {
+            total_acc.inc_filtered();
             return false;
-        if (!desc.apply(loan))
+        }
+            
+        if (!desc.apply(loan)) {
+            desc.inc_filtered();
             return false;
+        }
+            
         return true;
+    }
+
+    void clear_counters()
+    {
+        acc_open_past_24mths.reset_filtered();
+        funded_amnt.reset_filtered();
+        annual_inc.reset_filtered();
+        grade.reset_filtered();
+        dti.reset_filtered();
+        delinq_2yrs.reset_filtered();
+        earliest_cr_line.reset_filtered();
+        emp_length.reset_filtered();
+        home_ownership.reset_filtered();
+        is_inc_v.reset_filtered();
+        inq_last_6mths.reset_filtered();
+        purpose.reset_filtered();
+        mths_since_last_delinq.reset_filtered();
+        pub_rec.reset_filtered();
+        revol_util.reset_filtered();
+        addr_state.reset_filtered();
+        total_acc.reset_filtered();
+        desc.reset_filtered();
     }
 
     const std::string get_string_value(size_t i) const

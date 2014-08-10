@@ -41,6 +41,9 @@ public:
         else if (raw_data == "< 1 year") {
             return 1;
         }
+        else if (raw_data == "10 years") {
+            return 10;
+        }
         else if (raw_data == "10+ years") {
             return 11;
         }
@@ -54,30 +57,33 @@ public:
     {
         auto value = static_cast<unsigned>(get_value());
         if (value == 0) {
-            return "< 1 year";
+            return "n/a";
         }
-        else if (value == 11) {
-            return "10+ years";
+        if (value == 1) {
+            return "<1 year";
+        }
+        else if (value == 2) {
+            return ">1 year";
         }
         else if (value == 10) {
-            return "10 years";
+            return ">10 years";
         }
-        else if (value == 1) {
-            return "1 year";
+        else if (value == 11) {
+            return ">10 years";
         }
         else {
-            return std::string('0' + value, 1) + " years";
+            return '>' + std::string('0' + value, 1) + " years";
         }
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)
     {
-        return (loan.emp_length <= self.get_value());
+        return (loan.emp_length > self.get_value());
     }
 
     inline bool apply(const LCLoan& loan) const
     {
-        return (loan.emp_length <= get_value());
+        return (loan.emp_length > get_value());
     }
 };
 

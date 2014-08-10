@@ -24,7 +24,7 @@ class AccountsOpenLast24Months(Filter.Filter):
         """
         Constructor
         """
-        options = [i for i in range(0, 25,5)]
+        options = [i for i in range(0, 10, 2)]
 
         Filter.Filter.__init__(self, args, options, current)
 

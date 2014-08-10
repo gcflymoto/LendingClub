@@ -77,12 +77,12 @@ public:
 
     static bool static_apply(const Filter& self, const LCLoan& loan)
     {
-        return (loan.home_ownership != self.get_value());
+        return (loan.home_ownership == self.get_value());
     }   
 
     inline bool apply(const LCLoan& loan) const
     {
-        return (loan.home_ownership != get_value());
+        return (loan.home_ownership == get_value());
     }
 };
 

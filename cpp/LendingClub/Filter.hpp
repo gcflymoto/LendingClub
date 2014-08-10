@@ -50,7 +50,8 @@ public:
         _args(args),
         _options(NULL),
         _name(name),
-        _current(0)
+        _current(0),
+        _filtered(0)
     {
     }
 
@@ -66,22 +67,6 @@ public:
             assert(_current < options->size());
         }
     }
-
-    /*
-    inline bool apply(const LCLoan& loan)
-    {
-        return static_cast<Derived *>(this)->apply(loan);
-    }
-
-    inline FilterValue convert(const std::string& raw_data)
-    {
-        return static_cast<Derived *>(this)->convert(raw_data);
-    }
-    inline std::string get_string_value() const
-    {
-        return static_cast<Derived *>(this)->get_string_value();
-    }
-    */
 
     inline const FilterValue& get_value() const
     {
@@ -103,6 +88,21 @@ public:
     size_t get_count() const
     {
         return _options->size();
+    }
+
+    void inc_filtered()
+    {
+        ++_filtered;
+    }
+
+    unsigned filtered_count()
+    {
+        return _filtered;
+    }
+
+    void reset_filtered()
+    {
+        _filtered = 0;
     }
 
     bool next()
@@ -175,6 +175,7 @@ protected:
     const std::vector<FilterValue>* _options;
     const std::string& _name;
     unsigned _current;
+    unsigned _filtered;
 };
 
 };

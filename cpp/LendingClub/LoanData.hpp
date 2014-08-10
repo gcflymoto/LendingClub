@@ -121,6 +121,11 @@ public:
         if (boost::filesystem::exists(stats_file_path)) {
             info_msg("Initializing from " + stats_file_path.string());
             
+            double sum_acc_open_past_24mths = 0;
+            double sum_funded_amnt = 0;
+            double sum_annual_inc = 0;
+
+
             io::CSVReader<28, io::trim_chars<' ', '\t'>, io::double_quote_escape<',', '\"'>, io::throw_on_overflow, io::single_line_comment<'N','L','\0'> > in(stats_file_path.string().c_str());
             in.read_header(io::ignore_extra_column, "acc_open_past_24mths", "funded_amnt", "annual_inc", "grade", 
                 "dti", "delinq_2yrs", "earliest_cr_line", "emp_length", "home_ownership", "is_inc_v", "inq_last_6mths",
@@ -172,10 +177,17 @@ public:
                     // Assign the rowid of the loan to be the current last index in the loans list
                     loan.rowid = _loans.size();
                     _loans.push_back(loan);
+
+                    sum_acc_open_past_24mths += loan.acc_open_past_24mths;
+                    sum_funded_amnt += loan.funded_amnt;
+                    sum_annual_inc += loan.annual_income;
                 }
             }
 
             info_msg("Initializing from " + stats_file_path.string() + " done.");
+            info_msg("Avg acc_open_past_24mths=" + boost::lexical_cast<std::string>(sum_acc_open_past_24mths / _loans.size()));
+            info_msg("Avg funded_amnt=" + boost::lexical_cast<std::string>(sum_funded_amnt / _loans.size()));
+            info_msg("Avg annual_income=" + boost::lexical_cast<std::string>(sum_annual_inc / _loans.size()));
 
         } else {
             info_msg("error: " + stats_file_path.string() + " not found");
@@ -355,7 +367,7 @@ public:
         return loan_return;
     }
 
-    const std::vector<LCLoan>& get_loans() const 
+    std::vector<LCLoan>& get_loans()
     {
         return _loans;
     }

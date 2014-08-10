@@ -35,7 +35,7 @@ public:
             options.push_back(1 << 0 | 1 << 1 | 1 << 2 | 1 << 3);           // 0 - 3
             options.push_back(1 << 0 | 1 << 1 | 1 << 2 | 1 << 3 | 1 << 4);  // 0 - 4
             options.push_back(1 << 4);                                      // 4
-            options.push_back(1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 11); // 5 - 11
+            //options.push_back(1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 11); // 5 - 11
         }
 
         Filter::initialize(&options, current);

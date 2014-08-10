@@ -78,6 +78,8 @@ public:
 
             print_best();
             mate();
+
+            clear_counters();
         }
     }
 
@@ -169,6 +171,13 @@ public:
         }
 
         copy_population(_mate_population, _population);
+    }
+
+    void clear_counters()
+    {
+        for (auto& citizen : _population) {
+            citizen->second.clear_counters();
+        }
     }
 
     LCBT&                                                       _lcbt;
