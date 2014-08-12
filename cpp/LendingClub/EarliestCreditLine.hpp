@@ -45,18 +45,21 @@ namespace lc
             Filter::initialize(&options, current);
         }
 
-        virtual FilterValue convert(const std::string& raw_data)
+        virtual FilterValue convert(const std::string& raw_data) const
         {
             if (raw_data.empty()) {
                 return 0;
             }
             else {
-                std::stringstream ss(raw_data);
-                boost::posix_time::ptime raw_time;
-                ss >> raw_time;
-                boost::posix_time::time_duration diff = now - raw_time;
-                return diff.total_seconds();
+                boost::posix_time::ptime raw_time(boost::gregorian::from_simple_string(raw_data));
+                return (now - raw_time).total_seconds();
             }
+        }
+
+        const std::string get_string_value() const
+        {
+            boost::posix_time::time_duration td = boost::posix_time::seconds(static_cast<long>(get_value()));
+            return ">=" + boost::posix_time::to_simple_string(now - td);
         }
 
         static bool static_apply(const Filter& self, const LCLoan& loan)
@@ -64,16 +67,10 @@ namespace lc
             return (loan.earliest_credit_line >= self.get_value());
         }
 
-        inline bool apply(const LCLoan& loan)
+        inline bool apply(const LCLoan& loan) const
         {
             return (loan.earliest_credit_line >= get_value());
         }
-
-        std::string get_string_value() const
-        {
-            return boost::lexical_cast<std::string>(boost::numeric_cast<double>(get_value()) / multiplier);
-        }
-
     };
 
 };

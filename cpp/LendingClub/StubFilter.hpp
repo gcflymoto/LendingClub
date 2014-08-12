@@ -19,22 +19,27 @@ Created on July 28, 2014
 
 namespace lc {
 
-    class StubFilter : public Filter {
-    public:
-        //static const std::string sqlite_type;
-        //static const std::string name;
+class StubFilter : public Filter 
+{
+public:
+    //static const std::string sqlite_type;
+    //static const std::string name;
 
-        StubFilter(const Arguments& args, unsigned* current = nullptr) :
-            Filter("Stub", args) {
-        }
+    StubFilter(const Arguments& args, unsigned* current = nullptr) :
+        Filter("Stub", args) 
+    {
+    }
 
-        static bool static_apply(const Filter& self, const LCLoan& loan) {
-            return true;
-        }
-        inline bool apply(const LCLoan& loan) {
-            return true;
-        }
-    };
+    static bool static_apply(const Filter& self, const LCLoan& loan) 
+    {
+        return true;
+    }
+    inline bool apply(const LCLoan& loan)  const
+    {
+        return true;
+    }
+};
+
 };
 
 #endif // __LC_STUBFILTER_HPP__

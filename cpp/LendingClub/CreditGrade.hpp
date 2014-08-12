@@ -70,9 +70,14 @@ public:
         Filter::initialize(&options, current);
     }
 
-    virtual FilterValue convert(const std::string& raw_data)
+    virtual FilterValue convert(const std::string& raw_data) const
     {
         return _converation_table[raw_data];
+    }
+
+    virtual const std::string get_string_value() const
+    {
+        return _reverse_table[get_value()];
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)
@@ -80,14 +85,9 @@ public:
         return ((loan.grade & self.get_value()) > 0);
     }
 
-    inline bool apply(const LCLoan& loan)
+    inline bool apply(const LCLoan& loan) const
     {
         return ((loan.grade & get_value()) > 0);
-    }
-
-    std::string get_string_value() const
-    {
-        return _reverse_table[get_value()];
     }
 
 private:

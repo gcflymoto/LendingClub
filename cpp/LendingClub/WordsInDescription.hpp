@@ -35,7 +35,7 @@ namespace lc
             Filter::initialize(options, current);
         }
 
-        virtual FilterValue convert(const std::string& raw_data)
+        virtual FilterValue convert(const std::string& raw_data) const
         {
             std::string data = raw_data;
             std::unique(data.begin(), data.end(), BothAreSpaces<' '>);
@@ -43,12 +43,18 @@ namespace lc
             return std::count(data.begin(), data.end(), ' ');
         }
 
+        virtual const std::string get_string_value() const
+        {
+            const FilterValue& val = get_value();
+            return ">=" + boost::lexical_cast<std::string>(val);
+        }
+
         static bool static_apply(const Filter& self, const LCLoan& loan)
         {
             return (loan.desc_word_count >= self.get_value());
         }
 
-        inline bool apply(const LCLoan& loan)
+        inline bool apply(const LCLoan& loan) const
         {
             return (loan.desc_word_count >= get_value());
         }

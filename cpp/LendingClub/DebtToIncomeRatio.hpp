@@ -33,34 +33,33 @@ public:
         Filter::initialize(options, current);
     }
 
-    virtual FilterValue convert(const std::string& raw_data)
+    virtual FilterValue convert(const std::string& raw_data) const
     {
         // Convert DTI 19.48 into normalized 1948
         std::string data;
         if (raw_data[raw_data.length() - 1] == '%') {
-            data = raw_data.substr(0, raw_data.length() - 1);            
+            data = raw_data.substr(0, raw_data.length() - 1);
         }
         else {
             data = raw_data;
         }
         return boost::numeric_cast<FilterValue>(strtod(data.c_str(), nullptr) * 100);
     }
+    virtual const std::string get_string_value() const
+    {
+        return "<=" + boost::lexical_cast<std::string>(boost::numeric_cast<double>(get_value()) / 100);
+    }
+
 
     static bool static_apply(const Filter& self, const LCLoan& loan)
     {
         return (loan.debt_to_income_ratio <= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan)
+    inline bool apply(const LCLoan& loan) const
     {
         return (loan.debt_to_income_ratio <= get_value());
     }
-
-    std::string get_string_value() const
-    {
-        return boost::lexical_cast<std::string>(boost::numeric_cast<double>(get_value()) / 100);
-    }
-
 };
 
 };

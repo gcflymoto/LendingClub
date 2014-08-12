@@ -33,7 +33,7 @@ public:
         Filter::initialize(options, current);
     }
 
-    virtual FilterValue convert(const std::string& raw_data)
+    virtual FilterValue convert(const std::string& raw_data) const
     {
         // Convert DTI 19.48 into normalized 1948
         std::string data;
@@ -46,21 +46,20 @@ public:
         return boost::numeric_cast<unsigned>(strtod(data.c_str(), nullptr) * 100);
     }
 
+    virtual const std::string get_string_value() const
+    {
+        return "<=" + boost::lexical_cast<std::string>(boost::numeric_cast<double>(get_value()) / 100);
+    }
+
     static bool static_apply(const Filter& self, const LCLoan& loan)
     {
         return (loan.revol_utilization <= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan)
+    inline bool apply(const LCLoan& loan) const
     {
         return (loan.revol_utilization <= get_value());
     }
-
-    std::string get_string_value() const
-    {
-        return boost::lexical_cast<std::string>(boost::numeric_cast<double>(get_value()) / 100);
-    }
-
 };
 
 };

@@ -33,7 +33,7 @@ public:
         Filter::initialize(options, current);
     }
 
-    virtual FilterValue convert(const std::string& raw_data)
+    virtual FilterValue convert(const std::string& raw_data) const
     {
         if (raw_data == "MORTGAGE") {
             return 0;
@@ -55,17 +55,7 @@ public:
         }
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
-    {
-        return (loan.home_ownership != self.get_value());
-    }   
-
-    inline bool apply(const LCLoan& loan)
-    {
-        return (loan.home_ownership != get_value());
-    }
-
-    std::string get_string_value() const
+    virtual const std::string get_string_value() const
     {
         auto value = get_value();
         switch (value)
@@ -83,6 +73,16 @@ public:
         default:
             return "NULL";
         }
+    }
+
+    static bool static_apply(const Filter& self, const LCLoan& loan)
+    {
+        return (loan.home_ownership != self.get_value());
+    }   
+
+    inline bool apply(const LCLoan& loan) const
+    {
+        return (loan.home_ownership != get_value());
     }
 };
 

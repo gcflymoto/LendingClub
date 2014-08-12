@@ -53,7 +53,6 @@ public:
     {
     }
 
-    //virtual bool apply(const LCLoan& loan) = 0;
     virtual ~Filter() = 0;
 
     void initialize(const std::vector<FilterValue>* options, unsigned* current)
@@ -67,12 +66,8 @@ public:
         }
     }
 
-    virtual bool apply(const LCLoan& loan) = 0;
-
-    virtual FilterValue convert(const std::string& raw_data)
-    {
-        return (raw_data.empty()) ? 0 : boost::numeric_cast<FilterValue>(boost::lexical_cast<double>(raw_data.c_str()));
-    }
+    virtual bool apply(const LCLoan& loan) const = 0;
+    virtual FilterValue convert(const std::string& raw_data) const = 0;
 
     inline const FilterValue& get_value() const
     {
@@ -90,11 +85,7 @@ public:
         _current = current;
     }
 
-    std::string get_string_value() const
-    {
-        const FilterValue& val = get_value();
-        return boost::lexical_cast<std::string>(val);
-    }
+    virtual const std::string get_string_value() const = 0;
 
     size_t get_count()
     {
@@ -156,12 +147,12 @@ public:
         return nullptr;
     }
 
-    std::string get_name()
+    const std::string get_name() const
     {
         return _name;
     }	
     
-    std::string get_details()
+    const std::string get_details() const
     {
         return get_name() + "=" + get_string_value();
     }

@@ -33,7 +33,7 @@ public:
         Filter::initialize(options, current);
     }
 
-    virtual FilterValue convert(const std::string& raw_data)
+    virtual FilterValue convert(const std::string& raw_data) const
     {
         if (raw_data == "n/a") {
             return 0;
@@ -41,12 +41,37 @@ public:
         else if (raw_data == "< 1 year") {
             return 1;
         }
+        else if (raw_data == "10 years") {
+            return 10;
+        }
         else if (raw_data == "10+ years") {
             return 11;
         }
         else {
             unsigned result = (raw_data[0] - '0') + 1;
-            return result;            
+            return result;
+        }
+    }
+    virtual const std::string get_string_value() const
+    {
+        auto value = static_cast<unsigned>(get_value());
+        if (value == 0) {
+            return "n/a";
+        }
+        if (value == 1) {
+            return "<1 year";
+        }
+        else if (value == 2) {
+            return ">1 year";
+        }
+        else if (value == 10) {
+            return ">10 years";
+        }
+        else if (value == 11) {
+            return ">10 years";
+        }
+        else {
+            return '>' + std::string('0' + value, 1) + " years";
         }
     }
 
@@ -55,26 +80,9 @@ public:
         return (loan.emp_length <= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan)
+    virtual bool apply(const LCLoan& loan) const
     {
         return (loan.emp_length <= get_value());
-    }
-
-    std::string get_string_value() const
-    {
-        auto value = static_cast<unsigned>(get_value());
-        if (value == 0) {
-            return "< 1 year";
-        }
-        else if (value == 11) {
-            return "10+ years";
-        }
-        else if (value == 1) {
-            return "1 year";
-        } 
-        else {
-            return std::string('0' + value, 1) + " years";
-        }
     }
 };
 

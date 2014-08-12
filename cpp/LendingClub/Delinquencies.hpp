@@ -41,10 +41,25 @@
             Filter::initialize(&options, current);
         }
 
-        virtual FilterValue convert(const std::string& raw_data)
+        virtual FilterValue convert(const std::string& raw_data) const
         {
-            auto result = Filter::convert(raw_data);
+            auto result = (raw_data.empty()) ? 0 : boost::lexical_cast<FilterValue>(raw_data.c_str());
             return (result <= 11) ? (1 << result) : (1 << 11);
+        }
+
+        virtual const std::string get_string_value() const
+        {
+            auto value = get_value();
+            std::string delinq_list;
+            for (FilterValue i = 0; i < 12; ++i) {
+                if (((1ull << i) & value) > 0) {
+                    delinq_list += boost::lexical_cast<std::string>(i)+',';
+                }
+            }
+            if (delinq_list.empty()) {
+                return delinq_list;
+            }
+            return delinq_list.substr(0, delinq_list.length() - 1);
         }
 
         static bool static_apply(const Filter& self, const LCLoan& loan)
@@ -52,24 +67,9 @@
             return ((loan.delinq_2yrs & self.get_value()) > 0);
         }
 
-        inline bool apply(const LCLoan& loan)
+        inline bool apply(const LCLoan& loan) const
         {
             return ((loan.delinq_2yrs & get_value()) > 0);
-        }
-
-        std::string get_string_value() const
-        {
-            auto value = get_value();
-            std::string delinq_list;
-            for (FilterValue i = 0; i < 12; ++i) {
-                if (((1ull << i) & value) > 0) {
-                    delinq_list += boost::lexical_cast<std::string>(i) + ',';
-                }
-            }
-            if (delinq_list.empty()) {
-                return delinq_list;
-            }
-            return delinq_list.substr(0, delinq_list.length() - 1);                
         }
     };
 

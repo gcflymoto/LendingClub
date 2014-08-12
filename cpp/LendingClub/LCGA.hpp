@@ -107,16 +107,8 @@ public:
 
         inline bool operator() (const std::pair<LoanReturn, std::vector<Filter*>>& a, const std::pair<LoanReturn, std::vector<Filter*>>& b)
         {
-            unsigned a_fit = 0;
-            if (a.first.num_loans >= config_fitness_sort_num_loans) {
-                a_fit = boost::numeric_cast<unsigned>(a.first.net_apy * 1000);
-            }
-
-            unsigned b_fit = 0;
-            if (b.first.num_loans >= config_fitness_sort_num_loans) {
-                b_fit = boost::numeric_cast<unsigned>(b.first.net_apy * 1000);
-            }
-
+            double a_fit = (a.first.num_loans >= config_fitness_sort_num_loans) ? a.first.net_apy : 0.0;
+            double b_fit = (b.first.num_loans >= config_fitness_sort_num_loans) ? b.first.net_apy : 0.0;
             return b_fit < a_fit;
         }
 
@@ -131,14 +123,14 @@ public:
 
     void print_best() 
     {
-        auto best_results = _population[0].first;
+        auto& best_results = _population[0].first;
 
         std::string filters = "";
         for (auto& lc_filter : _population[0].second) {
             auto filter_name = lc_filter->get_name();
             auto filter_val_str = lc_filter->get_string_value();
             _csv_file << filter_val_str << ',';
-            filters += filter_name + '=' + filter_val_str + ',';
+            filters += filter_name + " is " + filter_val_str + ',';
         }
 
         std::cout << "Best Filter: " << filters << '\n';
@@ -174,17 +166,17 @@ public:
 
         for (size_t i = num_elite; i < _population.size(); ++i) {
 
-            auto& filters = _mate_population[i].second;
+            auto& lc_filters = _mate_population[i].second;
 
-            for (size_t j = 0; j < filters.size(); ++j) {
+            for (size_t j = 0; j < lc_filters.size(); ++j) {
                 // Mate with 20 % of population
                 auto partner = randint(0, mate_size);
 
-                filters[j]->set_current(_population[partner].second[j]->get_current());
+                lc_filters[j]->set_current(_population[partner].second[j]->get_current());
 
                 // Mutate! Once in a blue moon
                 if (!randint(0, mutation_possibility)) {
-                    auto& lc_filter = filters[j];
+                    auto& lc_filter = lc_filters[j];
                     lc_filter->set_current(randint(0, lc_filter->get_count() - 1));
                 }
             }
