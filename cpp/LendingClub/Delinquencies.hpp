@@ -59,7 +59,7 @@
             if (delinq_list.empty()) {
                 return delinq_list;
             }
-            return delinq_list.substr(0, delinq_list.length() - 1);
+            return '"' + delinq_list.substr(0, delinq_list.length() - 1) + '"';
         }
 
         static bool static_apply(const Filter& self, const LCLoan& loan)

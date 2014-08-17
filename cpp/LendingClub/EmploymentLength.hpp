@@ -71,7 +71,7 @@ public:
             return ">10 years";
         }
         else {
-            return '>' + std::string('0' + value, 1) + " years";
+            return '>' + boost::lexical_cast<std::string>(value) + " years";
         }
     }
 

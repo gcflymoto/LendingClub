@@ -50,7 +50,7 @@ class Delinquencies(Filter.Filter):
         for i in range(12):
             if ((1 << i) & value) > 0:
                 delinq_list.append(i)
-        return str(tuple(delinq_list))
+        return '"' + str(tuple(delinq_list)) + '"'
 
     def apply(self, loan, delinq_2yrs=LoanEnum.LOAN_ENUM_delinq_2yrs):
         return (loan[delinq_2yrs] & self.get_value()) > 0

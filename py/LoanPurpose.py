@@ -44,7 +44,7 @@ class LoanPurpose(Filter.Filter):
         for key, val in self.conversion_table.items():
             if val & value > 0:
                 l.append(key)
-        return ','.join(l)
+        return '"' + ','.join(l) + '"'
 
     def apply(self, loan, purpose=LoanEnum.LOAN_ENUM_purpose):
         return (loan[purpose] & self.get_value()) > 0

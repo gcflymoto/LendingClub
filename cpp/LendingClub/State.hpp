@@ -119,7 +119,7 @@ public:
             return result;
         }
         else {
-            return result.substr(0, result.length() - 1);
+            return '"' + result.substr(0, result.length() - 1) + '"';
         }
     }
     static bool static_apply(const Filter& self, const LCLoan& loan)

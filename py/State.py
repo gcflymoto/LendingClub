@@ -61,7 +61,7 @@ class State(Filter.Filter):
         for key, val in self.conversion_table.items():
             if val & value > 0:
                 l.append(key)
-        return ','.join(l)
+        return '"' + ','.join(l) + '"'
 
     def apply(self, loan, addr_state=LoanEnum.LOAN_ENUM_addr_state):
         return (loan[addr_state] & self.get_value()) > 0
