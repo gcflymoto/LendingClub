@@ -31,7 +31,7 @@ namespace lc
         static const int multiplier = 60 * 60 * 24 * 365;
         static const boost::posix_time::ptime now; // = boost::posix_time::second_clock::local_time(); //use the clock 
 
-        EarliestCreditLine(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+        EarliestCreditLine(unsigned* current = nullptr) : Filter(name)
         {
             static std::vector<FilterValue> options;
             if (options.empty()) {

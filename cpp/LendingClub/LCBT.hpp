@@ -15,7 +15,6 @@ Created on July 27, 2014
 
 #include <vector>
 #include <string>
-#include <boost/any.hpp>
 #include "Loan.hpp"
 #include "LoanData.hpp"
 
@@ -25,13 +24,12 @@ class LCBT {
 public:
     LCBT(
         const std::vector<LCLoan::LoanType>& conversion_filters,
-        const Arguments& args,
         const int worker_idx) :
-            _args(args),
+            _args(LCArguments::Get()),
             _filters(conversion_filters.size()),
             _test_filters(nullptr),
             _worker_idx(worker_idx),
-            _loan_data(conversion_filters, args, worker_idx)
+            _loan_data(conversion_filters, worker_idx)
     {
     }
         
@@ -76,7 +74,6 @@ public:
 
 private:
     const Arguments&						_args;
-    //std::vector<boost::any>			    _filters;
     std::vector<Filter*>					_filters;
     std::vector<Filter*>*                   _test_filters;
     const int								_worker_idx;

@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    TotalCreditLines(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    TotalCreditLines(unsigned* current = nullptr) : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(10, 40, 10);
         Filter::initialize(options, current);

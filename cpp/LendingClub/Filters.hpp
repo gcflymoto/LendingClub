@@ -40,64 +40,63 @@ Created on July 27, 2014
 namespace lc {
 
     void construct_filter(const LCLoan::LoanType filter_type,
-                          const Arguments& args,
                           std::vector<Filter*>::iterator& it,
                           unsigned* current = nullptr)
     {
         switch (filter_type) {
         case LCLoan::ACC_OPEN_PAST_24MTHS:
-            (*it) = new AccountsOpenPast24Months(args, current);
+            (*it) = new AccountsOpenPast24Months(current);
             break;
         case LCLoan::FUNDED_AMNT:
-            (*it) = new AmountRequested(args, current);
+            (*it) = new AmountRequested(current);
             break;
         case LCLoan::ANNUAL_INCOME:
-            (*it) = new AnnualIncome(args, current);
+            (*it) = new AnnualIncome(current);
             break;
         case LCLoan::GRADE:
-            (*it) = new CreditGrade(args, current);
+            (*it) = new CreditGrade(current);
             break;
         case LCLoan::DEBT_TO_INCOME_RATIO:
-            (*it) = new DebtToIncomeRatio(args, current);
+            (*it) = new DebtToIncomeRatio(current);
             break;
         case LCLoan::DELINQ_2YRS:
-            (*it) = new Delinquencies(args, current);
+            (*it) = new Delinquencies(current);
             break;
         case LCLoan::EARLIEST_CREDIT_LINE:
-            (*it) = new EarliestCreditLine(args, current);
+            (*it) = new EarliestCreditLine(current);
             break;
         case LCLoan::EMP_LENGTH:
-            (*it) = new EmploymentLength(args, current);
+            (*it) = new EmploymentLength(current);
             break;
         case LCLoan::HOME_OWNERSHIP:
-            (*it) = new HomeOwnership(args, current);
+            (*it) = new HomeOwnership(current);
             break;
         case LCLoan::INCOME_VALIDATED:
-            (*it) = new IncomeValidated(args, current);
+            (*it) = new IncomeValidated(current);
             break;
         case LCLoan::INQ_LAST_6MTHS:
-            (*it) = new InqueriesLast6Months(args, current);
+            (*it) = new InqueriesLast6Months(current);
             break;
         case LCLoan::PURPOSE:
-            (*it) = new LoanPurpose(args, current);
+            (*it) = new LoanPurpose(current);
             break;
         case LCLoan::MTHS_SINCE_LAST_DELINQ:
-            (*it) = new MonthsSinceLastDelinquency(args, current);
+            (*it) = new MonthsSinceLastDelinquency(current);
             break;
         case LCLoan::PUB_REC:
-            (*it) = new PublicRecordsOnFile(args, current);
+            (*it) = new PublicRecordsOnFile(current);
             break;
         case LCLoan::REVOL_UTILIZATION:
-            (*it) = new RevolvingLineUtilization(args, current);
+            (*it) = new RevolvingLineUtilization(current);
             break;
         case LCLoan::ADDR_STATE:
-            (*it) = new State(args, current);
+            (*it) = new State(current);
             break;
         case LCLoan::TOTAL_ACC:
-            (*it) = new TotalCreditLines(args, current);
+            (*it) = new TotalCreditLines(current);
             break;
         case LCLoan::DESC_WORD_COUNT:
-            (*it) = new WordsInDescription(args, current);
+            (*it) = new WordsInDescription(current);
             break;
         default:
             assert(filter_type < LCLoan::SIZE);

@@ -128,6 +128,7 @@
     <ClInclude Include="AccountsOpenPast24Months.hpp" />
     <ClInclude Include="AmountRequested.hpp" />
     <ClInclude Include="AnnualIncome.hpp" />
+    <ClInclude Include="Arguments.hpp" />
     <ClInclude Include="CreditGrade.hpp" />
     <ClInclude Include="csv.h" />
     <ClInclude Include="CSV.hpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="AccountsOpenPast24Months.cpp" />
     <ClCompile Include="AmountRequested.cpp" />
     <ClCompile Include="AnnualIncome.cpp" />
+    <ClCompile Include="Arguments.cpp" />
     <ClCompile Include="CreditGrade.cpp" />
     <ClCompile Include="DebtToIncomeRatio.cpp" />
     <ClCompile Include="Delinquencies.cpp" />

@@ -20,33 +20,18 @@ Created on July 27, 2014
 #include <cstdlib>
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
-#include <boost/program_options.hpp>
+#include "Arguments.hpp"
 #include "Loan.hpp"
-
-/*
-union FilterUnion {
-    unsigned		_int_val;
-    float			_float_val;
-};
-
-struct FilterValue {
-    enum class FilterValueType : unsigned char {INT, FLOAT};		
-    FilterUnion		_val;
-    FilterValueType _val_type;
-};
-*/
 
 namespace lc
 {
 
 typedef unsigned long long FilterValue;
-typedef boost::program_options::variables_map Arguments;
 
 class Filter
 {
 public:
-    Filter(const std::string& name, const Arguments& args) :
-        _args(args),
+    Filter(const std::string& name) :
         _options(NULL),
         _name(name),
         _current(0)
@@ -158,7 +143,6 @@ public:
     }
 
 protected:
-    const Arguments& _args;
     const std::vector<FilterValue>* _options;
     const std::string& _name;
     unsigned _current;

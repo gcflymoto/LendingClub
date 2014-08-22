@@ -29,7 +29,7 @@ namespace lc
         static const std::string csv_name;
         static const std::string name;
 
-        WordsInDescription(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+        WordsInDescription(unsigned* current = nullptr) : Filter(name)
         {
             static const std::vector<FilterValue>* options = create_range(25, 250, 50);
             Filter::initialize(options, current);

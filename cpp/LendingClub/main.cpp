@@ -1,6 +1,6 @@
 #include <vector>
 #include <thread>
-#include <boost/program_options.hpp>
+#include "Arguments.hpp"
 #include "LCBT.hpp"
 #include "LCGA.hpp"
 
@@ -15,7 +15,7 @@ int lcmain(int argc, char* argv[])
         ("help,h", "Produce help message")
         ("verbose,v", "Set verbosity level")
         ("version,V", boost::program_options::value<string>()->default_value("0.0"), "Program version")
-        ("grades,g", boost::program_options::value<string>()->default_value("ABCDEF"), "String with the allowed credit grades")
+        ("grades,g", boost::program_options::value<string>()->default_value("ABCDEFG"), "String with the allowed credit grades")
         ("seed,s", boost::program_options::value<unsigned>()->default_value(100), "Random Number Generator Seed")
         ("data,d", boost::program_options::value<string>()->default_value("https://www.lendingclub.com/fileDownload.action?file=LoanStatsNew.csv&type=gen"), "Download path for the notes data file")
         ("stats,l", boost::program_options::value<string>()->default_value("LoanStatsNew.csv"), "Input Loan Stats CSV file")
@@ -33,7 +33,8 @@ int lcmain(int argc, char* argv[])
         ("work_batch,b", boost::program_options::value<unsigned>()->default_value(75), "size of work batch size to give to each worker")
     ;
 
-    Arguments args;
+    auto& args = LCArguments::Get();
+
     boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), args);
     boost::program_options::notify(args);
 
@@ -41,6 +42,7 @@ int lcmain(int argc, char* argv[])
         cout << desc << "\n";
         return 1;
     }
+
 
     srand(args["seed"].as<unsigned>());
 
@@ -64,12 +66,12 @@ int lcmain(int argc, char* argv[])
     conversion_filters.push_back(LCLoan::TOTAL_ACC);
     conversion_filters.push_back(LCLoan::DESC_WORD_COUNT);
 
-    LCBT lcbt(conversion_filters, args, -1);
+    LCBT lcbt(conversion_filters, -1);
     lcbt.initialize();
 
     std::vector<LCLoan::LoanType> backtest_filters = conversion_filters;
 
-    GATest ga_test(backtest_filters, lcbt, args);
+    GATest ga_test(backtest_filters, lcbt);
     ga_test.run();
 
     return 0;

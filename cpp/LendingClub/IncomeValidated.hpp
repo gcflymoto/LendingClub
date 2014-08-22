@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    IncomeValidated(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    IncomeValidated(unsigned* current = nullptr) : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(0, 2, 1);
         Filter::initialize(options, current);

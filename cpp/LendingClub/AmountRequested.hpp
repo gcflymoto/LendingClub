@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    AmountRequested(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    AmountRequested(unsigned* current = nullptr) : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(5000, 30000, 5000);
         Filter::initialize(options, current);

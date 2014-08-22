@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    AnnualIncome(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    AnnualIncome(unsigned* current = nullptr) : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(0, 300000, 25000);
         Filter::initialize(options, current);
@@ -39,17 +39,17 @@ public:
     }
     virtual const std::string get_string_value() const
     {
-        return "<=" + boost::lexical_cast<std::string>(get_value());
+        return ">=" + boost::lexical_cast<std::string>(get_value());
     }
 
     static bool static_apply(const Filter& self, const LCLoan& loan)
     {
-        return (loan.annual_income <= self.get_value());
+        return (loan.annual_income >= self.get_value());
     }
 
     inline bool apply(const LCLoan& loan) const
     {
-        return (loan.annual_income <= get_value());
+        return (loan.annual_income >= get_value());
     }
 };
 

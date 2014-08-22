@@ -25,8 +25,8 @@ public:
     //static const std::string sqlite_type;
     //static const std::string name;
 
-    StubFilter(const Arguments& args, unsigned* current = nullptr) :
-        Filter("Stub", args) 
+    StubFilter(unsigned* current = nullptr) :
+        Filter("Stub") 
     {
     }
 

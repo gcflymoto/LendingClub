@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    MonthsSinceLastDelinquency(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    MonthsSinceLastDelinquency(unsigned* current = nullptr) : Filter(name)
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {

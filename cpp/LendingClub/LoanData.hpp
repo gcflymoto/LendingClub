@@ -18,11 +18,11 @@ Created on July 28, 2014
 #include <vector>
 #include <string>
 #include <map>
-#include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include "Arguments.hpp"
 #include "Loan.hpp"
 #include "Filters.hpp"
 #include "csv.h"
@@ -33,25 +33,25 @@ class LCLoanData {
 public:
     LCLoanData(
         const std::vector<LCLoan::LoanType>& conversion_filters,
-        const Arguments& args,
         const int worker_idx) : 
-            _args(args),
+            _args(LCArguments::Get()),
             _filters(conversion_filters.size()),
             _worker_idx(worker_idx),
             _row(0),
             _skipped_loans(0),
             _young_loans(0),
             _removed_expired_loans(0)
-    {
+            { 
+        _loans.reserve(350000);
         // Create each of the filters and use its conversion utility for normalizing the data
         for (auto& filter_type : conversion_filters) {
             _filters.resize(filter_type+1);
             std::vector<Filter*>::iterator filter_it = _filters.begin() + filter_type;
-            construct_filter(filter_type, args, filter_it);
+            construct_filter(filter_type, filter_it);
         }
 
         _now = boost::posix_time::second_clock::local_time(); //use the clock 
-        boost::gregorian::date_duration delta(args["young_loans_in_days"].as<unsigned>() + 30);
+        boost::gregorian::date_duration delta(_args["young_loans_in_days"].as<unsigned>() + 30);
 
         _last_date_for_full_month_for_volume = _now.date() - delta;
     }
@@ -95,11 +95,24 @@ public:
         std::string total_rec_prncp;        
         std::string to_str() const 
         {
-            assert(0); // incomplete
             std::string str;
             str += "acc_open_past_24mths=" + acc_open_past_24mths + ',';
             str += "funded_amnt=" + funded_amnt + ',';
             str += "annual_inc=" + annual_inc + ',';
+            str += "grade=" + grade + ',';
+            str += "dti=" + dti + ',';
+            str += "delinq_2yrs=" + delinq_2yrs + ',';
+            str += "earliest_cr_line=" + earliest_cr_line + ',';
+            str += "home_ownership=" + home_ownership + ',';
+            str += "is_inc_v=" + is_inc_v + ',';
+            str += "inq_last_6mths=" + inq_last_6mths + ',';
+            str += "purpose=" + purpose + ',';
+            str += "mths_since_last_delinq=" + mths_since_last_delinq + ',';
+            str += "pub_rec=" + pub_rec +',';
+            str += "revol_util=" + revol_util + ',';
+            str += "addr_state=" + addr_state + ',';
+            str += "total_acc=" + total_acc + ',';
+            str += "desc=" + desc + ',';
             str += "loan_status=" + loan_status + ',';
             str += "issue_d=" + issue_d + ',';
             str += "term=" + term + ',';
@@ -255,7 +268,8 @@ public:
         else if (raw_loan.term == " 60 months") {
             loan.number_of_payments = 60;
         } else {
-            assert(0); // Unknown number of payments
+            std::cout << "unknown number of payments: " << raw_loan.term << "expecting 36 or 60, skipping\n";
+            return false;
         }
 
         loan.installment = strtod(raw_loan.installment.c_str(), nullptr);
@@ -366,7 +380,6 @@ public:
 
 private:
         const Arguments&						_args;
-        //std::vector<boost::any>				_filters;
         std::vector<Filter*>					_filters;
         const int								_worker_idx;
         unsigned								_row;

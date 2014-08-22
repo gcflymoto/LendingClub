@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    InqueriesLast6Months(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    InqueriesLast6Months(unsigned* current = nullptr) : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(0, 11, 1);
         Filter::initialize(options, current);

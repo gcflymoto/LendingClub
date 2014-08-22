@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    HomeOwnership(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    HomeOwnership(unsigned* current = nullptr) : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(0, 6, 1);
         Filter::initialize(options, current);

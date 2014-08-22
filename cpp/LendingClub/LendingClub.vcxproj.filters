@@ -120,6 +120,9 @@
     <ClInclude Include="State.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Arguments.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -186,6 +189,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WordsInDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Arguments.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

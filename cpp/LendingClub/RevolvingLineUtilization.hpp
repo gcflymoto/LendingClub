@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    RevolvingLineUtilization(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    RevolvingLineUtilization(unsigned* current = nullptr) : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(5 * 100, 105 * 100, 5 * 100);
         Filter::initialize(options, current);

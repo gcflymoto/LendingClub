@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    DebtToIncomeRatio(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    DebtToIncomeRatio(unsigned* current = nullptr) : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(10 * 100, 35 * 100, 5 * 100);
         Filter::initialize(options, current);

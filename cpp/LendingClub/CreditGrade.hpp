@@ -14,6 +14,7 @@ Created on July 28, 2014
 #define __LC_CREDIT_GRADE_HPP__
 
 #include "Filter.hpp"
+#include "Arguments.hpp"
 #include "Loan.hpp"
 #include "Utilities.hpp"
 
@@ -27,7 +28,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    CreditGrade(const Arguments& args, unsigned* current = nullptr) : Filter(name, args)
+    CreditGrade(unsigned* current = nullptr) : Filter(name)
     {
         static std::vector<FilterValue> options;
 
@@ -48,25 +49,30 @@ public:
             _reverse_table[1 << 5] = "F";
             _reverse_table[1 << 6] = "G";
 
+            const auto& args = LCArguments::Get();
+
             std::string all_grades = args["grades"].as<std::string>();
             size_t num_grades = all_grades.size();
             
             for (size_t i = 0; i < num_grades + 1; ++i) {
                 for (size_t j = 0; j < num_grades; ++j) {
-                    if ((j + 1) <= num_grades) {
-                        std::string grades = all_grades.substr(j, i);
+                    if ((j + i) <= num_grades) {
+                        std::string grades = all_grades.substr(j, i+1);
                         FilterValue grades_bit_value = 0;
                         for (auto grade : grades) {
                             grades_bit_value += _converation_table[std::string(1, grade)];
                         }
-                        options.push_back(grades_bit_value);
                         _converation_table[grades] = grades_bit_value;
                         _reverse_table[grades_bit_value] = grades;
                     }
-
                 }
             }
         }
+
+        for (auto it : _converation_table) {
+            options.push_back(it.second);
+        }
+
         Filter::initialize(&options, current);
     }
 
