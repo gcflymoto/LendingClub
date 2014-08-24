@@ -54,12 +54,12 @@ public:
         }
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
+    static bool static_apply(const Filter& self, const Loan& loan)
     {
         return (loan.income_validated != self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan) const
+    inline bool apply(const Loan& loan) const
     {
         return (loan.income_validated != get_value());
     }

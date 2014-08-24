@@ -27,12 +27,14 @@ Created on July 28, 2014
 #include "Filters.hpp"
 #include "csv.h"
 
-namespace lc {
+namespace lc
+{
 
-class LCLoanData {
+class LoanData
+{
 public:
-    LCLoanData(
-        const std::vector<LCLoan::LoanType>& conversion_filters,
+    LoanData(
+        const std::vector<Loan::LoanType>& conversion_filters,
         const int worker_idx) : 
             _args(LCArguments::Get()),
             _filters(conversion_filters.size()),
@@ -43,6 +45,7 @@ public:
             _removed_expired_loans(0)
             { 
         _loans.reserve(350000);
+        _loan_infos.reserve(350000);
         // Create each of the filters and use its conversion utility for normalizing the data
         for (auto& filter_type : conversion_filters) {
             _filters.resize(filter_type+1);
@@ -177,18 +180,31 @@ public:
                     continue;
                 }
 
-                LCLoan loan;
+                Loan loan;
+                LoanInfo loan_info;
                 
-                bool parsed_loan_ok = normalize_loan_data(raw_loan, loan);
+                bool parsed_loan_ok = normalize_loan_data(raw_loan, loan, loan_info);
                 if (parsed_loan_ok) {
                     // Assign the rowid of the loan to be the current last index in the loans list
                     loan.rowid = _loans.size();
                     _loans.push_back(loan);
+                    _loan_infos.push_back(loan_info);
                 }
             }
 
             info_msg("Initializing from " + stats_file_path.string() + " done.");
-
+            find_average(Loan::ACC_OPEN_PAST_24MTHS);
+            find_average(Loan::FUNDED_AMNT);
+            find_average(Loan::ANNUAL_INCOME);
+            find_average(Loan::DEBT_TO_INCOME_RATIO);
+            find_average(Loan::DELINQ_2YRS);
+            find_average(Loan::EARLIEST_CREDIT_LINE);
+            find_average(Loan::EMP_LENGTH);
+            find_average(Loan::INQ_LAST_6MTHS);
+            find_average(Loan::MTHS_SINCE_LAST_DELINQ);
+            find_average(Loan::REVOL_UTILIZATION);
+            find_average(Loan::TOTAL_ACC);
+            find_average(Loan::DESC_WORD_COUNT);
         } else {
             info_msg("error: " + stats_file_path.string() + " not found");
             exit(-1);
@@ -237,67 +253,110 @@ public:
         }
         return true;
     }
-                  
-    virtual bool normalize_loan_data(const RawLoan& raw_loan, LCLoan& loan)
-    {
-        loan.acc_open_past_24mths = _filters[LCLoan::ACC_OPEN_PAST_24MTHS]->convert(raw_loan.acc_open_past_24mths);
-        loan.funded_amnt = _filters[LCLoan::FUNDED_AMNT]->convert(raw_loan.funded_amnt);
-        loan.annual_income = _filters[LCLoan::ANNUAL_INCOME]->convert(raw_loan.annual_inc);
-        loan.grade = _filters[LCLoan::GRADE]->convert(raw_loan.grade);
-        loan.debt_to_income_ratio = _filters[LCLoan::DEBT_TO_INCOME_RATIO]->convert(raw_loan.dti);
-        loan.delinq_2yrs = _filters[LCLoan::DELINQ_2YRS]->convert(raw_loan.delinq_2yrs);
-        loan.earliest_credit_line = _filters[LCLoan::EARLIEST_CREDIT_LINE]->convert(raw_loan.earliest_cr_line);
-        loan.emp_length = _filters[LCLoan::EMP_LENGTH]->convert(raw_loan.emp_length);
-        loan.home_ownership = _filters[LCLoan::HOME_OWNERSHIP]->convert(raw_loan.home_ownership);
-        loan.income_validated = _filters[LCLoan::INCOME_VALIDATED]->convert(raw_loan.is_inc_v);
-        loan.inq_last_6mths = _filters[LCLoan::INQ_LAST_6MTHS]->convert(raw_loan.inq_last_6mths);
-        loan.purpose = _filters[LCLoan::PURPOSE]->convert(raw_loan.purpose);
-        loan.mths_since_last_delinq = _filters[LCLoan::MTHS_SINCE_LAST_DELINQ]->convert(raw_loan.mths_since_last_delinq);
-        loan.pub_rec = _filters[LCLoan::PUB_REC]->convert(raw_loan.pub_rec);
-        loan.revol_utilization = _filters[LCLoan::REVOL_UTILIZATION]->convert(raw_loan.revol_util);
-        loan.addr_state = _filters[LCLoan::ADDR_STATE]->convert(raw_loan.addr_state);
-        loan.total_acc = _filters[LCLoan::TOTAL_ACC]->convert(raw_loan.total_acc);
-        loan.desc_word_count = _filters[LCLoan::DESC_WORD_COUNT]->convert(raw_loan.desc);
 
-        loan.loan_status = raw_loan.loan_status;
-        loan.issue_datetime = boost::gregorian::date(boost::gregorian::from_simple_string(raw_loan.issue_d));		
+    virtual void find_average(Loan::LoanType loan_value_type)
+    {
+        std::vector<LoanValue> data;
+        data.reserve(_loans.size());
+
+        // Step 1. Pull all the values in a new list
+        //
+        for (auto& loan : _loans) {
+            LoanValue* lv = &(loan.rowid);
+            // move the pointer from the struct variable in the loan to the one we are looking to average
+            lv += loan_value_type;
+            data.push_back(*lv);
+        }
+
+        // Step 2. Sort the values
+        //
+        std::sort(data.begin(), data.end());
+
+        // Step 3. Ignore the top and bottom 5% outliers
+        //
+        size_t start_index = static_cast<size_t>(data.size() * 0.05);
+        size_t end_index = static_cast<size_t>(data.size() * 0.95);
+
+        // Step 4. Find the sum
+        //
+        LoanValue sum = 0;
+        for (size_t i = start_index; i < end_index; ++i) {
+            sum += data[i];
+        }
+
+        std::vector<Filter*> filter(1);
+
+        construct_filter(loan_value_type, filter.begin());
+
+        std::vector<FilterValue> filter_value;
+        FilterValue avg = sum / (end_index - start_index + 1);
+        filter_value.push_back(avg);
+        unsigned current = 0;
+        filter[0]->initialize(&filter_value, &current);
+
+        info_msg("Avg " + filter[0]->get_name() + "=" + boost::lexical_cast<std::string>(static_cast<double>(sum) / (end_index - start_index + 1)) + " filter is " + filter[0]->get_string_value());
+    }
+
+    virtual bool normalize_loan_data(const RawLoan& raw_loan, Loan& loan, LoanInfo& loan_info)
+    {
+        loan.acc_open_past_24mths = _filters[Loan::ACC_OPEN_PAST_24MTHS]->convert(raw_loan.acc_open_past_24mths);
+        loan.funded_amnt = _filters[Loan::FUNDED_AMNT]->convert(raw_loan.funded_amnt);
+        loan.annual_income = _filters[Loan::ANNUAL_INCOME]->convert(raw_loan.annual_inc);
+        loan.grade = _filters[Loan::GRADE]->convert(raw_loan.grade);
+        loan.debt_to_income_ratio = _filters[Loan::DEBT_TO_INCOME_RATIO]->convert(raw_loan.dti);
+        loan.delinq_2yrs = _filters[Loan::DELINQ_2YRS]->convert(raw_loan.delinq_2yrs);
+        loan.earliest_credit_line = _filters[Loan::EARLIEST_CREDIT_LINE]->convert(raw_loan.earliest_cr_line);
+        loan.emp_length = _filters[Loan::EMP_LENGTH]->convert(raw_loan.emp_length);
+        loan.home_ownership = _filters[Loan::HOME_OWNERSHIP]->convert(raw_loan.home_ownership);
+        loan.income_validated = _filters[Loan::INCOME_VALIDATED]->convert(raw_loan.is_inc_v);
+        loan.inq_last_6mths = _filters[Loan::INQ_LAST_6MTHS]->convert(raw_loan.inq_last_6mths);
+        loan.purpose = _filters[Loan::PURPOSE]->convert(raw_loan.purpose);
+        loan.mths_since_last_delinq = _filters[Loan::MTHS_SINCE_LAST_DELINQ]->convert(raw_loan.mths_since_last_delinq);
+        loan.pub_rec = _filters[Loan::PUB_REC]->convert(raw_loan.pub_rec);
+        loan.revol_utilization = _filters[Loan::REVOL_UTILIZATION]->convert(raw_loan.revol_util);
+        loan.addr_state = _filters[Loan::ADDR_STATE]->convert(raw_loan.addr_state);
+        loan.total_acc = _filters[Loan::TOTAL_ACC]->convert(raw_loan.total_acc);
+        loan.desc_word_count = _filters[Loan::DESC_WORD_COUNT]->convert(raw_loan.desc);
+
+        loan_info.loan_status = raw_loan.loan_status;
+        loan_info.issue_datetime = boost::gregorian::date(boost::gregorian::from_simple_string(raw_loan.issue_d));		
 
         if (raw_loan.term == " 36 months") {
-            loan.number_of_payments = 36;
+            loan_info.number_of_payments = 36;
         }
         else if (raw_loan.term == " 60 months") {
-            loan.number_of_payments = 60;
+            loan_info.number_of_payments = 60;
         } else {
             std::cout << "unknown number of payments: " << raw_loan.term << "expecting 36 or 60, skipping\n";
             return false;
         }
 
-        loan.installment = strtod(raw_loan.installment.c_str(), nullptr);
+        loan_info.installment = strtod(raw_loan.installment.c_str(), nullptr);
 
         std::size_t found = raw_loan.int_rate.find_first_not_of(" ");
-        loan.int_rate = strtod(raw_loan.int_rate.substr(found, raw_loan.int_rate.length() - 1 - found).c_str(), nullptr);
-        loan.total_pymnt = strtod(raw_loan.total_pymnt.c_str(), nullptr);
-        loan.out_prncp = strtod(raw_loan.out_prncp.c_str(), nullptr);
-        loan.out_prncp_inv = strtod(raw_loan.out_prncp_inv.c_str(), nullptr);
+        loan_info.int_rate = strtod(raw_loan.int_rate.substr(found, raw_loan.int_rate.length() - 1 - found).c_str(), nullptr);
+        loan_info.total_pymnt = strtod(raw_loan.total_pymnt.c_str(), nullptr);
+        loan_info.out_prncp = strtod(raw_loan.out_prncp.c_str(), nullptr);
+        loan_info.out_prncp_inv = strtod(raw_loan.out_prncp_inv.c_str(), nullptr);
         double total_received_interest = strtod(raw_loan.total_rec_int.c_str(), nullptr);
         double total_received_principal = strtod(raw_loan.total_rec_prncp.c_str(), nullptr);
 
         double defaulted_amount = 0.0;
-        if ((loan.loan_status == "Charged Off") || (loan.loan_status == "Default")) {
-            defaulted_amount = ((loan.number_of_payments * loan.installment) - 
+        if ((loan_info.loan_status == "Charged Off") || (loan_info.loan_status == "Default")) {
+            defaulted_amount = ((loan_info.number_of_payments * loan_info.installment) - 
                                 (total_received_interest + total_received_principal)) * 0.99;
-            loan.lost = defaulted_amount;
-            loan.defaulted = 1;
+            loan_info.lost = defaulted_amount;
+            loan_info.defaulted = 1;
         } else {
-            loan.lost = 0.0;
-            loan.defaulted = 0;
+            loan_info.lost = 0.0;
+            loan_info.defaulted = 0;
         }
 
         double loan_profit = 0.0, loan_principal = 0.0, loan_lost = 0.0;
-        unsigned elapsed = loan.number_of_payments;
+        unsigned elapsed = loan_info.number_of_payments;
         double balance = static_cast<double>(loan.funded_amnt);
-        double monthly_payment = loan.installment;
-        double rate = loan.int_rate;
+        double monthly_payment = loan_info.installment;
+        double rate = loan_info.int_rate;
         double ratio = 25.0 / balance;
         double payments = 0.0;
         while (elapsed > 0) {
@@ -306,7 +365,7 @@ public:
             double interest = balance * rate / 1200.0;
             double service = 0.01 * monthly_payment;
             payments += monthly_payment;
-            if (loan.defaulted && payments > loan.total_pymnt) {
+            if (loan_info.defaulted && payments > loan_info.total_pymnt) {
                 loan_profit -= defaulted_amount * ratio;
                 loan_lost += defaulted_amount * ratio;
                 break;
@@ -322,26 +381,27 @@ public:
         // sys.stderr.write("csv total_received_interest=%.2f total_received_principal=%.2f loss=%.2f\n" %
         // (loan_profit, loan_principal, loan_lost, total_received_interest,
         // total_received_principal, loan_array[LOAN_ENUM_lost]))
-        loan.profit = loan_profit;
-        loan.principal = loan_principal;
-        loan.lost = loan_lost;
+        loan_info.profit = loan_profit;
+        loan_info.principal = loan_principal;
+        loan_info.lost = loan_lost;
         return true;
     }
 
-    LoanReturn get_nar(const std::vector<unsigned>& invested)
+    LoanReturn get_nar(const std::vector<LoanValue>& invested)
     {
         unsigned defaulted = 0, per_month = 0;
         double profit = 0.0, principal = 0.0, lost = 0.0, rate = 0.0;
 
-        for (auto idx : invested) {
-            profit += _loans[idx].profit;
-            principal += _loans[idx].principal;
-            lost += _loans[idx].lost;
-            defaulted += _loans[idx].defaulted;
-            rate += _loans[idx].int_rate;
+        for (auto row_id : invested) {
+            unsigned idx = static_cast<unsigned>(row_id);
+            profit += _loan_infos[idx].profit;
+            principal += _loan_infos[idx].principal;
+            lost += _loan_infos[idx].lost;
+            defaulted += _loan_infos[idx].defaulted;
+            rate += _loan_infos[idx].int_rate;
             // Count loan volume
-            if ((_loans[idx].issue_datetime.year() == _last_date_for_full_month_for_volume.year()) &&
-                (_loans[idx].issue_datetime.month() == _last_date_for_full_month_for_volume.month())) {
+            if ((_loan_infos[idx].issue_datetime.year() == _last_date_for_full_month_for_volume.year()) &&
+                (_loan_infos[idx].issue_datetime.month() == _last_date_for_full_month_for_volume.month())) {
                 ++per_month;
             }
         }
@@ -368,7 +428,7 @@ public:
         return loan_return;
     }
 
-    const std::vector<LCLoan>& get_loans() const 
+    const std::vector<Loan>& get_loans() const 
     {
         return _loans;
     }
@@ -388,7 +448,8 @@ private:
         unsigned								_removed_expired_loans;
         boost::gregorian::date					_last_date_for_full_month_for_volume;		
         std::vector<std::string>                _labels;
-        std::vector<LCLoan>						_loans;
+        std::vector<Loan>						_loans;
+        std::vector<LoanInfo>			        _loan_infos;
         boost::posix_time::ptime				_now;
 };
 

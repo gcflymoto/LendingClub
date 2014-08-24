@@ -17,7 +17,8 @@ Created on July 28, 2014
 #include "Loan.hpp"
 #include "Utilities.hpp"
 
-namespace lc {
+namespace lc
+{
 
 class StubFilter : public Filter 
 {
@@ -28,13 +29,15 @@ public:
     StubFilter(unsigned* current = nullptr) :
         Filter("Stub") 
     {
+        static std::vector<FilterValue> options(1);
+        Filter::initialize(&options, current);
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan) 
+    static bool static_apply(const Filter&, const Loan&) 
     {
         return true;
     }
-    inline bool apply(const LCLoan& loan)  const
+    inline bool apply(const Loan&)  const
     {
         return true;
     }

@@ -20,7 +20,7 @@ Created on July 28, 2014
 namespace lc
 {
 
-    class EmploymentLength : public Filter
+class EmploymentLength : public Filter
 {
 public:
     static const std::string sqlite_type;
@@ -75,12 +75,12 @@ public:
         }
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
+    static bool static_apply(const Filter& self, const Loan& loan)
     {
         return (loan.emp_length <= self.get_value());
     }
 
-    virtual bool apply(const LCLoan& loan) const
+    virtual bool apply(const Loan& loan) const
     {
         return (loan.emp_length <= get_value());
     }

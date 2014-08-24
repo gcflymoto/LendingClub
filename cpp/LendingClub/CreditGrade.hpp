@@ -86,12 +86,12 @@ public:
         return _reverse_table[get_value()];
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
+    static bool static_apply(const Filter& self, const Loan& loan)
     {
         return ((loan.grade & self.get_value()) > 0);
     }
 
-    inline bool apply(const LCLoan& loan) const
+    inline bool apply(const Loan& loan) const
     {
         return ((loan.grade & get_value()) > 0);
     }

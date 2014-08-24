@@ -34,6 +34,7 @@ public:
             options.push_back(12);
             options.push_back(24);
             options.push_back(60);
+            options.push_back(84);
         }
         Filter::initialize(&options, current);
     }
@@ -48,12 +49,12 @@ public:
         return ">=" + boost::lexical_cast<std::string>(get_value());
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
+    static bool static_apply(const Filter& self, const Loan& loan)
     {
         return (loan.mths_since_last_delinq >= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan) const
+    inline bool apply(const Loan& loan) const
     {
         return (loan.mths_since_last_delinq >= get_value());
     }

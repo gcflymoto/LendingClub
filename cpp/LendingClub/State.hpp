@@ -122,12 +122,12 @@ public:
             return '"' + result.substr(0, result.length() - 1) + '"';
         }
     }
-    static bool static_apply(const Filter& self, const LCLoan& loan)
+    static bool static_apply(const Filter& self, const Loan& loan)
     {
         return ((loan.addr_state & self.get_value()) > 0);
     }
 
-    inline bool apply(const LCLoan& loan) const
+    inline bool apply(const Loan& loan) const
     {
         return ((loan.addr_state & get_value()) > 0);
     }

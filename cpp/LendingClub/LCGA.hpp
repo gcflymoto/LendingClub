@@ -28,18 +28,16 @@ Created on July 27, 2014
 namespace lc 
 {
 
-class GATest {
+class GATest
+{
     typedef std::vector<std::pair<LoanReturn, std::vector<Filter*>>> PopulationType;
 public:
-    GATest(
-            const std::vector<LCLoan::LoanType>& backtest_filters,
-            LCBT& lcbt
-            ) :
-            _lcbt(lcbt),
-            _args(LCArguments::Get()),
-            _iteration(0),
-            _iteration_time(0),
-            _best_net_apy(0.0)
+    GATest(const std::vector<Loan::LoanType>& backtest_filters, LCBT& lcbt) :
+        _lcbt(lcbt),
+        _args(LCArguments::Get()),
+        _iteration(0),
+        _iteration_time(0),
+        _best_net_apy(0.0)
     {
         unsigned population_size = _args["population_size"].as<unsigned>();
         _population.reserve(population_size);

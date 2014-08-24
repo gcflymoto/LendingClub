@@ -29,7 +29,7 @@ public:
 
     RevolvingLineUtilization(unsigned* current = nullptr) : Filter(name)
     {
-        static const std::vector<FilterValue>* options = create_range(5 * 100, 105 * 100, 5 * 100);
+        static const std::vector<FilterValue>* options = create_range(5 * 100, 100 * 100, 5 * 100);
         Filter::initialize(options, current);
     }
 
@@ -51,12 +51,12 @@ public:
         return "<=" + boost::lexical_cast<std::string>(boost::numeric_cast<double>(get_value()) / 100);
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
+    static bool static_apply(const Filter& self, const Loan& loan)
     {
         return (loan.revol_utilization <= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan) const
+    inline bool apply(const Loan& loan) const
     {
         return (loan.revol_utilization <= get_value());
     }

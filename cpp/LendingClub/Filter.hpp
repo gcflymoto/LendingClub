@@ -40,6 +40,18 @@ public:
 
     virtual ~Filter() = 0;
 
+    Filter& operator=(const Filter& other)
+    {
+        if (this != &other) // protect against invalid self-assignment
+        {
+            _options = other._options;
+            //_name = other._name;
+            _current = other._current;
+        }
+        // by convention, always return *this
+        return *this;
+    }
+
     void initialize(const std::vector<FilterValue>* options, unsigned* current)
     {
         _options = options;
@@ -51,7 +63,7 @@ public:
         }
     }
 
-    virtual bool apply(const LCLoan& loan) const = 0;
+    virtual bool apply(const Loan& loan) const = 0;
     virtual FilterValue convert(const std::string& raw_data) const = 0;
 
     inline const FilterValue& get_value() const
@@ -80,7 +92,7 @@ public:
     bool next()
     {
         size_t size = _options->size();
-        _current = (_current + 1) % (size+1);
+        _current = (_current + 1) % (size + 1);
         return (_current != size);
     }
 
@@ -88,12 +100,12 @@ public:
     {
         std::vector<std::vector<FilterValue>> result;
         size_t n = options.size();
-        assert(n < 31);
+        assert(n < ((sizeof(FilterValue) * 8) - 1)); // Power-set must fit within the number of bits in FilterValue
     
-        for(unsigned i = 0, pow2n = 1 << n; i < pow2n; ++i) {
+        for (FilterValue i = 0, pow2n = 1ull << n; i < pow2n; ++i) {
             std::vector<FilterValue> set;
-            for(int j = 0, end = options.size(); j < end; ++j) {
-                if (i & (1 << j)) {
+            for (size_t j = 0, end = options.size(); j < end; ++j) {
+                if (i & (1ull << j)) {
                     set.push_back(options[j]);
                 }
             }
@@ -132,20 +144,15 @@ public:
         return nullptr;
     }
 
-    const std::string get_name() const
+    const std::string& get_name() const
     {
         return _name;
     }	
     
-    const std::string get_details() const
-    {
-        return get_name() + "=" + get_string_value();
-    }
-
 protected:
     const std::vector<FilterValue>* _options;
-    const std::string& _name;
     unsigned _current;
+    const std::string& _name;   // TODO: Get rid of this field from the class and instead put it outside the class
 };
 
 inline Filter::~Filter() {}  // defined even though it's pure virtual; it's faster this way; trust me

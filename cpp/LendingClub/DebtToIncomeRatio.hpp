@@ -51,12 +51,12 @@ public:
     }
 
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
+    static bool static_apply(const Filter& self, const Loan& loan)
     {
         return (loan.debt_to_income_ratio <= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan) const
+    inline bool apply(const Loan& loan) const
     {
         return (loan.debt_to_income_ratio <= get_value());
     }

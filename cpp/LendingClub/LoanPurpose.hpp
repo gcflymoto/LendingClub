@@ -80,12 +80,12 @@ public:
         }
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
+    static bool static_apply(const Filter& self, const Loan& loan)
     {
         return ((loan.purpose & self.get_value()) > 0);
     }
 
-    inline bool apply(const LCLoan& loan) const
+    inline bool apply(const Loan& loan) const
     {
         return ((loan.purpose & get_value()) > 0);
     }

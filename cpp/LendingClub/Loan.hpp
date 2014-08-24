@@ -16,14 +16,16 @@ Created on July 28, 2014
 #include <string>
 #include <boost/date_time/gregorian/gregorian.hpp>
 
-namespace lc {
+namespace lc
+{
 
 typedef unsigned long long LoanValue;
 
-struct LCLoan {
+struct Loan
+{
     enum LoanType 
     {
-        // These enums are used for conversions and backtesting
+        // These enums are used for conversions and back-testing
         ROWID = 0, 
         ACC_OPEN_PAST_24MTHS = 1,
         FUNDED_AMNT = 2,
@@ -43,8 +45,8 @@ struct LCLoan {
         ADDR_STATE = 16,
         TOTAL_ACC = 17,
         DESC_WORD_COUNT = 18,
+        // These enums are only used for figuring profit
         LOAN_STATUS = 19,
-        // These enums are only used for conversions
         ISSUE_DATETIME = 20,
         NUMBER_OF_PAYMENTS = 21,
         INSTALLMENT = 22,
@@ -59,8 +61,8 @@ struct LCLoan {
         SIZE = 31
     };
 
-    // These variables are used for conversions and backtesting
-    unsigned                        rowid;
+    // These variables are used for conversions and back-testing
+    LoanValue                       rowid;
     LoanValue                       acc_open_past_24mths;
     LoanValue                       funded_amnt;
     LoanValue                       annual_income;
@@ -79,6 +81,10 @@ struct LCLoan {
     LoanValue                       addr_state;
     LoanValue                       total_acc;
     LoanValue                       desc_word_count;
+};
+
+struct LoanInfo
+{
     // These variables are only used for conversions
     std::string                     loan_status;
     boost::gregorian::date          issue_datetime;
@@ -91,10 +97,11 @@ struct LCLoan {
     double                          profit;
     double                          principal;
     double                          lost;
-    unsigned                        defaulted;	
+    unsigned                        defaulted;
 };
 
-struct LoanReturn {
+struct LoanReturn
+{
     size_t                          num_loans;
     size_t                          loans_per_month;
     double                          expected_apy;

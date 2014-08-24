@@ -29,7 +29,7 @@ public:
 
     InqueriesLast6Months(unsigned* current = nullptr) : Filter(name)
     {
-        static const std::vector<FilterValue>* options = create_range(0, 11, 1);
+        static const std::vector<FilterValue>* options = create_range(0, 5, 1);
         Filter::initialize(options, current);
     }
 
@@ -43,12 +43,12 @@ public:
         return "<=" + boost::lexical_cast<std::string>(get_value());
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
+    static bool static_apply(const Filter& self, const Loan& loan)
     {
         return (loan.inq_last_6mths <= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan) const
+    inline bool apply(const Loan& loan) const
     {
         return (loan.inq_last_6mths <= get_value());
     }

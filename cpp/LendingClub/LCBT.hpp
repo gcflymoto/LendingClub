@@ -18,18 +18,18 @@ Created on July 27, 2014
 #include "Loan.hpp"
 #include "LoanData.hpp"
 
-namespace lc {
+namespace lc
+{
 
-class LCBT {
+class LCBT
+{
 public:
-    LCBT(
-        const std::vector<LCLoan::LoanType>& conversion_filters,
-        const int worker_idx) :
-            _args(LCArguments::Get()),
-            _filters(conversion_filters.size()),
-            _test_filters(nullptr),
-            _worker_idx(worker_idx),
-            _loan_data(conversion_filters, worker_idx)
+    LCBT(const std::vector<Loan::LoanType>& conversion_filters, const int worker_idx) :
+        _args(LCArguments::Get()),
+        _filters(conversion_filters.size()),
+        _test_filters(nullptr),
+        _worker_idx(worker_idx),
+        _loan_data(conversion_filters, worker_idx)
     {
     }
         
@@ -51,7 +51,7 @@ public:
         return _loan_data.get_nar(_invested);
     }
 
-    bool consider(const LCLoan& loan) 
+    bool consider(const Loan& loan) 
     {
         for (auto& lc_filter : *_test_filters) {
             if (!lc_filter->apply(loan)) {
@@ -77,8 +77,8 @@ private:
     std::vector<Filter*>					_filters;
     std::vector<Filter*>*                   _test_filters;
     const int								_worker_idx;
-    LCLoanData								_loan_data;
-    std::vector<unsigned>                   _invested;
+    LoanData								_loan_data;
+    std::vector<LoanValue>                  _invested;
 };
 
 };

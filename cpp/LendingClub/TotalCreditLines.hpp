@@ -29,7 +29,7 @@ public:
 
     TotalCreditLines(unsigned* current = nullptr) : Filter(name)
     {
-        static const std::vector<FilterValue>* options = create_range(10, 40, 10);
+        static const std::vector<FilterValue>* options = create_range(10, 50, 10);
         Filter::initialize(options, current);
     }
 
@@ -42,12 +42,12 @@ public:
         return "<=" + boost::lexical_cast<std::string>(get_value());
     }
 
-    static bool static_apply(const Filter& self, const LCLoan& loan)
+    static bool static_apply(const Filter& self, const Loan& loan)
     {
         return (loan.total_acc <= self.get_value());
     }
 
-    inline bool apply(const LCLoan& loan) const
+    inline bool apply(const Loan& loan) const
     {
         return (loan.total_acc <= get_value());
     }

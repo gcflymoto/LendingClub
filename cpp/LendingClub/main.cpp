@@ -46,30 +46,30 @@ int lcmain(int argc, char* argv[])
 
     srand(args["seed"].as<unsigned>());
 
-    std::vector<LCLoan::LoanType> conversion_filters;
-    conversion_filters.push_back(LCLoan::ACC_OPEN_PAST_24MTHS);
-    conversion_filters.push_back(LCLoan::FUNDED_AMNT);
-    conversion_filters.push_back(LCLoan::ANNUAL_INCOME);
-    conversion_filters.push_back(LCLoan::GRADE);
-    conversion_filters.push_back(LCLoan::DEBT_TO_INCOME_RATIO);
-    conversion_filters.push_back(LCLoan::DELINQ_2YRS);
-    conversion_filters.push_back(LCLoan::EARLIEST_CREDIT_LINE);
-    conversion_filters.push_back(LCLoan::EMP_LENGTH);
-    conversion_filters.push_back(LCLoan::HOME_OWNERSHIP);
-    conversion_filters.push_back(LCLoan::INCOME_VALIDATED);
-    conversion_filters.push_back(LCLoan::INQ_LAST_6MTHS);
-    conversion_filters.push_back(LCLoan::PURPOSE);
-    conversion_filters.push_back(LCLoan::MTHS_SINCE_LAST_DELINQ);
-    conversion_filters.push_back(LCLoan::PUB_REC);
-    conversion_filters.push_back(LCLoan::REVOL_UTILIZATION);
-    conversion_filters.push_back(LCLoan::ADDR_STATE);
-    conversion_filters.push_back(LCLoan::TOTAL_ACC);
-    conversion_filters.push_back(LCLoan::DESC_WORD_COUNT);
+    std::vector<Loan::LoanType> conversion_filters;
+    conversion_filters.push_back(Loan::ACC_OPEN_PAST_24MTHS);
+    conversion_filters.push_back(Loan::FUNDED_AMNT);
+    conversion_filters.push_back(Loan::ANNUAL_INCOME);
+    conversion_filters.push_back(Loan::GRADE);
+    conversion_filters.push_back(Loan::DEBT_TO_INCOME_RATIO);
+    conversion_filters.push_back(Loan::DELINQ_2YRS);
+    conversion_filters.push_back(Loan::EARLIEST_CREDIT_LINE);
+    conversion_filters.push_back(Loan::EMP_LENGTH);
+    conversion_filters.push_back(Loan::HOME_OWNERSHIP);
+    conversion_filters.push_back(Loan::INCOME_VALIDATED);
+    conversion_filters.push_back(Loan::INQ_LAST_6MTHS);
+    conversion_filters.push_back(Loan::PURPOSE);
+    conversion_filters.push_back(Loan::MTHS_SINCE_LAST_DELINQ);
+    conversion_filters.push_back(Loan::PUB_REC);
+    conversion_filters.push_back(Loan::REVOL_UTILIZATION);
+    conversion_filters.push_back(Loan::ADDR_STATE);
+    conversion_filters.push_back(Loan::TOTAL_ACC);
+    conversion_filters.push_back(Loan::DESC_WORD_COUNT);
 
     LCBT lcbt(conversion_filters, -1);
     lcbt.initialize();
 
-    std::vector<LCLoan::LoanType> backtest_filters = conversion_filters;
+    std::vector<Loan::LoanType> backtest_filters = conversion_filters;
 
     GATest ga_test(backtest_filters, lcbt);
     ga_test.run();
