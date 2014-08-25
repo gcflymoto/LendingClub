@@ -1,37 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AmountRequested.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AmountRequested.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AnnualIncome.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AnnualIncome.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/CreditGrade.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/CreditGrade.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/DebtToIncomeRatio.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/DebtToIncomeRatio.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Delinquencies.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Delinquencies.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/EarliestCreditLine.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/EarliestCreditLine.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/EmploymentLength.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/EmploymentLength.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Filter.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Filter.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Filters.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Filters.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/HomeOwnership.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/HomeOwnership.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/IncomeValidated.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/IncomeValidated.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/InqueriesLast6Months.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/InqueriesLast6Months.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LCBT.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LCBT.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LCGA.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LCGA.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj" afterPath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Loan.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Loan.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LoanData.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LoanData.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LoanPurpose.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LoanPurpose.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/MonthsSinceLastDelinquency.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/MonthsSinceLastDelinquency.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/PublicRecordsOnFile.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/PublicRecordsOnFile.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/RevolvingLineUtilization.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/RevolvingLineUtilization.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/State.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/State.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/StubFilter.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/StubFilter.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/TotalCreditLines.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/TotalCreditLines.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Utilities.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Utilities.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/WordsInDescription.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/WordsInDescription.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/main.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/main.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="" />
     <ignored path="LendingClub.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -86,7 +56,7 @@
       <file leaf-file-name="CreditGrade.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/py/CreditGrade.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.37199125" vertical-offset="391" max-vertical-offset="1564">
+            <state vertical-scroll-proportion="0.3628602" vertical-offset="391" max-vertical-offset="1564">
               <caret line="43" column="14" selection-start-line="43" selection-start-column="14" selection-end-line="43" selection-end-column="14" />
               <folding />
             </state>
@@ -278,7 +248,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -327,14 +296,15 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="options.lastSelected" value="appearance" />
+    <property name="options.lastSelected" value="vcs.Git" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lcbt.py" />
+    <property name="last_opened_file_path" value="C:/cygwin/bin/git.exe" />
     <property name="FullScreen" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="restartRequiresConfirmation" value="true" />
@@ -667,14 +637,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="1846" height="1098" extended-state="6" />
+    <frame x="-9" y="-9" width="1846" height="1098" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923076" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16137856" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16120219" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -682,12 +652,12 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32923076" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32923076" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923076" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -738,6 +708,14 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/py/lcbt.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="11118" max-vertical-offset="12716">
+          <caret line="654" column="111" selection-start-line="654" selection-start-column="33" selection-end-line="654" selection-end-column="111" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/py/AmountRequested.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="391" max-vertical-offset="493">
@@ -812,13 +790,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="391" max-vertical-offset="493">
           <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharm30/system/python_stubs/-762174762/__builtin__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33260393" vertical-offset="9828" max-vertical-offset="87567">
-          <caret line="596" column="8" selection-start-line="596" selection-start-column="8" selection-end-line="596" selection-end-column="8" />
         </state>
       </provider>
     </entry>
@@ -946,9 +917,6 @@
         <state vertical-scroll-proportion="-1.875" vertical-offset="93" max-vertical-offset="1003">
           <caret line="9" column="22" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="74" />
         </state>
-      </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/py/Filter.py">
@@ -1102,7 +1070,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/py/CreditGrade.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.37199125" vertical-offset="391" max-vertical-offset="1564">
+        <state vertical-scroll-proportion="0.3628602" vertical-offset="391" max-vertical-offset="1564">
           <caret line="43" column="14" selection-start-line="43" selection-start-column="14" selection-end-line="43" selection-end-column="14" />
           <folding />
         </state>
