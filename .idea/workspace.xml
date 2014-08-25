@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/LendingClub/Arguments.cpp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/LendingClub/Arguments.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub.sln" afterPath="$PROJECT_DIR$/cpp/LendingClub.sln" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="" />
     <ignored path="LendingClub.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -61,8 +56,8 @@
       <file leaf-file-name="CreditGrade.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/py/CreditGrade.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2045952" vertical-offset="391" max-vertical-offset="1564">
-              <caret line="34" column="16" selection-start-line="34" selection-start-column="16" selection-end-line="34" selection-end-column="16" />
+            <state vertical-scroll-proportion="0.78118163" vertical-offset="391" max-vertical-offset="1564">
+              <caret line="65" column="40" selection-start-line="65" selection-start-column="40" selection-end-line="65" selection-end-column="40" />
               <folding />
             </state>
           </provider>
@@ -136,7 +131,7 @@
     </FindUsagesManager>
   </component>
   <component name="Git.Settings">
-    <option name="UPDATE_TYPE" value="REBASE" />
+    <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -644,7 +639,11 @@
       <created>1408929104013</created>
       <updated>1408929104013</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="add missing source files">
+      <created>1408936760652</created>
+      <updated>1408936760652</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -669,14 +668,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1846" height="1098" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923076" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923076" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16137856" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16137856" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -706,7 +705,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="updates to compile in vs2013" />
     <MESSAGE value="attempt to use functionoids" />
     <MESSAGE value="updates for linux" />
     <MESSAGE value="code fixes" />
@@ -731,7 +729,8 @@
     <MESSAGE value="pull out Arguments and fix grades generation" />
     <MESSAGE value="added calculation of average" />
     <MESSAGE value="got rid of current and array accesses during inner core. Improving performance" />
-    <option name="LAST_COMMIT_MESSAGE" value="got rid of current and array accesses during inner core. Improving performance" />
+    <MESSAGE value="add missing source files" />
+    <option name="LAST_COMMIT_MESSAGE" value="add missing source files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1103,8 +1102,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/py/CreditGrade.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2045952" vertical-offset="391" max-vertical-offset="1564">
-          <caret line="34" column="16" selection-start-line="34" selection-start-column="16" selection-end-line="34" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.78118163" vertical-offset="391" max-vertical-offset="1564">
+          <caret line="65" column="40" selection-start-line="65" selection-start-column="40" selection-end-line="65" selection-end-column="40" />
           <folding />
         </state>
       </provider>
