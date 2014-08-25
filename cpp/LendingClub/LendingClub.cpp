@@ -5,8 +5,8 @@
 
 extern int lcmain(int argc, char* argv[]);
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char *argv[])
 {
-    return lcmain(argc, reinterpret_cast<char**>(argv));
+    return lcmain(argc, argv);
 }
 

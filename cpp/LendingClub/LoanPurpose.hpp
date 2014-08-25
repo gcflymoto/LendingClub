@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    LoanPurpose(unsigned* current = nullptr) : Filter(name)
+    LoanPurpose() : Filter(name)
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {
@@ -53,7 +53,7 @@ public:
             }            
             options = power_bitset(purpose_bitmap);
         }
-        Filter::initialize(&options, current);
+        Filter::initialize(&options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const

@@ -27,10 +27,10 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    DebtToIncomeRatio(unsigned* current = nullptr) : Filter(name)
+    DebtToIncomeRatio() : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(10 * 100, 35 * 100, 5 * 100);
-        Filter::initialize(options, current);
+        Filter::initialize(options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const

@@ -38,3 +38,10 @@ AppWizard uses "TODO:" comments to indicate parts of the source code you
 should add to or customize.
 
 /////////////////////////////////////////////////////////////////////////////
+
+With current, and get_value() returning FilterValue&
+[iteration 573/4096 10.93 sec/iter] Matched 1000/313600 loans (0/mo.) test at 13.24% APY. 32 loans defaulted (3.2%, $18.14 avg loss) 10.81% net APY
+No current, and get_value() returning FilterValue
+[iteration 573/4096 8.636 sec/iter] Matched 1000/313600 loans (0/mo.) test at 13.24% APY. 32 loans defaulted (3.2%, $18.14 avg loss) 10.81% net APY
+No current, and direct _value lookup
+[iteration 489/4096 5.795 sec/iter] Matched 1000/313600 loans (0/mo.) test at 13.24% APY. 32 loans defaulted (3.2%, $18.14 avg loss) 10.81% net APY

@@ -27,10 +27,10 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    InqueriesLast6Months(unsigned* current = nullptr) : Filter(name)
+    InqueriesLast6Months() : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(0, 5, 1);
-        Filter::initialize(options, current);
+        Filter::initialize(options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const

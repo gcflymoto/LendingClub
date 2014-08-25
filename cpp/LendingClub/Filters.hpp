@@ -41,63 +41,62 @@ namespace lc
 {
 
 void construct_filter(const Loan::LoanType filter_type,
-                      std::vector<Filter*>::iterator& it,
-                      unsigned* current = nullptr)
+                      std::vector<Filter*>::iterator& it)
 {
     switch (filter_type) {
     case Loan::ACC_OPEN_PAST_24MTHS:
-        (*it) = new AccountsOpenPast24Months(current);
+        (*it) = new AccountsOpenPast24Months();
         break;
     case Loan::FUNDED_AMNT:
-        (*it) = new AmountRequested(current);
+        (*it) = new AmountRequested();
         break;
     case Loan::ANNUAL_INCOME:
-        (*it) = new AnnualIncome(current);
+        (*it) = new AnnualIncome();
         break;
     case Loan::GRADE:
-        (*it) = new CreditGrade(current);
+        (*it) = new CreditGrade();
         break;
     case Loan::DEBT_TO_INCOME_RATIO:
-        (*it) = new DebtToIncomeRatio(current);
+        (*it) = new DebtToIncomeRatio();
         break;
     case Loan::DELINQ_2YRS:
-        (*it) = new Delinquencies(current);
+        (*it) = new Delinquencies();
         break;
     case Loan::EARLIEST_CREDIT_LINE:
-        (*it) = new EarliestCreditLine(current);
+        (*it) = new EarliestCreditLine();
         break;
     case Loan::EMP_LENGTH:
-        (*it) = new EmploymentLength(current);
+        (*it) = new EmploymentLength();
         break;
     case Loan::HOME_OWNERSHIP:
-        (*it) = new HomeOwnership(current);
+        (*it) = new HomeOwnership();
         break;
     case Loan::INCOME_VALIDATED:
-        (*it) = new IncomeValidated(current);
+        (*it) = new IncomeValidated();
         break;
     case Loan::INQ_LAST_6MTHS:
-        (*it) = new InqueriesLast6Months(current);
+        (*it) = new InqueriesLast6Months();
         break;
     case Loan::PURPOSE:
-        (*it) = new LoanPurpose(current);
+        (*it) = new LoanPurpose();
         break;
     case Loan::MTHS_SINCE_LAST_DELINQ:
-        (*it) = new MonthsSinceLastDelinquency(current);
+        (*it) = new MonthsSinceLastDelinquency();
         break;
     case Loan::PUB_REC:
-        (*it) = new PublicRecordsOnFile(current);
+        (*it) = new PublicRecordsOnFile();
         break;
     case Loan::REVOL_UTILIZATION:
-        (*it) = new RevolvingLineUtilization(current);
+        (*it) = new RevolvingLineUtilization();
         break;
     case Loan::ADDR_STATE:
-        (*it) = new State(current);
+        (*it) = new State();
         break;
     case Loan::TOTAL_ACC:
-        (*it) = new TotalCreditLines(current);
+        (*it) = new TotalCreditLines();
         break;
     case Loan::DESC_WORD_COUNT:
-        (*it) = new WordsInDescription(current);
+        (*it) = new WordsInDescription();
         break;
     default:
         assert(filter_type < Loan::SIZE);

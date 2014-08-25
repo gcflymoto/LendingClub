@@ -31,7 +31,7 @@ public:
     static const int multiplier = 60 * 60 * 24 * 365;
     static const boost::posix_time::ptime now; // = boost::posix_time::second_clock::local_time(); //use the clock 
 
-    EarliestCreditLine(unsigned* current = nullptr) : Filter(name)
+    EarliestCreditLine() : Filter(name)
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {
@@ -42,7 +42,7 @@ public:
             options.push_back(30 * multiplier);
             options.push_back(40 * multiplier);
         }
-        Filter::initialize(&options, current);
+        Filter::initialize(&options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const

@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    Delinquencies(unsigned* current = nullptr) : Filter(name)
+    Delinquencies() : Filter(name)
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {
@@ -38,7 +38,7 @@ public:
             options.push_back(1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 11); // 5 - 11
         }
 
-        Filter::initialize(&options, current);
+        Filter::initialize(&options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const

@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    State(unsigned* current = nullptr) : Filter(name)
+    State() : Filter(name)
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {               
@@ -96,7 +96,7 @@ public:
             state_bitmap.push_back(_conversion_table["NY"]);                
             options = power_bitset(state_bitmap);
         }
-        Filter::initialize(&options, current);
+        Filter::initialize(&options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const

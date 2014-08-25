@@ -27,7 +27,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    MonthsSinceLastDelinquency(unsigned* current = nullptr) : Filter(name)
+    MonthsSinceLastDelinquency() : Filter(name)
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {
@@ -36,7 +36,7 @@ public:
             options.push_back(60);
             options.push_back(84);
         }
-        Filter::initialize(&options, current);
+        Filter::initialize(&options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const
