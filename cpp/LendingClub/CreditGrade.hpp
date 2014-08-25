@@ -28,7 +28,7 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    CreditGrade(unsigned* current = nullptr) : Filter(name)
+    CreditGrade() : Filter(name)
     {
         static std::vector<FilterValue> options;
 
@@ -73,7 +73,7 @@ public:
             options.push_back(it.second);
         }
 
-        Filter::initialize(&options, current);
+        Filter::initialize(&options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const

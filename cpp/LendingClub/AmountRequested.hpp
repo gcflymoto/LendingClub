@@ -27,10 +27,10 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    AmountRequested(unsigned* current = nullptr) : Filter(name)
+    AmountRequested() : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(5000, 30000, 5000);
-        Filter::initialize(options, current);
+        Filter::initialize(options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const

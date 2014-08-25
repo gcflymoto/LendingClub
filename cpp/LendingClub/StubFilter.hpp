@@ -26,11 +26,11 @@ public:
     //static const std::string sqlite_type;
     //static const std::string name;
 
-    StubFilter(unsigned* current = nullptr) :
+    StubFilter() :
         Filter("Stub") 
     {
         static std::vector<FilterValue> options(1);
-        Filter::initialize(&options, current);
+        Filter::initialize(&options);
     }
 
     static bool static_apply(const Filter&, const Loan&) 

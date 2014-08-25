@@ -27,10 +27,10 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    PublicRecordsOnFile(unsigned* current = nullptr) : Filter(name)
+    PublicRecordsOnFile() : Filter(name)
     {
         static std::vector<FilterValue> options(1);
-        Filter::initialize(&options, current);
+        Filter::initialize(&options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const

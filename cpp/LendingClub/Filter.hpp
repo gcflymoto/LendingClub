@@ -32,6 +32,7 @@ class Filter
 {
 public:
     Filter(const std::string& name) :
+        _value(0),
         _options(NULL),
         _name(name),
         _current(0)
@@ -44,6 +45,7 @@ public:
     {
         if (this != &other) // protect against invalid self-assignment
         {
+            _value = other._value;
             _options = other._options;
             //_name = other._name;
             _current = other._current;
@@ -52,23 +54,18 @@ public:
         return *this;
     }
 
-    void initialize(const std::vector<FilterValue>* options, unsigned* current)
+    void initialize(const std::vector<FilterValue>* options)
     {
         _options = options;
-        if (nullptr == current) {
-            _current = options->size();
-        } else {
-            _current = *current;
-            assert(_current < options->size());
-        }
+        set_current(0);
     }
 
     virtual bool apply(const Loan& loan) const = 0;
     virtual FilterValue convert(const std::string& raw_data) const = 0;
 
-    inline const FilterValue& get_value() const
+    inline const FilterValue get_value() const
     {
-        return (*_options)[_current];
+        return _value;
     }
 
     inline unsigned get_current() const
@@ -80,6 +77,7 @@ public:
     {
         assert(current < _options->size());
         _current = current;
+        _value = (*_options)[_current];
     }
 
     virtual const std::string get_string_value() const = 0;
@@ -93,6 +91,12 @@ public:
     {
         size_t size = _options->size();
         _current = (_current + 1) % (size + 1);
+        if (_current != size) {
+            _value = (*_options)[_current];
+        }
+        else {
+            _value = 0;
+        }
         return (_current != size);
     }
 
@@ -150,6 +154,7 @@ public:
     }	
     
 protected:
+    FilterValue _value;
     const std::vector<FilterValue>* _options;
     unsigned _current;
     const std::string& _name;   // TODO: Get rid of this field from the class and instead put it outside the class

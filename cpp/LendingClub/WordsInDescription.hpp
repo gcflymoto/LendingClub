@@ -29,10 +29,10 @@ public:
     static const std::string csv_name;
     static const std::string name;
 
-    WordsInDescription(unsigned* current = nullptr) : Filter(name)
+    WordsInDescription() : Filter(name)
     {
         static const std::vector<FilterValue>* options = create_range(25, 110, 10);
-        Filter::initialize(options, current);
+        Filter::initialize(options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const

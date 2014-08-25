@@ -291,8 +291,7 @@ public:
         std::vector<FilterValue> filter_value;
         FilterValue avg = sum / (end_index - start_index + 1);
         filter_value.push_back(avg);
-        unsigned current = 0;
-        filter[0]->initialize(&filter_value, &current);
+        filter[0]->initialize(&filter_value);
 
         info_msg("Avg " + filter[0]->get_name() + "=" + boost::lexical_cast<std::string>(static_cast<double>(sum) / (end_index - start_index + 1)) + " filter is " + filter[0]->get_string_value());
     }
