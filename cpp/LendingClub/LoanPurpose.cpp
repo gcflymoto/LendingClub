@@ -16,5 +16,4 @@ using namespace lc;
 
 const std::string LoanPurpose::sqlite_type = "INT";
 const std::string LoanPurpose::csv_name = "purpose";
-const std::string LoanPurpose::name = "LoanPurpose";
 std::map<std::string, FilterValue> LoanPurpose::_conversion_table;

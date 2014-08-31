@@ -16,4 +16,3 @@ using namespace lc;
 
 const std::string WordsInDescription::sqlite_type = "INT";
 const std::string WordsInDescription::csv_name = "desc";
-const std::string WordsInDescription::name = "WordsInDescription";

@@ -38,7 +38,7 @@ public:
         _loan_data.initialize();
     }
 
-    LoanReturn test(std::vector<Filter*>& test_filters) 
+    LoanReturn test(std::vector<VariantFilter>& test_filters) 
     {
         _invested.clear();
         _test_filters = &test_filters;
@@ -53,8 +53,11 @@ public:
 
     bool consider(const Loan& loan) 
     {
+        static filter_test_visitor test_visitor;
+        test_visitor.set(loan);
+
         for (auto& lc_filter : *_test_filters) {
-            if (!lc_filter->apply(loan)) {
+            if (!lc_filter.apply_visitor(test_visitor)) {
                 return false;
             }
         }
@@ -74,8 +77,8 @@ public:
 
 private:
     const Arguments&						_args;
-    std::vector<Filter*>					_filters;
-    std::vector<Filter*>*                   _test_filters;
+    std::vector<VariantFilter>			    _filters;
+    std::vector<VariantFilter>*             _test_filters;
     const int								_worker_idx;
     LoanData								_loan_data;
     std::vector<LoanValue>                  _invested;

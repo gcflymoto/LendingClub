@@ -27,11 +27,10 @@ class EarliestCreditLine : public Filter
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
-    static const std::string name;
     static const int multiplier = 60 * 60 * 24 * 365;
     static const boost::posix_time::ptime now; // = boost::posix_time::second_clock::local_time(); //use the clock 
 
-    EarliestCreditLine() : Filter(name)
+    EarliestCreditLine() : Filter()
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {
@@ -43,33 +42,6 @@ public:
             options.push_back(40 * multiplier);
         }
         Filter::initialize(&options);
-    }
-
-    virtual FilterValue convert(const std::string& raw_data) const
-    {
-        if (raw_data.empty()) {
-            return 0;
-        }
-        else {
-            boost::posix_time::ptime raw_time(boost::gregorian::from_simple_string(raw_data));
-            return (now - raw_time).total_seconds();
-        }
-    }
-
-    virtual const std::string get_string_value() const
-    {
-        boost::posix_time::time_duration td = boost::posix_time::seconds(static_cast<long>(get_value()));
-        return ">=" + boost::posix_time::to_simple_string(now - td);
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return (loan.earliest_credit_line >= self.get_value());
-    }
-
-    inline bool apply(const Loan& loan) const
-    {
-        return (loan.earliest_credit_line >= get_value());
     }
 };
 

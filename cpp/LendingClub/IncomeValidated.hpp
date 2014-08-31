@@ -25,43 +25,11 @@ class IncomeValidated : public Filter
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
-    static const std::string name;
 
-    IncomeValidated() : Filter(name)
+    IncomeValidated() : Filter()
     {
         static const std::vector<FilterValue>* options = create_range(0, 2, 1);
         Filter::initialize(options);
-    }
-
-    virtual FilterValue convert(const std::string& raw_data) const
-    {
-        if (raw_data == "TRUE") {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    }
-
-    virtual const std::string get_string_value() const
-    {
-        auto value = get_value();
-        if (value == 0) {
-            return "income validated";
-        }
-        else {
-            return "income unvalidated";
-        }
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return (loan.income_validated != self.get_value());
-    }
-
-    inline bool apply(const Loan& loan) const
-    {
-        return (loan.income_validated != get_value());
     }
 };
 

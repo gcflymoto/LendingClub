@@ -1,116 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="add missing source files">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/unsuccessfulbuild" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/unsuccessfulbuild" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitattributes" afterPath="$PROJECT_DIR$/.gitattributes" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="$PROJECT_DIR$/.idea/.name" />
+    <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/AccountsOpenPast24Months.py" afterPath="$PROJECT_DIR$/py/AccountsOpenPast24Months.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AmountRequested.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AmountRequested.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AmountRequested.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AmountRequested.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/AmountRequested.py" afterPath="$PROJECT_DIR$/py/AmountRequested.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AnnualIncome.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AnnualIncome.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AnnualIncome.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AnnualIncome.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/AnnualIncome.py" afterPath="$PROJECT_DIR$/py/AnnualIncome.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Arguments.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Arguments.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Arguments.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Arguments.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/CL.read.1.tlog" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/CL.read.1.tlog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/CL.write.1.tlog" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/CL.write.1.tlog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/CSV.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/CSV.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/CreditGrade.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/CreditGrade.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/CreditGrade.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/CreditGrade.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/CreditGrade.py" afterPath="$PROJECT_DIR$/py/CreditGrade.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/DebtToIncomeRatio.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/DebtToIncomeRatio.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/DebtToIncomeRatio.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/DebtToIncomeRatio.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/DebtToIncomeRatio.py" afterPath="$PROJECT_DIR$/py/DebtToIncomeRatio.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Delinquencies.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Delinquencies.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Delinquencies.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Delinquencies.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/Delinquencies.py" afterPath="$PROJECT_DIR$/py/Delinquencies.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/EarliestCreditLine.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/EarliestCreditLine.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/EarliestCreditLine.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/EarliestCreditLine.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/EarliestCreditLine.py" afterPath="$PROJECT_DIR$/py/EarliestCreditLine.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/EmploymentLength.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/EmploymentLength.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/EmploymentLength.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/EmploymentLength.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/EmploymentLength.py" afterPath="$PROJECT_DIR$/py/EmploymentLength.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/FastDelegate.h" afterPath="$PROJECT_DIR$/cpp/LendingClub/FastDelegate.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/FastDelegate2011.h" afterPath="$PROJECT_DIR$/cpp/LendingClub/FastDelegate2011.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/FastDelegateBind.h" afterPath="$PROJECT_DIR$/cpp/LendingClub/FastDelegateBind.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/FastFunc.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/FastFunc.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Filter.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Filter.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/Filter.py" afterPath="$PROJECT_DIR$/py/Filter.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Filters.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Filters.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/HomeOwnership.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/HomeOwnership.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/HomeOwnership.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/HomeOwnership.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/HomeOwnership.py" afterPath="$PROJECT_DIR$/py/HomeOwnership.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/IncomeValidated.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/IncomeValidated.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/IncomeValidated.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/IncomeValidated.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/IncomeValidated.py" afterPath="$PROJECT_DIR$/py/IncomeValidated.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/InqueriesLast6Months.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/InqueriesLast6Months.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/InqueriesLast6Months.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/InqueriesLast6Months.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/InquiriesLast6Months.py" afterPath="$PROJECT_DIR$/py/InquiriesLast6Months.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LCBT.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LCBT.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LCGA.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LCGA.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/LendingClub.iml" afterPath="$PROJECT_DIR$/.idea/LendingClub.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/LendingClub.lastbuildstate" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/LendingClub.lastbuildstate" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub.sln" afterPath="$PROJECT_DIR$/cpp/LendingClub.sln" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj.filters" afterPath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj.filters" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj" afterPath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Loan.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Loan.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LoanData.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LoanData.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/LoanData.py" afterPath="$PROJECT_DIR$/py/LoanData.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/LoanEnum.py" afterPath="$PROJECT_DIR$/py/LoanEnum.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LoanPurpose.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LoanPurpose.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LoanPurpose.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LoanPurpose.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/LoanPurpose.py" afterPath="$PROJECT_DIR$/py/LoanPurpose.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/MonthsSinceLastDelinquency.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/MonthsSinceLastDelinquency.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/MonthsSinceLastDelinquency.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/MonthsSinceLastDelinquency.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/MonthsSinceLastDelinquency.py" afterPath="$PROJECT_DIR$/py/MonthsSinceLastDelinquency.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/PublicRecordsOnFile.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/PublicRecordsOnFile.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/PublicRecordsOnFile.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/PublicRecordsOnFile.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/PublicRecordsOnFile.py" afterPath="$PROJECT_DIR$/py/PublicRecordsOnFile.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReadMe.txt" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReadMe.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/RevolvingLineUtilization.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/RevolvingLineUtilization.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/RevolvingLineUtilization.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/RevolvingLineUtilization.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/RevolvingLineUtilization.py" afterPath="$PROJECT_DIR$/py/RevolvingLineUtilization.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/SqliteLoanData.py" afterPath="$PROJECT_DIR$/py/SqliteLoanData.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/State.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/State.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/State.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/State.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/State.py" afterPath="$PROJECT_DIR$/py/State.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/StubFilter.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/StubFilter.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/StubFilter.py" afterPath="$PROJECT_DIR$/py/StubFilter.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/TotalCreditLines.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/TotalCreditLines.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/TotalCreditLines.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/TotalCreditLines.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/TotalCreditLines.py" afterPath="$PROJECT_DIR$/py/TotalCreditLines.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Utilities.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Utilities.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Utilities.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Utilities.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/WordsInDescription.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/WordsInDescription.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/WordsInDescription.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/WordsInDescription.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/WordsInDescription.py" afterPath="$PROJECT_DIR$/py/WordsInDescription.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/bisect_script.csh" afterPath="$PROJECT_DIR$/cpp/LendingClub/bisect_script.csh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/cl.command.1.tlog" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/cl.command.1.tlog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/csv.h" afterPath="$PROJECT_DIR$/cpp/LendingClub/csv.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/gczajkow.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/gczajkow.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/lcbt.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/lcbt.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/lcbt.py" afterPath="$PROJECT_DIR$/py/lcbt.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/link-pgomgr.read.1.tlog" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/link-pgomgr.read.1.tlog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/link.command.1.tlog" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/link.command.1.tlog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/link.read.1.tlog" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/link.read.1.tlog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/link.write.1.tlog" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReleasePGO/LendingClub.tlog/link.write.1.tlog" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/main.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/main.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/pretty_decimal.py" afterPath="$PROJECT_DIR$/py/pretty_decimal.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" afterPath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/stdafx.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/stdafx.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/stdafx.h" afterPath="$PROJECT_DIR$/cpp/LendingClub/stdafx.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/targetver.h" afterPath="$PROJECT_DIR$/cpp/LendingClub/targetver.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/py/utilities.py" afterPath="$PROJECT_DIR$/py/utilities.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="LendingClub.iws" />
@@ -167,8 +100,8 @@
       <file leaf-file-name="CreditGrade.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/py/CreditGrade.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.61378556" vertical-offset="408" max-vertical-offset="1581">
-              <caret line="57" column="0" selection-start-line="36" selection-start-column="17" selection-end-line="57" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.2603939" vertical-offset="408" max-vertical-offset="1581">
+              <caret line="38" column="13" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -755,7 +688,11 @@
       <created>1408936760652</created>
       <updated>1408936760652</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="add missing source files">
+      <created>1409449892220</created>
+      <updated>1409449892220</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -780,13 +717,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1846" height="1098" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923076" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923076" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16137856" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16137856" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -796,7 +734,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32923076" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923076" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -1214,8 +1151,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/py/CreditGrade.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.61378556" vertical-offset="408" max-vertical-offset="1581">
-          <caret line="57" column="0" selection-start-line="36" selection-start-column="17" selection-end-line="57" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.2603939" vertical-offset="408" max-vertical-offset="1581">
+          <caret line="38" column="13" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
           <folding />
         </state>
       </provider>

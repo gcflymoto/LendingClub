@@ -25,9 +25,8 @@ class MonthsSinceLastDelinquency : public Filter
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
-    static const std::string name;
 
-    MonthsSinceLastDelinquency() : Filter(name)
+    MonthsSinceLastDelinquency() : Filter()
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {
@@ -37,26 +36,6 @@ public:
             options.push_back(84);
         }
         Filter::initialize(&options);
-    }
-
-    virtual FilterValue convert(const std::string& raw_data) const
-    {
-        return (raw_data.empty()) ? 61 : boost::lexical_cast<FilterValue>(raw_data.c_str());
-    }
-
-    virtual const std::string get_string_value() const
-    {
-        return ">=" + boost::lexical_cast<std::string>(get_value());
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return (loan.mths_since_last_delinq >= self.get_value());
-    }
-
-    inline bool apply(const Loan& loan) const
-    {
-        return (loan.mths_since_last_delinq >= get_value());
     }
 };
 

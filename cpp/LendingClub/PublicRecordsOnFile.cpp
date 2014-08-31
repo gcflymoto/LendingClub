@@ -16,4 +16,3 @@ using namespace lc;
 
 const std::string PublicRecordsOnFile::sqlite_type = "INT";
 const std::string PublicRecordsOnFile::csv_name = "pub_rec";
-const std::string PublicRecordsOnFile::name = "PublicRecordsOnFile";

@@ -16,4 +16,3 @@ using namespace lc;
 
 const std::string AccountsOpenPast24Months::sqlite_type = "INT";
 const std::string AccountsOpenPast24Months::csv_name = "acc_open_past_24mths";
-const std::string AccountsOpenPast24Months::name = "AccountsOpenPast24Months";

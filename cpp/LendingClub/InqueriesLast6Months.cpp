@@ -16,4 +16,3 @@ using namespace lc;
 
 const std::string InqueriesLast6Months::sqlite_type = "INT";
 const std::string InqueriesLast6Months::csv_name = "inq_last_6mths";
-const std::string InqueriesLast6Months::name = "InqueriesLast6Months";

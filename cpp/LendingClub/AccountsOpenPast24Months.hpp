@@ -25,37 +25,11 @@ class AccountsOpenPast24Months : public Filter
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
-    static const std::string name;
 
-    AccountsOpenPast24Months() : Filter(name)
+    AccountsOpenPast24Months() : Filter()
     {
         static const std::vector<FilterValue>* options = create_range(0, 8, 1);
         Filter::initialize(options);
-    }
-
-    virtual FilterValue convert(const std::string& raw_data) const
-    {
-        if (raw_data.empty()) {
-            return 0;
-        }
-        else {
-            return boost::lexical_cast<FilterValue>(raw_data.c_str());
-        }
-    }
-
-    virtual const std::string get_string_value() const
-    {
-        return "<=" + boost::lexical_cast<std::string>(get_value());
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return (loan.acc_open_past_24mths <= self.get_value());
-    }
-
-    inline bool apply(const Loan& loan) const
-    {
-        return (loan.acc_open_past_24mths <= get_value());
     }
 };
 

@@ -26,9 +26,11 @@ class CreditGrade : public Filter
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
-    static const std::string name;
 
-    CreditGrade() : Filter(name)
+    friend class filter_convert_visitor;
+    friend class filter_stringify_visitor;
+
+    CreditGrade() : Filter()
     {
         static std::vector<FilterValue> options;
 
@@ -74,26 +76,6 @@ public:
         }
 
         Filter::initialize(&options);
-    }
-
-    virtual FilterValue convert(const std::string& raw_data) const
-    {
-        return _converation_table[raw_data];
-    }
-
-    virtual const std::string get_string_value() const
-    {
-        return _reverse_table[get_value()];
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return ((loan.grade & self.get_value()) > 0);
-    }
-
-    inline bool apply(const Loan& loan) const
-    {
-        return ((loan.grade & get_value()) > 0);
     }
 
 private:

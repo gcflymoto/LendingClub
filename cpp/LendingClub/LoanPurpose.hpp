@@ -25,9 +25,11 @@ class LoanPurpose : public Filter
 public:
     static const std::string sqlite_type;
     static const std::string csv_name;
-    static const std::string name;
 
-    LoanPurpose() : Filter(name)
+    friend class filter_convert_visitor;
+    friend class filter_stringify_visitor;
+
+    LoanPurpose() : Filter()
     {
         static std::vector<FilterValue> options;
         if (options.empty()) {
@@ -54,40 +56,6 @@ public:
             options = power_bitset(purpose_bitmap);
         }
         Filter::initialize(&options);
-    }
-
-    virtual FilterValue convert(const std::string& raw_data) const
-    {
-        auto it = _conversion_table.find(raw_data);
-        assert(it != _conversion_table.end());
-        return (it->second);
-    }
-
-    virtual const std::string get_string_value() const
-    {
-        auto value = get_value();
-        std::string result;
-        for (auto& it : _conversion_table) {
-            if ((it.second & value) > 0) {
-                result += it.first + ',';
-            }
-        }
-        if (result.empty()) {
-            return result;
-        }
-        else {
-            return '"' + result.substr(0, result.length() - 1) + '"';
-        }
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return ((loan.purpose & self.get_value()) > 0);
-    }
-
-    inline bool apply(const Loan& loan) const
-    {
-        return ((loan.purpose & get_value()) > 0);
     }
 
 private:

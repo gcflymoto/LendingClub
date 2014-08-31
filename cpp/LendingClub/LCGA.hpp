@@ -30,7 +30,7 @@ namespace lc
 
 class GATest
 {
-    typedef std::vector<std::pair<LoanReturn, std::vector<Filter*>>> PopulationType;
+    typedef std::vector<std::pair<LoanReturn, std::vector<VariantFilter>>> PopulationType;
 public:
     GATest(const std::vector<Loan::LoanType>& backtest_filters, LCBT& lcbt) :
         _lcbt(lcbt),
@@ -46,17 +46,21 @@ public:
 
         std::hash<lc::FilterValue> filter_hash;
 
+        filter_count_visitor count_visitor;
+        filter_value_visitor value_visitor;
+        filter_set_current_visitor current_visitor;
+
         for (unsigned i = 0; i < population_size; ++i) {
-            std::vector<Filter*> filters(backtest_filters.size());
-            std::vector<Filter*> mate_filters(backtest_filters.size());
+            std::vector<VariantFilter> filters(backtest_filters.size());
+            std::vector<VariantFilter> mate_filters(backtest_filters.size());
 
             // Create each of the filters
             unsigned j = 0;
             for (auto& filter_type : backtest_filters) {
-                std::vector<Filter*>::iterator filter_it = filters.begin() + j;
-                construct_filter(filter_type, filter_it);
-                std::vector<Filter*>::iterator mate_filter_it = mate_filters.begin() + j;
-                construct_filter(filter_type, mate_filter_it);
+                auto filter_it = filters.begin() + j;
+                construct_variant_filter(filter_type, filter_it);
+                auto mate_filter_it = mate_filters.begin() + j;
+                construct_variant_filter(filter_type, mate_filter_it);
                 ++j;
             }
 
@@ -66,10 +70,12 @@ public:
 
                 unsigned j = 0;
                 for (auto& filter_type : backtest_filters) {
-                    std::vector<Filter*>::iterator filter_it = filters.begin() + j;
-                    (*filter_it)->set_current(randint(0, (*filter_it)->get_count() - 1));
+                    auto filter_it = filters.begin() + j;
+                    auto& f = *filter_it;
+                    current_visitor.set(randint(0, f.apply_visitor(count_visitor) - 1));
+                    f.apply_visitor(current_visitor);
 
-                    hash_result = hash_result ^ (filter_hash((*filter_it)->get_value() << 1));
+                    hash_result = hash_result ^ (filter_hash(f.apply_visitor(value_visitor) << 1));
                     ++j;
                 }
             // Keep randomizing until we find a filter set we haven't used before
@@ -85,13 +91,13 @@ public:
 
         _csv_file.open(_args["csvresults"].as<std::string>().c_str());
 
-        std::vector<std::string> csv_field_names; 
+        std::vector<std::string> csv_field_names;
+        static filter_name_visitor name_visitor;
         for (auto& lc_filter : _population[0].second) {
-            _csv_file << lc_filter->get_name() << ',';
+            _csv_file << lc_filter.apply_visitor(name_visitor) << ',';
         }
 
         _csv_file << "expected_apy,num_loans,num_defaulted,pct_defaulted,avg_default_loss,net_apy\n";
-
     }
 
     void run()
@@ -124,7 +130,7 @@ public:
     {
         net_apy_cmp(unsigned config_fitness_sort_num_loans) : config_fitness_sort_num_loans(config_fitness_sort_num_loans) {}
 
-        inline bool operator() (const std::pair<LoanReturn, std::vector<Filter*>>& a, const std::pair<LoanReturn, std::vector<Filter*>>& b)
+        inline bool operator() (const std::pair<LoanReturn, std::vector<VariantFilter>>& a, const std::pair<LoanReturn, std::vector<VariantFilter>>& b)
         {
             double a_fit = (a.first.num_loans >= config_fitness_sort_num_loans) ? a.first.net_apy : 0.0;
             double b_fit = (b.first.num_loans >= config_fitness_sort_num_loans) ? b.first.net_apy : 0.0;
@@ -156,11 +162,14 @@ public:
             net_apy = best_results.net_apy;
         }
 
+        static filter_name_visitor name_visitor;
+        static filter_stringify_visitor stringify_visitor;
+
         if (net_apy > _best_net_apy) {
 
             for (auto& lc_filter : best_filters) {
-                auto filter_name = lc_filter->get_name();
-                auto filter_val_str = lc_filter->get_string_value();
+                auto filter_name = lc_filter.apply_visitor(name_visitor);
+                auto filter_val_str = lc_filter.apply_visitor(stringify_visitor);
                 _csv_file << filter_val_str << ',';
             }
 
@@ -172,8 +181,8 @@ public:
 
         std::string filters = "";
         for (auto& lc_filter : best_filters) {
-            auto filter_name = lc_filter->get_name();
-            auto filter_val_str = lc_filter->get_string_value();
+            auto filter_name = lc_filter.apply_visitor(name_visitor);;
+            auto filter_val_str = lc_filter.apply_visitor(stringify_visitor);
             filters += filter_name + " is " + filter_val_str + ',';
         }
 
@@ -187,11 +196,15 @@ public:
 
     void copy_population(const PopulationType& from_population, PopulationType& to_population)
     {
+        static filter_set_current_visitor set_current_visitor;
+        static filter_get_current_visitor get_current_visitor;
+
         unsigned i = 0;
         for (auto& lc_pair : from_population) {
             unsigned j = 0;
             for (auto& lc_filter : lc_pair.second) {
-                to_population[i].second[j]->set_current(lc_filter->get_current());
+                set_current_visitor.set(lc_filter.apply_visitor(get_current_visitor));
+                to_population[i].second[j].apply_visitor(set_current_visitor);
                 ++j;
             }
             ++i;
@@ -205,6 +218,11 @@ public:
         auto mate_size = boost::numeric_cast<unsigned>(std::floor(_population.size() / 5.0));
         auto mutation_possibility = boost::numeric_cast<unsigned>(1.0 / _args["mutation_rate"].as<double>());
         copy_population(_population, _mate_population);
+
+        static filter_set_current_visitor set_current_visitor;
+        static filter_get_current_visitor get_current_visitor;
+        static filter_count_visitor count_visitor;
+        static filter_value_visitor value_visitor;
 
         std::hash<lc::FilterValue> filter_hash;
 
@@ -221,15 +239,17 @@ public:
                     // Mate with 20 % of population
                     auto partner = randint(0, mate_size);
 
-                    lc_filters[j]->set_current(_population[partner].second[j]->get_current());
+                    auto& lc_filter = lc_filters[j];
+                    set_current_visitor.set(_population[partner].second[j].apply_visitor(get_current_visitor));
+                    lc_filter.apply_visitor(set_current_visitor);
 
                     // Mutate! Once in a blue moon
                     if (!randint(0, mutation_possibility)) {
-                        auto& lc_filter = lc_filters[j];
-                        lc_filter->set_current(randint(0, lc_filter->get_count() - 1));
+                        set_current_visitor.set(randint(0, lc_filter.apply_visitor(count_visitor) - 1));
+                        lc_filter.apply_visitor(set_current_visitor);
                     }
 
-                    hash_result = hash_result ^ (filter_hash(lc_filters[j]->get_value()) << 1);
+                    hash_result = hash_result ^ (filter_hash(lc_filter.apply_visitor(value_visitor)) << 1);
                 }
             // Keep randomizing until we find a filter set we haven't used before
             } while (_memoized_filters.find(hash_result) != _memoized_filters.end());
@@ -242,7 +262,7 @@ public:
 
     LCBT&                                                       _lcbt;
     const Arguments&						                    _args;
-    std::vector<Filter*>					                    _filters;
+    std::vector<VariantFilter>					                _filters;
     PopulationType                                              _population;
     PopulationType                                              _mate_population;
     unsigned                                                    _iteration;

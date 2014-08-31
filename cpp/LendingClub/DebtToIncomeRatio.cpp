@@ -16,4 +16,4 @@ using namespace lc;
 
 const std::string DebtToIncomeRatio::sqlite_type = "INT";
 const std::string DebtToIncomeRatio::csv_name = "dti";
-const std::string DebtToIncomeRatio::name = "DebtToIncomeRatio";
+

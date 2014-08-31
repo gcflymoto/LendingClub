@@ -50,8 +50,8 @@ public:
         // Create each of the filters and use its conversion utility for normalizing the data
         for (auto& filter_type : conversion_filters) {
             _filters.resize(filter_type + 1);
-            std::vector<Filter*>::iterator filter_it = _filters.begin() + filter_type;
-            construct_filter(filter_type, filter_it);
+            std::vector<VariantFilter>::iterator filter_it = _filters.begin() + filter_type;
+            construct_variant_filter(filter_type, filter_it);
         }
 
         _now = boost::posix_time::second_clock::local_time(); //use the clock 
@@ -285,36 +285,51 @@ public:
             sum += data[i];
         }
 
-        std::vector<Filter*> filter(1);
-        construct_filter(loan_value_type, filter.begin());
+        std::vector<VariantFilter> filter(1);
+        construct_variant_filter(loan_value_type, filter.begin());
         std::vector<FilterValue> filter_value;
         FilterValue avg = sum / (end_index - start_index + 1);
         filter_value.push_back(avg);
-        filter[0]->initialize(&filter_value);
 
-        info_msg("Avg " + filter[0]->get_name() + "=" + boost::lexical_cast<std::string>(static_cast<double>(sum) / (end_index - start_index + 1)) + " filter is " + filter[0]->get_string_value());
+        filter_initialize_visitor initialize_visitor(filter_value);
+
+        filter[0].apply_visitor(initialize_visitor);
+
+        filter_name_visitor name_visitor;
+        filter_stringify_visitor stringify_visitor;
+
+        info_msg("Avg " + filter[0].apply_visitor(name_visitor) + "=" + 
+            boost::lexical_cast<std::string>(static_cast<double>(sum) / (end_index - start_index + 1)) + 
+            " filter is " + filter[0].apply_visitor(stringify_visitor));
+    }
+
+    FilterValue convert_raw_data(VariantFilter& filter, const std::string& raw_data)
+    {
+        static filter_convert_visitor visitor;
+        visitor.set(raw_data);
+        return boost::apply_visitor(visitor, filter);
     }
 
     virtual bool normalize_loan_data(const RawLoan& raw_loan, Loan& loan, LoanInfo& loan_info)
     {
-        loan.acc_open_past_24mths = _filters[Loan::ACC_OPEN_PAST_24MTHS]->convert(raw_loan.acc_open_past_24mths);
-        loan.funded_amnt = _filters[Loan::FUNDED_AMNT]->convert(raw_loan.funded_amnt);
-        loan.annual_income = _filters[Loan::ANNUAL_INCOME]->convert(raw_loan.annual_inc);
-        loan.grade = _filters[Loan::GRADE]->convert(raw_loan.grade);
-        loan.debt_to_income_ratio = _filters[Loan::DEBT_TO_INCOME_RATIO]->convert(raw_loan.dti);
-        loan.delinq_2yrs = _filters[Loan::DELINQ_2YRS]->convert(raw_loan.delinq_2yrs);
-        loan.earliest_credit_line = _filters[Loan::EARLIEST_CREDIT_LINE]->convert(raw_loan.earliest_cr_line);
-        loan.emp_length = _filters[Loan::EMP_LENGTH]->convert(raw_loan.emp_length);
-        loan.home_ownership = _filters[Loan::HOME_OWNERSHIP]->convert(raw_loan.home_ownership);
-        loan.income_validated = _filters[Loan::INCOME_VALIDATED]->convert(raw_loan.is_inc_v);
-        loan.inq_last_6mths = _filters[Loan::INQ_LAST_6MTHS]->convert(raw_loan.inq_last_6mths);
-        loan.purpose = _filters[Loan::PURPOSE]->convert(raw_loan.purpose);
-        loan.mths_since_last_delinq = _filters[Loan::MTHS_SINCE_LAST_DELINQ]->convert(raw_loan.mths_since_last_delinq);
-        loan.pub_rec = _filters[Loan::PUB_REC]->convert(raw_loan.pub_rec);
-        loan.revol_utilization = _filters[Loan::REVOL_UTILIZATION]->convert(raw_loan.revol_util);
-        loan.addr_state = _filters[Loan::ADDR_STATE]->convert(raw_loan.addr_state);
-        loan.total_acc = _filters[Loan::TOTAL_ACC]->convert(raw_loan.total_acc);
-        loan.desc_word_count = _filters[Loan::DESC_WORD_COUNT]->convert(raw_loan.desc);
+        loan.acc_open_past_24mths = convert_raw_data(_filters[Loan::ACC_OPEN_PAST_24MTHS], raw_loan.acc_open_past_24mths);
+        loan.funded_amnt = convert_raw_data(_filters[Loan::FUNDED_AMNT], raw_loan.funded_amnt);
+        loan.annual_income = convert_raw_data(_filters[Loan::ANNUAL_INCOME], raw_loan.annual_inc);
+        loan.grade = convert_raw_data(_filters[Loan::GRADE], raw_loan.grade);
+        loan.debt_to_income_ratio = convert_raw_data(_filters[Loan::DEBT_TO_INCOME_RATIO], raw_loan.dti);
+        loan.delinq_2yrs = convert_raw_data(_filters[Loan::DELINQ_2YRS], raw_loan.delinq_2yrs);
+        loan.earliest_credit_line = convert_raw_data(_filters[Loan::EARLIEST_CREDIT_LINE], raw_loan.earliest_cr_line);
+        loan.emp_length = convert_raw_data(_filters[Loan::EMP_LENGTH], raw_loan.emp_length);
+        loan.home_ownership = convert_raw_data(_filters[Loan::HOME_OWNERSHIP], raw_loan.home_ownership);
+        loan.income_validated = convert_raw_data(_filters[Loan::INCOME_VALIDATED], raw_loan.is_inc_v);
+        loan.inq_last_6mths = convert_raw_data(_filters[Loan::INQ_LAST_6MTHS], raw_loan.inq_last_6mths);
+        loan.purpose = convert_raw_data(_filters[Loan::PURPOSE], raw_loan.purpose);
+        loan.mths_since_last_delinq = convert_raw_data(_filters[Loan::MTHS_SINCE_LAST_DELINQ], raw_loan.mths_since_last_delinq);
+        loan.pub_rec = convert_raw_data(_filters[Loan::PUB_REC], raw_loan.pub_rec);
+        loan.revol_utilization = convert_raw_data(_filters[Loan::REVOL_UTILIZATION], raw_loan.revol_util);
+        loan.addr_state = convert_raw_data(_filters[Loan::ADDR_STATE], raw_loan.addr_state);
+        loan.total_acc = convert_raw_data(_filters[Loan::TOTAL_ACC], raw_loan.total_acc);
+        loan.desc_word_count = convert_raw_data(_filters[Loan::DESC_WORD_COUNT], raw_loan.desc);
 
         loan_info.loan_status = raw_loan.loan_status;
         loan_info.issue_datetime = boost::gregorian::date(boost::gregorian::from_simple_string(raw_loan.issue_d));		
@@ -438,7 +453,7 @@ public:
 
 private:
         const Arguments&						_args;
-        std::vector<Filter*>					_filters;
+        std::vector<VariantFilter>				_filters;
         const int								_worker_idx;
         unsigned								_row;
         unsigned								_skipped_loans;

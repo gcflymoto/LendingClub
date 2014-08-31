@@ -16,5 +16,4 @@ using namespace lc;
 
 const std::string State::sqlite_type = "INT";
 const std::string State::csv_name = "addr_state";
-const std::string State::name = "State";
 std::map<std::string, FilterValue> State::_conversion_table;

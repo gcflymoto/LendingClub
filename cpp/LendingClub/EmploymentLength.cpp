@@ -16,4 +16,3 @@ using namespace lc;
 
 const std::string EmploymentLength::sqlite_type = "INT";
 const std::string EmploymentLength::csv_name = "emp_length";
-const std::string EmploymentLength::name = "EmploymentLength";

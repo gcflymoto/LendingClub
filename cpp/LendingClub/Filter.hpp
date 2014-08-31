@@ -31,15 +31,12 @@ typedef unsigned long long FilterValue;
 class Filter
 {
 public:
-    Filter(const std::string& name) :
+    Filter() :
         _value(0),
         _options(NULL),
-        _name(name),
         _current(0)
     {
     }
-
-    virtual ~Filter() = 0;
 
     Filter& operator=(const Filter& other)
     {
@@ -60,9 +57,6 @@ public:
         set_current(0);
     }
 
-    virtual bool apply(const Loan& loan) const = 0;
-    virtual FilterValue convert(const std::string& raw_data) const = 0;
-
     inline const FilterValue get_value() const
     {
         return _value;
@@ -80,9 +74,7 @@ public:
         _value = (*_options)[_current];
     }
 
-    virtual const std::string get_string_value() const = 0;
-
-    size_t get_count()
+    inline size_t get_count()
     {
         return _options->size();
     }
@@ -147,20 +139,12 @@ public:
         }
         return nullptr;
     }
-
-    const std::string& get_name() const
-    {
-        return _name;
-    }	
     
 protected:
     FilterValue _value;
     const std::vector<FilterValue>* _options;
     unsigned _current;
-    const std::string& _name;   // TODO: Get rid of this field from the class and instead put it outside the class
 };
-
-inline Filter::~Filter() {}  // defined even though it's pure virtual; it's faster this way; trust me
 
 };
 

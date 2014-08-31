@@ -16,4 +16,3 @@ using namespace lc;
 
 const std::string AnnualIncome::sqlite_type = "INT";
 const std::string AnnualIncome::csv_name = "annual_inc";
-const std::string AnnualIncome::name = "AnnualIncome";

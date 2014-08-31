@@ -16,5 +16,4 @@ using namespace lc;
 
 const std::string EarliestCreditLine::sqlite_type = "INT";
 const std::string EarliestCreditLine::csv_name = "EarliestCreditLine";
-const std::string EarliestCreditLine::name = "EarliestCreditLine";
 const boost::posix_time::ptime EarliestCreditLine::now = boost::posix_time::second_clock::local_time(); //use the clock 
