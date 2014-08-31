@@ -80,7 +80,7 @@ public:
         return (loan.emp_length <= self.get_value());
     }
 
-    virtual bool apply(const Loan& loan) const
+    inline bool apply(const Loan& loan) const
     {
         return (loan.emp_length <= get_value());
     }

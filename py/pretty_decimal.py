@@ -8,6 +8,7 @@ Created on May 31, 2013
 '''
 from decimal import Decimal
 
+
 def _plusone(digits):
     for i in reversed(range(len(digits))):
         digits[i] = digits[i] + 1

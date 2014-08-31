@@ -20,11 +20,12 @@ class AccountsOpenLast24Months(Filter.Filter):
     name = "acc_open_past_24mths"
     query = "(acc_open_past_24mths <= ?)"
     named_query = "(acc_open_past_24mths <= :acc_open_past_24mths)"
+
     def __init__(self, args, current=None):
         """
         Constructor
         """
-        options = [i for i in range(0, 25,5)]
+        options = [i for i in range(0, 25, 5)]
 
         Filter.Filter.__init__(self, args, options, current)
 

@@ -43,12 +43,13 @@ public:
             _skipped_loans(0),
             _young_loans(0),
             _removed_expired_loans(0)
-            { 
+    { 
         _loans.reserve(350000);
         _loan_infos.reserve(350000);
+        
         // Create each of the filters and use its conversion utility for normalizing the data
         for (auto& filter_type : conversion_filters) {
-            _filters.resize(filter_type+1);
+            _filters.resize(filter_type + 1);
             std::vector<Filter*>::iterator filter_it = _filters.begin() + filter_type;
             construct_filter(filter_type, filter_it);
         }
@@ -285,9 +286,7 @@ public:
         }
 
         std::vector<Filter*> filter(1);
-
         construct_filter(loan_value_type, filter.begin());
-
         std::vector<FilterValue> filter_value;
         FilterValue avg = sum / (end_index - start_index + 1);
         filter_value.push_back(avg);

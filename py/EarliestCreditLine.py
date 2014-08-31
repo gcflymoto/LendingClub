@@ -24,11 +24,13 @@ class EarliestCreditLine(Filter.Filter):
     name = "earliest_cr_line"
     query = "(earliest_cr_line >= ?)"
     named_query = "(earliest_cr_line >= :earliest_cr_line)"
+
     def __init__(self, args, current=None):
         """
         Constructor
         """
-        options = [1 * self.multiplier, 5 * self.multiplier, 10 * self.multiplier, 20 * self.multiplier, 30 * self.multiplier, 40 * self.multiplier]
+        options = [1 * self.multiplier, 5 * self.multiplier, 10 * self.multiplier, 20 * self.multiplier,
+                   30 * self.multiplier, 40 * self.multiplier]
 
         Filter.Filter.__init__(self, args, options, current)
 

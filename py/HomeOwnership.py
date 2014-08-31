@@ -20,6 +20,7 @@ class HomeOwnership(Filter.Filter):
     name = "home_ownership"
     query = "(home_ownership != ?)"
     named_query = "(home_ownership != :home_ownership)"
+
     def __init__(self, args, current=None):
         """
         Constructor
@@ -30,7 +31,7 @@ class HomeOwnership(Filter.Filter):
 
         self.reverse_table = ["MORTGAGE", "OWN", "RENT", "OTHER", "NONE", "NULL"]
 
-    def convert(self, raw_data, conversion_table={"MORTGAGE":0, "OWN":1, "RENT":2, "OTHER":3, "NONE":4, "":5}):
+    def convert(self, raw_data, conversion_table={"MORTGAGE": 0, "OWN": 1, "RENT": 2, "OTHER": 3, "NONE": 4, "": 5}):
         return conversion_table[str(raw_data)]
 
     def __str__(self):

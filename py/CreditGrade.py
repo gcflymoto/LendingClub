@@ -19,6 +19,7 @@ class CreditGrade(Filter.Filter):
     name = "grade"
     query = "((grade & ?) > 0)"
     named_query = "((grade & :grade) > 0)"
+
     def __init__(self, args, current=None):
         """
         Construct a set similar to this based on the passed in grades

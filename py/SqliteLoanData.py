@@ -29,6 +29,7 @@ def init_sqlite_db(db_name):
     mem_db.commit()
     return mem_db
 
+
 class SqliteLCLoanData(LoanData.LCLoanData):
     def __init__(self, conversion_filters, args, worker_idx):
         LoanData.LCLoanData.__init__(self, conversion_filters, args, worker_idx)
@@ -38,7 +39,7 @@ class SqliteLCLoanData(LoanData.LCLoanData):
         self.create_sqlite_db(self.loans)
 
     def create_sqlite_db(self, loans):
-        #db_name = "loans_serialized_python%d.db" % sys.version_info.major
+        # db_name = "loans_serialized_python%d.db" % sys.version_info.major
 
         self.con = sqlite3.connect(":memory:")
         self.cursor = self.con.cursor()

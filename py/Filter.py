@@ -16,6 +16,7 @@ class Filter(object):
     """
     classdocs
     """
+
     def __init__(self, args, options, current=None):
         """
         Constructor
@@ -42,7 +43,7 @@ class Filter(object):
         #
         # Original algorithm used 'None'
         #
-        #if self.current is None:
+        # if self.current is None:
         #    self.current = 0
         #elif self.current + 1 < self.size:
         #    self.current += 1

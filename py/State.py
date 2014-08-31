@@ -27,12 +27,13 @@ class State(Filter.Filter):
     name = "addr_state"
     query = "((addr_state & ?) > 0)"
     named_query = "((addr_state & :addr_state) > 0)"
+
     def __init__(self, args, current=None):
         """
         Constructor
         """
-        state_bitmap = dict(AK=1 << 0,  AL=1 << 1,  AR=1 << 2,  AZ=1 << 3,  CA=1 << 4,  CO=1 << 5,  CT=1 << 6,
-                            DC=1 << 7,  DE=1 << 8,  FL=1 << 9,  GA=1 << 10, HI=1 << 11, IA=1 << 12, ID=1 << 13,
+        state_bitmap = dict(AK=1 << 0, AL=1 << 1, AR=1 << 2, AZ=1 << 3, CA=1 << 4, CO=1 << 5, CT=1 << 6,
+                            DC=1 << 7, DE=1 << 8, FL=1 << 9, GA=1 << 10, HI=1 << 11, IA=1 << 12, ID=1 << 13,
                             IL=1 << 14, IN=1 << 15, KS=1 << 16, KY=1 << 17, LA=1 << 18, MA=1 << 19, MD=1 << 20,
                             ME=1 << 21, MI=1 << 22, MN=1 << 23, MO=1 << 24, MS=1 << 25, MT=1 << 26, NC=1 << 27,
                             NE=1 << 28, NH=1 << 29, NJ=1 << 30, NM=1 << 31, NV=1 << 32, NY=1 << 33, OH=1 << 34,
@@ -42,7 +43,8 @@ class State(Filter.Filter):
 
         self.conversion_table = state_bitmap
 
-        options = self.power_bitset([state_bitmap[state] for state in ["CA", "AZ", "FL", "GA", "IL", "MD", "MO", "NV", "TX", "NY"]])
+        options = self.power_bitset(
+            [state_bitmap[state] for state in ["CA", "AZ", "FL", "GA", "IL", "MD", "MO", "NV", "TX", "NY"]])
 
         # self.options = self.powerSet(["AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
         # "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME",

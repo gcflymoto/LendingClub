@@ -20,6 +20,7 @@ class PublicRecordsOnFile(Filter.Filter):
     name = "pub_rec"
     query = "(pub_rec != 1)"
     named_query = "(pub_rec != 1)"
+
     def __init__(self, args, current=None):
         """
         Constructor

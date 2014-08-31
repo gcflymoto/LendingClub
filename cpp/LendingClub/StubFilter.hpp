@@ -20,17 +20,25 @@ Created on July 28, 2014
 namespace lc
 {
 
-class StubFilter : public Filter 
+class StubFilter : public Filter
 {
 public:
     //static const std::string sqlite_type;
     //static const std::string name;
 
-    StubFilter() :
-        Filter("Stub") 
+    StubFilter() : Filter("Stub") 
     {
         static std::vector<FilterValue> options(1);
         Filter::initialize(&options);
+    }
+
+    virtual FilterValue convert(const std::string& raw_data) const
+    {
+        return 0;
+    }
+    virtual const std::string get_string_value() const
+    {
+        return "";
     }
 
     static bool static_apply(const Filter&, const Loan&) 

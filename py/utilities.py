@@ -24,7 +24,7 @@ def check_for_zmqpy():
     # C:\Python27\python.exe -O lcbt.py
     # zmqpy does not work on windows
     # C:\Python27\lib\site-packages\zmqpy\__pycache__\_cffi__x88b86722x954aa029.c(153) :
-    #  fatal error C1083: Cannot open include file: 'zmq.h': No such file or directory
+    # fatal error C1083: Cannot open include file: 'zmq.h': No such file or directory
     #
     if sys.platform == 'win32' or sys.platform == 'cygwin':
         enable_zmqpy = 0
@@ -44,13 +44,14 @@ def check_for_zmqpy():
     return enable_zmqpy
 
 
-#----------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
 def check_for_sqlite():
     if platform.python_implementation() == 'PyPy':
         enable_sqlite = 0
     else:
         enable_sqlite = 1
     return enable_sqlite
+
 
 def check_for_pyzmq():
     enable_pyzmq = 1
@@ -84,15 +85,19 @@ class Unbuffered(object):
     def __getattr__(self, attr):
         return getattr(self.stream, attr)
 
+
 if sys.version < '3':
     import codecs
+
     def u(x):
         return codecs.unicode_escape_decode(x)[0]
+
     def s(x):
         return x.encode('ascii')
 else:
     def u(x):
         return x
+
     def s(x):
         return x.encode('ascii')
 
@@ -118,9 +123,11 @@ class Timer(object):
 
 if sys.version_info.major < 3:
     from StringIO import StringIO
+
     stringio = StringIO
 else:
     from io import StringIO
+
     stringio = StringIO
 
 if sys.version_info.major < 3:
@@ -130,6 +137,7 @@ if sys.version_info.major < 3:
         """
         Iterator that reads an encoded stream and re-encodes the input to UTF-8
         """
+
         def __init__(self, f, encoding):
             self.reader = codecs.getreader(encoding)(f)
 
@@ -144,6 +152,7 @@ if sys.version_info.major < 3:
         A CSV reader which will iterate over lines in the CSV file "f",
         which is encoded in the given encoding.
         """
+
         def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
             f = UTF8Recoder(f, encoding)
             self.reader = csv.reader(f, dialect=dialect, **kwds)

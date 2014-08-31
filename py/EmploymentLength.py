@@ -20,6 +20,7 @@ class EmploymentLength(Filter.Filter):
     name = "emp_length"
     query = "(emp_length <= ?)"
     named_query = "(emp_length <= :emp_length)"
+
     def __init__(self, args, current=None):
         """
         Constructor

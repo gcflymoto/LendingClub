@@ -20,6 +20,7 @@ class MonthsSinceLastDelinquency(Filter.Filter):
     name = "mths_since_last_delinq"
     query = "(mths_since_last_delinq >= ?)"
     named_query = "(mths_since_last_delinq >= :mths_since_last_delinq)"
+
     def __init__(self, args, current=None):
         """
         Constructor

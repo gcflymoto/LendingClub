@@ -20,10 +20,12 @@ class StubFilter(Filter.Filter):
     name = "Id"
     query = ""
     named_query = ""
+
     def __init__(self, args, current=None):
         """
         Constructor
         """
         Filter.Filter.__init__(self, args, [1], current)
+
     def apply(self, loan):
         return True

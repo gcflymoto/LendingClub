@@ -20,11 +20,12 @@ class RevolvingLineUtilization(Filter.Filter):
     name = "revol_util"
     query = "(revol_util <= ?)"
     named_query = "(revol_util <= :revol_util)"
+
     def __init__(self, args, current=None):
         """
         Constructor
         """
-        options = [float(n) for n in range(5*100, 105*100, 5*100)]
+        options = [float(n) for n in range(5 * 100, 105 * 100, 5 * 100)]
 
         Filter.Filter.__init__(self, args, options, current)
 

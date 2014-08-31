@@ -47,34 +47,36 @@ public:
         std::hash<lc::FilterValue> filter_hash;
 
         for (unsigned i = 0; i < population_size; ++i) {
-
-            unsigned hash_result = 0;
-
             std::vector<Filter*> filters(backtest_filters.size());
             std::vector<Filter*> mate_filters(backtest_filters.size());
-            // Create each of the filters and use its conversion utility for normalizing the data
+
+            // Create each of the filters
             unsigned j = 0;
             for (auto& filter_type : backtest_filters) {
                 std::vector<Filter*>::iterator filter_it = filters.begin() + j;
                 construct_filter(filter_type, filter_it);
-                (*filter_it)->set_current(randint(0, (*filter_it)->get_count() - 1));
-
-                hash_result = hash_result ^ (filter_hash((*filter_it)->get_value()) << 1);
-
                 std::vector<Filter*>::iterator mate_filter_it = mate_filters.begin() + j;
                 construct_filter(filter_type, mate_filter_it);
-
                 ++j;
             }
 
-            auto it = _memoized_filters.find(hash_result);
-            if (it != _memoized_filters.end()) {
-                std::cout << "population_count=" << i << " same filters already seen " << it->second << " times\n";
-            }
+            unsigned hash_result = 0;
+            do {                
+                hash_result = 0;
+
+                unsigned j = 0;
+                for (auto& filter_type : backtest_filters) {
+                    std::vector<Filter*>::iterator filter_it = filters.begin() + j;
+                    (*filter_it)->set_current(randint(0, (*filter_it)->get_count() - 1));
+
+                    hash_result = hash_result ^ (filter_hash((*filter_it)->get_value() << 1));
+                    ++j;
+                }
+            // Keep randomizing until we find a filter set we haven't used before
+            } while (_memoized_filters.find(hash_result) != _memoized_filters.end());
 
             _population.push_back(std::make_pair(LoanReturn(), filters));
             _mate_population.push_back(std::make_pair(LoanReturn(), mate_filters));
-
 
             ++_memoized_filters[hash_result];
         }

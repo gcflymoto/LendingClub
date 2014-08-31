@@ -99,13 +99,13 @@ int lcmain(int argc, char* argv[])
     }
 
     double elite_rate = args["elite_rate"].as<double>();
-    if (elite_rate == 0.0 || elite_rate > 1.0) {
+    if (elite_rate == 0.0 || elite_rate >= 1.0) {
         cout << "The elite rate must be greater than 0 and less than 1.0\n";
         return 1;
     }
 
     double mutation_rate = args["mutation_rate"].as<double>();
-    if (mutation_rate == 0.0 || mutation_rate > 1.0) {
+    if (mutation_rate == 0.0 || mutation_rate >= 1.0) {
         cout << "The mutation rate must be greater than 0 and less than 1.0\n";
         return 1;
     }

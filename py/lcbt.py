@@ -80,6 +80,7 @@ DEBUG = 0
 TESTRUN = 0
 PROFILE = 0
 
+
 class ProfileGuidedOptimization(object):
     def __init__(self, f, initial_value):
         self.f = f
@@ -115,6 +116,7 @@ class ProfileGuidedOptimization(object):
             self.exponent -= self.backoff
         self.current_value = self.initial_value ** self.exponent
 
+
 class GATest:
     population = []
     mate_population = []
@@ -132,7 +134,7 @@ class GATest:
         self.args = args
 
         for _ in range(self.args.population_size):
-            filters  = []
+            filters = []
             mate_filters = []
             for backtest_filter in backtest_filters.values():
                 lc_filter = backtest_filter(args)
@@ -158,7 +160,8 @@ class GATest:
             'net_apy'
         ])
 
-        self.csvwriter = csv.DictWriter(utilities.Unbuffered(open(self.args.csvresults, 'w')), fieldnames=csv_field_names,
+        self.csvwriter = csv.DictWriter(utilities.Unbuffered(open(self.args.csvresults, 'w')),
+                                        fieldnames=csv_field_names,
                                         extrasaction='ignore')
         self.csvwriter.writeheader()
 
@@ -168,7 +171,7 @@ class GATest:
 
         for i in range(self.args.iterations):
             self.iteration = i
-            #sys.stdout.write("Calculating fitness of iteration %d\n" % i)
+            # sys.stdout.write("Calculating fitness of iteration %d\n" % i)
 
             timer = utilities.Timer()
 
@@ -189,8 +192,8 @@ class GATest:
     def calculate(self):
         for citizen in self.population:
             citizen['result'] = self.lcbt.test(citizen['filters'])
-            #sys.stdout.write('.')
-        #sys.stdout.write('\n')
+            # sys.stdout.write('.')
+            #sys.stdout.write('\n')
 
     def sort_by_fitness(self):
 
@@ -299,7 +302,7 @@ class ParallelGATest(GATest):
             self.work_queue.put(None)
 
     def calculate_fitness(self):
-        #self.pgo()
+        # self.pgo()
         self.calculate(self.args.work_batch)
 
     def calculate(self, min_work_messages=100):
@@ -335,7 +338,7 @@ class ParallelGATest(GATest):
             result_message = self.response_queue.get()
             new_results_count = len(result_message['results'])
             self.debug_msg("Worker[%i] returned %d results" %
-                          (result_message['worker'], new_results_count))
+                           (result_message['worker'], new_results_count))
             for citizen_idx, result in result_message['results']:
                 # sys.stderr.write("results[%d]=%s\n" % (citizen_idx, result))
                 self.population[citizen_idx]['result'] = result
@@ -380,7 +383,7 @@ class ZmqGATest(GATest):
         self.control_sender.send_unicode(utilities.u("FINISHED"))
 
     def calculate_fitness(self):
-        #self.pgo()
+        # self.pgo()
         self.calculate(self.args.work_batch)
 
     def calculate(self, min_work_messages=100):
@@ -414,7 +417,7 @@ class ZmqGATest(GATest):
         for _ in range(self.args.workers):
             results_message = results_receiver.recv_json()
             self.debug_msg("Worker[%i] returned %d results" %
-                          (results_message['worker'], len(results_message['results'])))
+                           (results_message['worker'], len(results_message['results'])))
             for citizen_idx, result in results_message['results']:
                 # sys.stderr.write("results[%d]=%s\n" % (citizen_idx, result))
                 self.population[citizen_idx]['result'] = result
@@ -427,16 +430,18 @@ class LCBT:
         # Create each of the filters
         self.filters = [None] * len(conversion_filters)
         for filter_idx, lc_filter in conversion_filters.items():
-            #print(filter_idx, lc_filter.name)
+            # print(filter_idx, lc_filter.name)
             self.filters[filter_idx] = lc_filter(args)
 
         if args.sqlite:
             self.test = self.test_sqlite
             # Generate the Sqlite Query
-            self.sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join([lc_filter.query for lc_filter in self.filters if lc_filter.query])
-            #print(self.sql_query)
+            self.sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join(
+                [lc_filter.query for lc_filter in self.filters if lc_filter.query])
+            # print(self.sql_query)
 
-            self.named_sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join([lc_filter.named_query for lc_filter in self.filters if lc_filter.query])
+            self.named_sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join(
+                [lc_filter.named_query for lc_filter in self.filters if lc_filter.query])
 
             """
             This ends up being a lot slower
@@ -445,7 +450,9 @@ class LCBT:
                INTERSECT SELECT rowid FROM table1 WHERE b=11);
             """
             # http://www.sqlite.org/cvstrac/wiki?p=PerformanceTuning
-            self.expanded_query = "SELECT Id FROM Loans WHERE Id IN\n (" + '\n INTERSECT '.join(['SELECT Id from Loans WHERE %s' % lc_filter.query for lc_filter in self.filters if lc_filter.query]) + ')'
+            self.expanded_query = "SELECT Id FROM Loans WHERE Id IN\n (" + '\n INTERSECT '.join(
+                ['SELECT Id from Loans WHERE %s' % lc_filter.query for lc_filter in self.filters if
+                 lc_filter.query]) + ')'
             #print(self.expanded_query)
 
             self.loan_data = SqliteLoanData.SqliteLCLoanData(conversion_filters, args, worker_idx)
@@ -466,7 +473,7 @@ class LCBT:
         return self.loan_data.get_nar(invested)
 
     def test_sqlite(self, filters):
-        #print(self.sql_query)
+        # print(self.sql_query)
         params = tuple(lc_filter.get_value() for lc_filter in filters if '?' in lc_filter.query)
         #print([type(param) for param in params])
         self.loan_data.cursor.execute(self.sql_query, params)
@@ -484,7 +491,7 @@ class LCBT:
 
     def consider(self, loan):
         for lc_filter in self.filters:
-            #if lc_filter.current != lc_filter.size and not lc_filter.apply(loan):
+            # if lc_filter.current != lc_filter.size and not lc_filter.apply(loan):
             if not lc_filter.apply(loan):
                 return False
         return True
@@ -520,7 +527,7 @@ class ParallelLCBT(LCBT, Process):
                     self.filters[i].current = filters[i]
 
                 result = self.test(self.filters)
-                #sys.stdout.write(str(self.worker_idx))
+                # sys.stdout.write(str(self.worker_idx))
                 results.append((citizen_idx, result))
 
             answer_message['results'] = results
@@ -602,6 +609,7 @@ class ZmqLCBT(LCBT):
                 self.debug_msg("Exiting. Unknown control_message received %s", control_message)
                 sys.exit(-1)
 
+
 def zmq_worker(worker_idx, args):
     random.seed(args.seed)
     lcbt = ZmqLCBT(ConversionFilters, args, worker_idx)
@@ -609,10 +617,12 @@ def zmq_worker(worker_idx, args):
     lcbt.setup_zmq()
     lcbt.run()
 
+
 def mp_worker(worker_idx, args, work_queue, response_queue):
     random.seed(args.seed)
     lcbt = ParallelLCBT(ConversionFilters, args, worker_idx, work_queue, response_queue)
     lcbt.start()
+
 
 def main(argv=None):  # IGNORE:C0111
     """Command line options."""
@@ -639,7 +649,7 @@ def main(argv=None):  # IGNORE:C0111
 USAGE
 ''' % (program_name, program_shortdesc, str(__date__))
 
-    #----------------------------------------------------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------------------------------------------
     enable_workers = (cpu_count() > 1)
     #----------------------------------------------------------------------------------------------------------------------
 
@@ -659,13 +669,18 @@ USAGE
     parser.add_argument('-c', '--csvresults', default="lc_best.csv",
                         help="Output best results CSV file [default: %(default)s]")
     parser.add_argument('-p', '--population_size', default=512, type=int, help="population size [default: %(default)s]")
-    parser.add_argument('-i', '--iterations', default=4096, type=int, help="how many Genetic Algorithm iterations to perform [default: %(default)s]")
+    parser.add_argument('-i', '--iterations', default=4096, type=int,
+                        help="how many Genetic Algorithm iterations to perform [default: %(default)s]")
     parser.add_argument('-e', '--elite_rate', default=0.05, type=float, help="elite rate [default: %(default)s]")
     parser.add_argument('-m', '--mutation_rate', default=0.05, type=float, help="mutation rate [default: %(default)s]")
-    parser.add_argument('-k', '--check', default=False, action='store_true', help="checking mode: open the CSV results file and filter the loans into a separate file [default: %(default)s]")
-    parser.add_argument('-r', '--checkresults', default="LoanStatsNewFiltered.csv", help="file name for the filtered results used during checking mode [default: %(default)s]")
-    parser.add_argument('-z', '--zmq', default=False, action='store_true', help="Use zmq libraries for multi-processing [default: %(default)s]")
-    parser.add_argument('-q', '--sqlite', default=1, type=int, help="Use sqlite as the core processing engine for the backtesting [default: %(default)s]")
+    parser.add_argument('-k', '--check', default=False, action='store_true',
+                        help="checking mode: open the CSV results file and filter the loans into a separate file [default: %(default)s]")
+    parser.add_argument('-r', '--checkresults', default="LoanStatsNewFiltered.csv",
+                        help="file name for the filtered results used during checking mode [default: %(default)s]")
+    parser.add_argument('-z', '--zmq', default=False, action='store_true',
+                        help="Use zmq libraries for multi-processing [default: %(default)s]")
+    parser.add_argument('-q', '--sqlite', default=1, type=int,
+                        help="Use sqlite as the core processing engine for the backtesting [default: %(default)s]")
     parser.add_argument('-f', '--fitness_sort_size', default=1000, type=int,
                         help="number of loans to limit the fitness sort size, the larger the longer and more optimal solution [default: %(default)s]")
     parser.add_argument('-y', '--young_loans_in_days', default=3 * 30, type=int,
@@ -719,6 +734,7 @@ USAGE
         ga_test.run()
 
     return 0
+
 
 if __name__ == "__main__":
     sys.stdout = utilities.Unbuffered(sys.stdout)

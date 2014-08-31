@@ -29,14 +29,14 @@ public:
 
     DebtToIncomeRatio() : Filter(name)
     {
-        static const std::vector<FilterValue>* options = create_range(10 * 100, 35 * 100, 5 * 100);
+        static const std::vector<FilterValue>* options = create_range(10 * 100, 45 * 100, 5 * 100);
         Filter::initialize(options);
     }
 
     virtual FilterValue convert(const std::string& raw_data) const
     {
         // Convert DTI 19.48 into normalized 1948
-        std::string data;
+        std::string data;   
         if (raw_data[raw_data.length() - 1] == '%') {
             data = raw_data.substr(0, raw_data.length() - 1);
         }

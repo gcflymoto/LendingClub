@@ -20,6 +20,7 @@ class TotalCreditLines(Filter.Filter):
     name = "total_acc"
     query = "(total_acc <= ?)"
     named_query = "(total_acc <= :total_acc)"
+
     def __init__(self, args, current=None):
         """
         Constructor

@@ -19,11 +19,12 @@ class DebtToIncomeRatio(Filter.Filter):
     name = "dti"
     query = "(dti <= ?)"
     named_query = "(dti <= :dti)"
+
     def __init__(self, args, current=None):
         """
         Constructor
         """
-        options = [float(p) for p in range(10*100, 35*100, 5*100)]
+        options = [float(p) for p in range(10 * 100, 35 * 100, 5 * 100)]
 
         Filter.Filter.__init__(self, args, options, current)
 

@@ -20,6 +20,7 @@ class AmountRequested(Filter.Filter):
     name = "funded_amnt"
     query = "(funded_amnt <= ?)"
     named_query = "(funded_amnt <= :funded_amnt)"
+
     def __init__(self, args, current=None):
         """
         Constructor

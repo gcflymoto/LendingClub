@@ -499,7 +499,7 @@ struct SimplifyMemFunc<SINGLE_MEMFUNCPTR_SIZE + 3*sizeof(int) >
 				reinterpret_cast<const char *>(vtable) + u.s.vtable_index);
 		}
 		// The int at 'virtual_delta' gives us the amount to add to 'this'.
-        // Finally we can add the three components together. Phew!
+        //ly we can add the three components together. Phew!
         return reinterpret_cast<GenericClass *>(
 			reinterpret_cast<char *>(pthis) + u.s.delta + virtual_delta);
 	};

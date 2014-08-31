@@ -20,6 +20,7 @@ class LoanPurpose(Filter.Filter):
     name = "purpose"
     query = "((purpose & ?) > 0)"
     named_query = "((purpose & :purpose) > 0)"
+
     def __init__(self, args, current=None):
         """
         Constructor

@@ -56,7 +56,7 @@ public:
         }
     }
 
-    const std::string get_string_value() const
+    virtual const std::string get_string_value() const
     {
         boost::posix_time::time_duration td = boost::posix_time::seconds(static_cast<long>(get_value()));
         return ">=" + boost::posix_time::to_simple_string(now - td);
