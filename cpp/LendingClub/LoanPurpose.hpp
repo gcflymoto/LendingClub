@@ -23,13 +23,13 @@ namespace lc
 class LoanPurpose : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
 
     LoanPurpose() : Filter(name)
     {
-        static std::vector<FilterValue> options;
+        static FilterValueVector options;
         if (options.empty()) {
             _conversion_table["other"] = 1 << 0;
             _conversion_table["debt_consolidation"] = 1 << 1;
@@ -46,7 +46,7 @@ public:
             _conversion_table["major_purchase"] = 1 << 12;
             _conversion_table["renewable_energy"] = 1 << 13;
 
-            std::vector<FilterValue> purpose_bitmap;
+            FilterValueVector purpose_bitmap;
 
             for (unsigned i = 0; i < 14; ++i) {
                 purpose_bitmap.push_back(1 << i);
@@ -56,17 +56,17 @@ public:
         Filter::initialize(&options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         auto it = _conversion_table.find(raw_data);
         assert(it != _conversion_table.end());
         return (it->second);
     }
 
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
         auto value = get_value();
-        std::string result;
+        LCString result;
         for (auto& it : _conversion_table) {
             if ((it.second & value) > 0) {
                 result += it.first + ',';
@@ -80,18 +80,13 @@ public:
         }
     }
 
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return ((loan.purpose & self.get_value()) > 0);
-    }
-
     inline bool apply(const Loan& loan) const
     {
         return ((loan.purpose & get_value()) > 0);
     }
 
 private:
-    static std::map<std::string, FilterValue>   _conversion_table;
+    static std::map<LCString, FilterValue>   _conversion_table;
 };
 
 };

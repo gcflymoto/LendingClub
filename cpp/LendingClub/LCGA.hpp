@@ -29,10 +29,9 @@ namespace lc
 {
 
 class GATest
-{
-    typedef std::vector<std::pair<LoanReturn, std::vector<Filter*>>> PopulationType;
+{    
 public:
-    GATest(const std::vector<Loan::LoanType>& backtest_filters, LCBT& lcbt) :
+    GATest(const LoanTypeVector& backtest_filters, LCBT& lcbt) :
         _lcbt(lcbt),
         _args(LCArguments::Get()),
         _iteration(0),
@@ -47,15 +46,15 @@ public:
         std::hash<lc::FilterValue> filter_hash;
 
         for (unsigned i = 0; i < population_size; ++i) {
-            std::vector<Filter*> filters(backtest_filters.size());
-            std::vector<Filter*> mate_filters(backtest_filters.size());
+            FilterPtrVector filters(backtest_filters.size());
+            FilterPtrVector mate_filters(backtest_filters.size());
 
             // Create each of the filters
             unsigned j = 0;
             for (auto& filter_type : backtest_filters) {
-                std::vector<Filter*>::iterator filter_it = filters.begin() + j;
+                FilterPtrVector::iterator filter_it = filters.begin() + j;
                 construct_filter(filter_type, filter_it);
-                std::vector<Filter*>::iterator mate_filter_it = mate_filters.begin() + j;
+                FilterPtrVector::iterator mate_filter_it = mate_filters.begin() + j;
                 construct_filter(filter_type, mate_filter_it);
                 ++j;
             }
@@ -66,7 +65,7 @@ public:
 
                 unsigned j = 0;
                 for (auto& filter_type : backtest_filters) {
-                    std::vector<Filter*>::iterator filter_it = filters.begin() + j;
+                    FilterPtrVector::iterator filter_it = filters.begin() + j;
                     (*filter_it)->set_current(randint(0, (*filter_it)->get_count() - 1));
 
                     hash_result = hash_result ^ (filter_hash((*filter_it)->get_value() << 1));
@@ -83,9 +82,9 @@ public:
 
         assert(population_size > 0);
 
-        _csv_file.open(_args["csvresults"].as<std::string>().c_str());
+        _csv_file.open(_args["csvresults"].as<LCString>().c_str());
 
-        std::vector<std::string> csv_field_names; 
+        StringVector csv_field_names;
         for (auto& lc_filter : _population[0].second) {
             _csv_file << lc_filter->get_name() << ',';
         }
@@ -124,7 +123,7 @@ public:
     {
         net_apy_cmp(unsigned config_fitness_sort_num_loans) : config_fitness_sort_num_loans(config_fitness_sort_num_loans) {}
 
-        inline bool operator() (const std::pair<LoanReturn, std::vector<Filter*>>& a, const std::pair<LoanReturn, std::vector<Filter*>>& b)
+        inline bool operator() (const std::pair<LoanReturn, FilterPtrVector>& a, const std::pair<LoanReturn, FilterPtrVector>& b)
         {
             double a_fit = (a.first.num_loans >= config_fitness_sort_num_loans) ? a.first.net_apy : 0.0;
             double b_fit = (b.first.num_loans >= config_fitness_sort_num_loans) ? b.first.net_apy : 0.0;
@@ -170,7 +169,7 @@ public:
             _best_net_apy = net_apy;
         }
 
-        std::string filters = "";
+        LCString filters = "";
         for (auto& lc_filter : best_filters) {
             auto filter_name = lc_filter->get_name();
             auto filter_val_str = lc_filter->get_string_value();
@@ -242,7 +241,7 @@ public:
 
     LCBT&                                                       _lcbt;
     const Arguments&						                    _args;
-    std::vector<Filter*>					                    _filters;
+    FilterPtrVector     					                    _filters;
     PopulationType                                              _population;
     PopulationType                                              _mate_population;
     unsigned                                                    _iteration;

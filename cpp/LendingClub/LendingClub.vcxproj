@@ -70,7 +70,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(USERPROFILE)\boost_1_55_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(USERPROFILE)\boost_1_55_0;$(USERPROFILE)\Documents\GitHub\folly;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -161,6 +161,7 @@
     <ClInclude Include="StubFilter.hpp" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TotalCreditLines.hpp" />
+    <ClInclude Include="Types.hpp" />
     <ClInclude Include="Utilities.hpp" />
     <ClInclude Include="WordsInDescription.hpp" />
   </ItemGroup>

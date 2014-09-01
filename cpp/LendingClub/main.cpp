@@ -130,7 +130,7 @@ int lcmain(int argc, char* argv[])
 
     srand(args["seed"].as<unsigned>());
 
-    std::vector<Loan::LoanType> conversion_filters;
+    LoanTypeVector conversion_filters;
     conversion_filters.push_back(Loan::ACC_OPEN_PAST_24MTHS);
     conversion_filters.push_back(Loan::FUNDED_AMNT);
     conversion_filters.push_back(Loan::ANNUAL_INCOME);
@@ -153,7 +153,7 @@ int lcmain(int argc, char* argv[])
     LCBT lcbt(conversion_filters, -1);
     lcbt.initialize();
 
-    std::vector<Loan::LoanType> backtest_filters = conversion_filters;
+    LoanTypeVector backtest_filters = conversion_filters;
 
     GATest ga_test(backtest_filters, lcbt);
     ga_test.run();

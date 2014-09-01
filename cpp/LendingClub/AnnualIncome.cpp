@@ -14,6 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string AnnualIncome::sqlite_type = "INT";
-const std::string AnnualIncome::csv_name = "annual_inc";
-const std::string AnnualIncome::name = "AnnualIncome";
+const LCString AnnualIncome::sqlite_type = "INT";
+const LCString AnnualIncome::csv_name = "annual_inc";
+const LCString AnnualIncome::name = "AnnualIncome";

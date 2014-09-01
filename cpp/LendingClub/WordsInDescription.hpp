@@ -25,33 +25,28 @@ template<char Remove> bool BothAreSpaces(char lhs, char rhs) { return (lhs == rh
 class WordsInDescription : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
 
     WordsInDescription() : Filter(name)
     {
-        static const std::vector<FilterValue>* options = create_range(25, 110, 10);
+        static const FilterValueVector* options = create_range(25, 110, 10);
         Filter::initialize(options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
-        std::string data = raw_data;
+        LCString data = raw_data;
         std::unique(data.begin(), data.end(), BothAreSpaces<' '>);
         std::unique(data.begin(), data.end(), BothAreSpaces<'\t'>);
         return std::count(data.begin(), data.end(), ' ');
     }
 
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
         const FilterValue& val = get_value();
-        return ">=" + boost::lexical_cast<std::string>(val);
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return (loan.desc_word_count >= self.get_value());
+        return ">=" + boost::lexical_cast<LCString>(val);
     }
 
     inline bool apply(const Loan& loan) const

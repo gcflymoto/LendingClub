@@ -14,6 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string EmploymentLength::sqlite_type = "INT";
-const std::string EmploymentLength::csv_name = "emp_length";
-const std::string EmploymentLength::name = "EmploymentLength";
+const LCString EmploymentLength::sqlite_type = "INT";
+const LCString EmploymentLength::csv_name = "emp_length";
+const LCString EmploymentLength::name = "EmploymentLength";

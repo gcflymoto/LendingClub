@@ -14,6 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string TotalCreditLines::sqlite_type = "INT";
-const std::string TotalCreditLines::csv_name = "total_acc";
-const std::string TotalCreditLines::name = "TotalCreditLines";
+const LCString TotalCreditLines::sqlite_type = "INT";
+const LCString TotalCreditLines::csv_name = "total_acc";
+const LCString TotalCreditLines::name = "TotalCreditLines";

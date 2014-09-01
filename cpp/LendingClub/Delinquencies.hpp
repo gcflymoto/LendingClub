@@ -23,13 +23,13 @@ namespace lc
 class Delinquencies : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
 
     Delinquencies() : Filter(name)
     {
-        static std::vector<FilterValue> options;
+        static FilterValueVector options;
         if (options.empty()) {
             options.push_back(1 << 0);                                      // 0
             options.push_back(1 << 0 | 1 << 1 | 1 << 2 | 1 << 3);           // 0 - 3
@@ -41,30 +41,25 @@ public:
         Filter::initialize(&options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         auto result = (raw_data.empty()) ? 0 : boost::lexical_cast<FilterValue>(raw_data.c_str());
         return (result <= 11) ? (1 << result) : (1 << 11);
     }
 
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
         auto value = get_value();
-        std::string delinq_list;
+        LCString delinq_list;
         for (FilterValue i = 0; i < 12; ++i) {
             if (((1ull << i) & value) > 0) {
-                delinq_list += boost::lexical_cast<std::string>(i)+',';
+                delinq_list += boost::lexical_cast<LCString>(i)+',';
             }
         }
         if (delinq_list.empty()) {
             return delinq_list;
         }
         return '"' + delinq_list.substr(0, delinq_list.length() - 1) + '"';
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return ((loan.delinq_2yrs & self.get_value()) > 0);
     }
 
     inline bool apply(const Loan& loan) const

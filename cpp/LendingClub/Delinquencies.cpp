@@ -14,6 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string Delinquencies::sqlite_type = "INT";
-const std::string Delinquencies::csv_name = "delinq_2yrs";
-const std::string Delinquencies::name = "Delinquencies";
+const LCString Delinquencies::sqlite_type = "INT";
+const LCString Delinquencies::csv_name = "delinq_2yrs";
+const LCString Delinquencies::name = "Delinquencies";

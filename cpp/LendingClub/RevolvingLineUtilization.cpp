@@ -14,6 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string RevolvingLineUtilization::sqlite_type = "INT";
-const std::string RevolvingLineUtilization::csv_name = "revol_util";
-const std::string RevolvingLineUtilization::name = "RevolvingLineUtilization";
+const LCString RevolvingLineUtilization::sqlite_type = "INT";
+const LCString RevolvingLineUtilization::csv_name = "revol_util";
+const LCString RevolvingLineUtilization::name = "RevolvingLineUtilization";

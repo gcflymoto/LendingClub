@@ -14,6 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string InqueriesLast6Months::sqlite_type = "INT";
-const std::string InqueriesLast6Months::csv_name = "inq_last_6mths";
-const std::string InqueriesLast6Months::name = "InqueriesLast6Months";
+const LCString InqueriesLast6Months::sqlite_type = "INT";
+const LCString InqueriesLast6Months::csv_name = "inq_last_6mths";
+const LCString InqueriesLast6Months::name = "InqueriesLast6Months";

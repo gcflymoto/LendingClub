@@ -23,17 +23,17 @@ namespace lc
 class IncomeValidated : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
 
     IncomeValidated() : Filter(name)
     {
-        static const std::vector<FilterValue>* options = create_range(0, 2, 1);
+        static const FilterValueVector* options = create_range(0, 2, 1);
         Filter::initialize(options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         if (raw_data == "TRUE") {
             return 1;
@@ -43,7 +43,7 @@ public:
         }
     }
 
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
         auto value = get_value();
         if (value == 0) {
@@ -52,11 +52,6 @@ public:
         else {
             return "income unvalidated";
         }
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return (loan.income_validated != self.get_value());
     }
 
     inline bool apply(const Loan& loan) const

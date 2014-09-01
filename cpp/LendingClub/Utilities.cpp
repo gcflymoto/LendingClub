@@ -1,5 +1,7 @@
 #include "Utilities.hpp"
 
+using namespace lc;
+
 const std::vector<unsigned long long>* lc::create_range(const unsigned start, const unsigned stop, const unsigned step)
 {
     assert(start <= stop);
@@ -13,9 +15,9 @@ const std::vector<unsigned long long>* lc::create_range(const unsigned start, co
     return result;
 }
 
-std::string lc::map_to_str(const std::map<std::string, std::string>& m) 
+LCString lc::map_to_str(const std::map<LCString, LCString>& m) 
 {
-    std::string s;
+    LCString s;
     for (auto& kv : m) {
         s += kv.first + "=" + kv.second + ",";
     }

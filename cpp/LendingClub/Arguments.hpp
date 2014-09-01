@@ -28,7 +28,7 @@ public:
     }
 
 private:
-    static Arguments                        _args;
+    static Arguments _args;
 };
 
 };

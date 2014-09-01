@@ -23,20 +23,20 @@ namespace lc
 class RevolvingLineUtilization : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
 
     RevolvingLineUtilization() : Filter(name)
     {
-        static const std::vector<FilterValue>* options = create_range(5 * 100, 100 * 100, 5 * 100);
+        static const FilterValueVector* options = create_range(5 * 100, 100 * 100, 5 * 100);
         Filter::initialize(options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         // Convert DTI 19.48 into normalized 1948
-        std::string data;
+        LCString data;
         if (raw_data.empty()) {
             data = "0.0";
         } else {
@@ -46,14 +46,9 @@ public:
         return boost::numeric_cast<unsigned>(strtod(data.c_str(), nullptr) * 100);
     }
 
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
-        return "<=" + boost::lexical_cast<std::string>(boost::numeric_cast<double>(get_value()) / 100);
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return (loan.revol_utilization <= self.get_value());
+        return "<=" + boost::lexical_cast<LCString>(boost::numeric_cast<double>(get_value()) / 100);
     }
 
     inline bool apply(const Loan& loan) const

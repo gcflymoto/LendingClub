@@ -23,28 +23,24 @@ namespace lc
 class StubFilter : public Filter
 {
 public:
-    //static const std::string sqlite_type;
-    //static const std::string name;
+    //static const LCString sqlite_type;
+    //static const LCString name;
 
     StubFilter() : Filter("Stub") 
     {
-        static std::vector<FilterValue> options(1);
+        static FilterValueVector options(1);
         Filter::initialize(&options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         return 0;
     }
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
         return "";
     }
 
-    static bool static_apply(const Filter&, const Loan&) 
-    {
-        return true;
-    }
     inline bool apply(const Loan&)  const
     {
         return true;

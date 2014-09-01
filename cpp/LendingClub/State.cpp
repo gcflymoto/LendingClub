@@ -14,7 +14,7 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string State::sqlite_type = "INT";
-const std::string State::csv_name = "addr_state";
-const std::string State::name = "State";
-std::map<std::string, FilterValue> State::_conversion_table;
+const LCString State::sqlite_type = "INT";
+const LCString State::csv_name = "addr_state";
+const LCString State::name = "State";
+std::map<LCString, FilterValue> State::_conversion_table;

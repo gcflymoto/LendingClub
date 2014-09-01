@@ -14,6 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string AccountsOpenPast24Months::sqlite_type = "INT";
-const std::string AccountsOpenPast24Months::csv_name = "acc_open_past_24mths";
-const std::string AccountsOpenPast24Months::name = "AccountsOpenPast24Months";
+const LCString AccountsOpenPast24Months::sqlite_type = "INT";
+const LCString AccountsOpenPast24Months::csv_name = "acc_open_past_24mths";
+const LCString AccountsOpenPast24Months::name = "AccountsOpenPast24Months";

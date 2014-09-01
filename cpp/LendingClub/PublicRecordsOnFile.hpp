@@ -23,28 +23,24 @@ namespace lc
 class PublicRecordsOnFile : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
 
     PublicRecordsOnFile() : Filter(name)
     {
-        static std::vector<FilterValue> options(1);
+        static FilterValueVector options(1);
         Filter::initialize(&options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         return (raw_data.empty()) ? 0 : boost::lexical_cast<FilterValue>(raw_data.c_str());
     }
-    virtual const std::string get_string_value() const
-    {
-        return boost::lexical_cast<std::string>(get_value());
-    }
 
-    static bool static_apply(const Filter&, const Loan& loan)
+    virtual const LCString get_string_value() const
     {
-        return (!loan.pub_rec);
+        return boost::lexical_cast<LCString>(get_value());
     }
 
     inline bool apply(const Loan& loan) const

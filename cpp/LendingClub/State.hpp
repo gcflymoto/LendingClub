@@ -23,13 +23,13 @@ namespace lc
 class State : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
 
     State() : Filter(name)
     {
-        static std::vector<FilterValue> options;
+        static FilterValueVector options;
         if (options.empty()) {               
             _conversion_table["AK"] = 1ull << 0;
             _conversion_table["AL"] = 1ull << 1;
@@ -83,7 +83,7 @@ public:
             _conversion_table["WY"] = 1ull << 49;
             _conversion_table["NULL"] = 1ull << 50;
 
-            std::vector<FilterValue> state_bitmap;
+            FilterValueVector state_bitmap;
             state_bitmap.push_back(_conversion_table["CA"]);
             state_bitmap.push_back(_conversion_table["AZ"]);
             state_bitmap.push_back(_conversion_table["FL"]);
@@ -99,17 +99,17 @@ public:
         Filter::initialize(&options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         auto it = _conversion_table.find(raw_data);
         assert(it != _conversion_table.end());
         return (it->second);
     }
 
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
         auto value = get_value();
-        std::string result;
+        LCString result;
         for (auto& it : _conversion_table) {
             if ((it.second & value) > 0) {
                 result += it.first + ',';
@@ -122,10 +122,6 @@ public:
             return '"' + result.substr(0, result.length() - 1) + '"';
         }
     }
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return ((loan.addr_state & self.get_value()) > 0);
-    }
 
     inline bool apply(const Loan& loan) const
     {
@@ -133,7 +129,7 @@ public:
     }
 
 private:
-    static std::map<std::string, FilterValue>   _conversion_table;
+    static std::map<LCString, FilterValue>   _conversion_table;
 };
 
 };

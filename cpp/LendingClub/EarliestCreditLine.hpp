@@ -25,15 +25,15 @@ namespace lc
 class EarliestCreditLine : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
     static const int multiplier = 60 * 60 * 24 * 365;
     static const boost::posix_time::ptime now; // = boost::posix_time::second_clock::local_time(); //use the clock 
 
     EarliestCreditLine() : Filter(name)
     {
-        static std::vector<FilterValue> options;
+        static FilterValueVector options;
         if (options.empty()) {
             options.push_back(1 * multiplier);
             options.push_back(5 * multiplier);
@@ -45,7 +45,7 @@ public:
         Filter::initialize(&options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         if (raw_data.empty()) {
             return 0;
@@ -56,15 +56,10 @@ public:
         }
     }
 
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
         boost::posix_time::time_duration td = boost::posix_time::seconds(static_cast<long>(get_value()));
         return ">=" + boost::posix_time::to_simple_string(now - td);
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return (loan.earliest_credit_line >= self.get_value());
     }
 
     inline bool apply(const Loan& loan) const

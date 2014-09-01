@@ -14,14 +14,13 @@ Created on July 28, 2014
 #define __LC_UTILITIES_HPP__
 
 #include <cassert>
-#include <vector>
 #include <map>
-#include <string>
+#include "Types.hpp"
 
 namespace lc {
 
 const std::vector<unsigned long long>* create_range(const unsigned start, const unsigned stop, const unsigned step);
-std::string map_to_str(const std::map<std::string, std::string>& m);
+LCString map_to_str(const std::map<LCString, LCString>& m);
 
 // Returns random number a <= N <= b
 unsigned randint(const unsigned a, const unsigned b);

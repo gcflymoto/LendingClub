@@ -23,6 +23,7 @@ Created on July 28, 2014
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include "Arguments.hpp"
+#include "Types.hpp"
 #include "Loan.hpp"
 #include "Filters.hpp"
 #include "csv.h"
@@ -34,7 +35,7 @@ class LoanData
 {
 public:
     LoanData(
-        const std::vector<Loan::LoanType>& conversion_filters,
+        const LoanTypeVector& conversion_filters,
         const int worker_idx) : 
             _args(LCArguments::Get()),
             _filters(conversion_filters.size()),
@@ -50,7 +51,7 @@ public:
         // Create each of the filters and use its conversion utility for normalizing the data
         for (auto& filter_type : conversion_filters) {
             _filters.resize(filter_type + 1);
-            std::vector<Filter*>::iterator filter_it = _filters.begin() + filter_type;
+            FilterPtrVector::iterator filter_it = _filters.begin() + filter_type;
             construct_filter(filter_type, filter_it);
         }
 
@@ -60,7 +61,7 @@ public:
         _last_date_for_full_month_for_volume = _now.date() - delta;
     }
 
-    void info_msg(const std::string& msg)
+    void info_msg(const LCString& msg)
     {
         std::cout << "Worker[" << _worker_idx << "] " << msg << '\n';
     }
@@ -69,37 +70,37 @@ public:
 
     struct RawLoan
     {
-        std::string acc_open_past_24mths;
-        std::string funded_amnt;
-        std::string annual_inc;
-        std::string grade;
-        std::string dti;
-        std::string delinq_2yrs;
-        std::string earliest_cr_line;
-        std::string emp_length;
-        std::string home_ownership;
-        std::string is_inc_v;
-        std::string inq_last_6mths;
-        std::string purpose;
-        std::string mths_since_last_delinq;
-        std::string pub_rec;
-        std::string revol_util;
-        std::string addr_state;
-        std::string total_acc;
-        std::string desc;
-        std::string loan_status;
-        std::string issue_d;
-        std::string term;
-        std::string installment;
-        std::string int_rate;
-        std::string total_pymnt;
-        std::string out_prncp;
-        std::string out_prncp_inv;
-        std::string total_rec_int;
-        std::string total_rec_prncp;        
-        std::string to_str() const 
+        LCString acc_open_past_24mths;
+        LCString funded_amnt;
+        LCString annual_inc;
+        LCString grade;
+        LCString dti;
+        LCString delinq_2yrs;
+        LCString earliest_cr_line;
+        LCString emp_length;
+        LCString home_ownership;
+        LCString is_inc_v;
+        LCString inq_last_6mths;
+        LCString purpose;
+        LCString mths_since_last_delinq;
+        LCString pub_rec;
+        LCString revol_util;
+        LCString addr_state;
+        LCString total_acc;
+        LCString desc;
+        LCString loan_status;
+        LCString issue_d;
+        LCString term;
+        LCString installment;
+        LCString int_rate;
+        LCString total_pymnt;
+        LCString out_prncp;
+        LCString out_prncp_inv;
+        LCString total_rec_int;
+        LCString total_rec_prncp;        
+        LCString to_str() const 
         {
-            std::string str;
+            LCString str;
             str += "acc_open_past_24mths=" + acc_open_past_24mths + ',';
             str += "funded_amnt=" + funded_amnt + ',';
             str += "annual_inc=" + annual_inc + ',';
@@ -133,7 +134,7 @@ public:
 
     virtual void initialize() 
     {
-        boost::filesystem::path stats_file_path = _args["stats"].as<std::string>();
+        boost::filesystem::path stats_file_path = _args["stats"].as<LCString>();
         if (boost::filesystem::exists(stats_file_path)) {
             info_msg("Initializing from " + stats_file_path.string());
             
@@ -257,7 +258,7 @@ public:
 
     virtual void find_average(Loan::LoanType loan_value_type)
     {
-        std::vector<LoanValue> data;
+        LoanValueVector data;
         data.reserve(_loans.size());
 
         // Step 1. Pull all the values in a new list
@@ -285,14 +286,14 @@ public:
             sum += data[i];
         }
 
-        std::vector<Filter*> filter(1);
+        FilterPtrVector filter(1);
         construct_filter(loan_value_type, filter.begin());
-        std::vector<FilterValue> filter_value;
+        FilterValueVector filter_value;
         FilterValue avg = sum / (end_index - start_index + 1);
         filter_value.push_back(avg);
         filter[0]->initialize(&filter_value);
 
-        info_msg("Avg " + filter[0]->get_name() + "=" + boost::lexical_cast<std::string>(static_cast<double>(sum) / (end_index - start_index + 1)) + " filter is " + filter[0]->get_string_value());
+        info_msg("Avg " + filter[0]->get_name() + "=" + boost::lexical_cast<LCString>(static_cast<double>(sum) / (end_index - start_index + 1)) + " filter is " + filter[0]->get_string_value());
     }
 
     virtual bool normalize_loan_data(const RawLoan& raw_loan, Loan& loan, LoanInfo& loan_info)
@@ -385,7 +386,7 @@ public:
         return true;
     }
 
-    LoanReturn get_nar(const std::vector<LoanValue>& invested)
+    LoanReturn get_nar(const LoanValueVector& invested)
     {
         unsigned defaulted = 0, per_month = 0;
         double profit = 0.0, principal = 0.0, lost = 0.0, rate = 0.0;
@@ -426,7 +427,7 @@ public:
         return loan_return;
     }
 
-    const std::vector<Loan>& get_loans() const 
+    const LoanVector& get_loans() const
     {
         return _loans;
     }
@@ -438,16 +439,16 @@ public:
 
 private:
         const Arguments&						_args;
-        std::vector<Filter*>					_filters;
+        FilterPtrVector     					_filters;
         const int								_worker_idx;
         unsigned								_row;
         unsigned								_skipped_loans;
         unsigned								_young_loans;
         unsigned								_removed_expired_loans;
         boost::gregorian::date					_last_date_for_full_month_for_volume;		
-        std::vector<std::string>                _labels;
-        std::vector<Loan>						_loans;
-        std::vector<LoanInfo>			        _loan_infos;
+        StringVector                            _labels;
+        LoanVector	        					_loans;
+        LoanInfoVector                          _loan_infos;
         boost::posix_time::ptime				_now;
 };
 

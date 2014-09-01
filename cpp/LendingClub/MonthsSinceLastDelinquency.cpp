@@ -14,6 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string MonthsSinceLastDelinquency::sqlite_type = "INT";
-const std::string MonthsSinceLastDelinquency::csv_name = "mths_since_last_delinq";
-const std::string MonthsSinceLastDelinquency::name = "MonthsSinceLastDelinquency";
+const LCString MonthsSinceLastDelinquency::sqlite_type = "INT";
+const LCString MonthsSinceLastDelinquency::csv_name = "mths_since_last_delinq";
+const LCString MonthsSinceLastDelinquency::name = "MonthsSinceLastDelinquency";

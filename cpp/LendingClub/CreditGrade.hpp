@@ -24,13 +24,13 @@ namespace lc
 class CreditGrade : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
 
     CreditGrade() : Filter(name)
     {
-        static std::vector<FilterValue> options;
+        static FilterValueVector options;
 
         if (_converation_table.empty()) {
             _converation_table["A"] = 1 << 0;
@@ -51,16 +51,16 @@ public:
 
             const auto& args = LCArguments::Get();
 
-            std::string all_grades = args["grades"].as<std::string>();
+            LCString all_grades = args["grades"].as<LCString>();
             size_t num_grades = all_grades.size();
             
             for (size_t i = 0; i < num_grades + 1; ++i) {
                 for (size_t j = 0; j < num_grades; ++j) {
                     if ((j + i) <= num_grades) {
-                        std::string grades = all_grades.substr(j, i+1);
+                        LCString grades = all_grades.substr(j, i+1);
                         FilterValue grades_bit_value = 0;
                         for (auto grade : grades) {
-                            grades_bit_value += _converation_table[std::string(1, grade)];
+                            grades_bit_value += _converation_table[LCString(1, grade)];
                         }
                         _converation_table[grades] = grades_bit_value;
                         _reverse_table[grades_bit_value] = grades;
@@ -76,19 +76,14 @@ public:
         Filter::initialize(&options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         return _converation_table[raw_data];
     }
 
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
         return _reverse_table[get_value()];
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return ((loan.grade & self.get_value()) > 0);
     }
 
     inline bool apply(const Loan& loan) const
@@ -97,8 +92,8 @@ public:
     }
 
 private:
-    static std::map<std::string, FilterValue>   _converation_table;
-    static std::map<FilterValue, std::string>   _reverse_table;
+    static std::map<LCString, FilterValue>   _converation_table;
+    static std::map<FilterValue, LCString>   _reverse_table;
 };
 
 };

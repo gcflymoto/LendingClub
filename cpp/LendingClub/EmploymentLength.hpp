@@ -23,17 +23,17 @@ namespace lc
 class EmploymentLength : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
 
     EmploymentLength() : Filter(name)
     {
-        static const std::vector<FilterValue>* options = create_range(0, 12, 1);
+        static const FilterValueVector* options = create_range(0, 12, 1);
         Filter::initialize(options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         if (raw_data == "n/a") {
             return 0;
@@ -52,7 +52,7 @@ public:
             return result;
         }
     }
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
         auto value = static_cast<unsigned>(get_value());
         if (value == 0) {
@@ -71,13 +71,8 @@ public:
             return ">10 years";
         }
         else {
-            return '>' + boost::lexical_cast<std::string>(value) + " years";
+            return '>' + boost::lexical_cast<LCString>(value) + " years";
         }
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return (loan.emp_length <= self.get_value());
     }
 
     inline bool apply(const Loan& loan) const

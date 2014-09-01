@@ -14,6 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string WordsInDescription::sqlite_type = "INT";
-const std::string WordsInDescription::csv_name = "desc";
-const std::string WordsInDescription::name = "WordsInDescription";
+const LCString WordsInDescription::sqlite_type = "INT";
+const LCString WordsInDescription::csv_name = "desc";
+const LCString WordsInDescription::name = "WordsInDescription";

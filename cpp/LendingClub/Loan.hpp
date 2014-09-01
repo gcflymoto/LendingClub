@@ -13,13 +13,11 @@ Created on July 28, 2014
 #ifndef __LC_LOAN_HPP__
 #define __LC_LOAN_HPP__
 
-#include <string>
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include "Types.hpp"
 
 namespace lc
 {
-
-typedef unsigned long long LoanValue;
 
 struct Loan
 {
@@ -83,10 +81,12 @@ struct Loan
     LoanValue                       desc_word_count;
 };
 
+typedef std::vector<Loan::LoanType> LoanTypeVector;
+
 struct LoanInfo
 {
     // These variables are only used for conversions
-    std::string                     loan_status;
+    LCString                     loan_status;
     boost::gregorian::date          issue_datetime;
     unsigned                        number_of_payments;
     double                          installment;

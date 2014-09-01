@@ -23,13 +23,13 @@ namespace lc
 class MonthsSinceLastDelinquency : public Filter
 {
 public:
-    static const std::string sqlite_type;
-    static const std::string csv_name;
-    static const std::string name;
+    static const LCString sqlite_type;
+    static const LCString csv_name;
+    static const LCString name;
 
     MonthsSinceLastDelinquency() : Filter(name)
     {
-        static std::vector<FilterValue> options;
+        static FilterValueVector options;
         if (options.empty()) {
             options.push_back(12);
             options.push_back(24);
@@ -39,19 +39,14 @@ public:
         Filter::initialize(&options);
     }
 
-    virtual FilterValue convert(const std::string& raw_data) const
+    virtual FilterValue convert(const LCString& raw_data) const
     {
         return (raw_data.empty()) ? 61 : boost::lexical_cast<FilterValue>(raw_data.c_str());
     }
 
-    virtual const std::string get_string_value() const
+    virtual const LCString get_string_value() const
     {
-        return ">=" + boost::lexical_cast<std::string>(get_value());
-    }
-
-    static bool static_apply(const Filter& self, const Loan& loan)
-    {
-        return (loan.mths_since_last_delinq >= self.get_value());
+        return ">=" + boost::lexical_cast<LCString>(get_value());
     }
 
     inline bool apply(const Loan& loan) const

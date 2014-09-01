@@ -14,6 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const std::string HomeOwnership::sqlite_type = "INT";
-const std::string HomeOwnership::csv_name = "home_ownership";
-const std::string HomeOwnership::name = "HomeOwnership";
+const LCString HomeOwnership::sqlite_type = "INT";
+const LCString HomeOwnership::csv_name = "home_ownership";
+const LCString HomeOwnership::name = "HomeOwnership";
