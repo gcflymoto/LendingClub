@@ -47,6 +47,11 @@ public:
     {
         return (loan.funded_amnt <= get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

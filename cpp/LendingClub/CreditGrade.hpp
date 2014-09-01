@@ -91,6 +91,11 @@ public:
         return ((loan.grade & get_value()) > 0);
     }
 
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
+
 private:
     static std::map<LCString, FilterValue>   _converation_table;
     static std::map<FilterValue, LCString>   _reverse_table;

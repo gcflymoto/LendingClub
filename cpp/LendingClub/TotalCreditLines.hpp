@@ -52,6 +52,11 @@ public:
     {
         return (loan.total_acc <= get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

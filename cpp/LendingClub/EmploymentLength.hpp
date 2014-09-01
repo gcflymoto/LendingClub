@@ -79,6 +79,11 @@ public:
     {
         return (loan.emp_length <= get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

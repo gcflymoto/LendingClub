@@ -85,6 +85,11 @@ public:
         return ((loan.purpose & get_value()) > 0);
     }
 
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
+
 private:
     static std::map<LCString, FilterValue>   _conversion_table;
 };

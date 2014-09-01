@@ -47,6 +47,11 @@ public:
     {
         return (!loan.pub_rec);
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

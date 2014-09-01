@@ -53,6 +53,11 @@ public:
     {
         return (loan.mths_since_last_delinq >= get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

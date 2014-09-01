@@ -24,9 +24,9 @@ class StubFilter : public Filter
 {
 public:
     //static const LCString sqlite_type;
-    //static const LCString name;
+    static const LCString name;
 
-    StubFilter() : Filter("Stub") 
+    StubFilter() : Filter(name) 
     {
         static FilterValueVector options(1);
         Filter::initialize(&options);
@@ -44,6 +44,11 @@ public:
     inline bool apply(const Loan&)  const
     {
         return true;
+    }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
     }
 };
 

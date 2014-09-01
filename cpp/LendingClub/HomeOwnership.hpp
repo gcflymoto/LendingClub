@@ -79,6 +79,10 @@ public:
     {
         return (loan.home_ownership != get_value());
     }
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

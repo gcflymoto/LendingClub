@@ -58,6 +58,11 @@ public:
     {
         return (loan.income_validated != get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

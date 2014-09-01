@@ -66,6 +66,11 @@ public:
     {
         return (loan.earliest_credit_line >= get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

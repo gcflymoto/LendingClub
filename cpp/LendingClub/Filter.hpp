@@ -144,10 +144,7 @@ public:
         return nullptr;
     }
 
-    const LCString& get_name() const
-    {
-        return _name;
-    }	
+    virtual const LCString& get_name() const = 0;
     
 protected:
     FilterValue _value;

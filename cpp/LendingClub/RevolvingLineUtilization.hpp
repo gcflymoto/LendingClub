@@ -55,6 +55,11 @@ public:
     {
         return (loan.revol_utilization <= get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

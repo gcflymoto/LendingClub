@@ -55,6 +55,11 @@ public:
     {
         return (loan.debt_to_income_ratio <= get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

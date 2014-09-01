@@ -53,6 +53,11 @@ public:
     {
         return (loan.desc_word_count >= get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

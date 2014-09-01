@@ -66,6 +66,11 @@ public:
     {
         return ((loan.delinq_2yrs & get_value()) > 0);
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

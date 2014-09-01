@@ -52,6 +52,11 @@ public:
     {
         return (loan.acc_open_past_24mths <= get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };

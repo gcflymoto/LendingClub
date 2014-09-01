@@ -47,6 +47,11 @@ public:
     {
         return (loan.inq_last_6mths <= get_value());
     }
+
+    virtual const LCString& get_name() const
+    {
+        return name;
+    }
 };
 
 };
