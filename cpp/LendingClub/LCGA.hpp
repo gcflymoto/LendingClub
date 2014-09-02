@@ -63,14 +63,11 @@ public:
             do {                
                 hash_result = 0;
 
-                unsigned j = 0;
-                for (auto& filter_type : backtest_filters) {
-                    FilterPtrVector::iterator filter_it = filters.begin() + j;
-                    (*filter_it)->set_current(randint(0, (*filter_it)->get_count() - 1));
-
-                    hash_result = hash_result ^ (filter_hash((*filter_it)->get_value() << 1));
-                    ++j;
+                for (auto& filter : filters) {
+                    filter->set_current(randint(0, filter->get_count() - 1));
+                    hash_result = hash_result ^ (filter_hash(filter->get_value() << 1));
                 }
+
             // Keep randomizing until we find a filter set we haven't used before
             } while (_memoized_filters.find(hash_result) != _memoized_filters.end());
 

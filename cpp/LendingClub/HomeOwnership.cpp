@@ -17,3 +17,4 @@ using namespace lc;
 const LCString HomeOwnership::sqlite_type = "INT";
 const LCString HomeOwnership::csv_name = "home_ownership";
 const LCString HomeOwnership::name = "HomeOwnership";
+const FilterValueVector* HomeOwnership::options = nullptr;

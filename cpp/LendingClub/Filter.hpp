@@ -27,10 +27,8 @@ namespace lc
 class Filter
 {
 public:
-    Filter(const LCString& name) :
+    Filter() :
         _value(0),
-        _options(NULL),
-        _name(name),
         _current(0)
     {
     }
@@ -42,7 +40,7 @@ public:
         if (this != &other) // protect against invalid self-assignment
         {
             _value = other._value;
-            _options = other._options;
+            //_options = other._options;
             //_name = other._name;
             _current = other._current;
         }
@@ -50,12 +48,8 @@ public:
         return *this;
     }
 
-    void initialize(const FilterValueVector* options)
-    {
-        _options = options;
-        set_current(0);
-    }
-
+    virtual const FilterValueVector& get_options() = 0;
+    virtual void set_options(const FilterValueVector* new_options) = 0;
     virtual bool apply(const Loan& loan) const = 0;
     virtual FilterValue convert(const LCString& raw_data) const = 0;
 
@@ -71,24 +65,24 @@ public:
    
     inline void set_current(const unsigned current)
     {
-        assert(current < _options->size());
+        assert(current < get_options().size());
         _current = current;
-        _value = (*_options)[_current];
+        _value = get_options()[_current];
     }
 
     virtual const LCString get_string_value() const = 0;
 
     size_t get_count()
     {
-        return _options->size();
+        return get_options().size();
     }
 
     bool next()
     {
-        size_t size = _options->size();
+        size_t size = get_options().size();
         _current = (_current + 1) % (size + 1);
         if (_current != size) {
-            _value = (*_options)[_current];
+            _value = get_options()[_current];
         }
         else {
             _value = 0;
@@ -148,9 +142,8 @@ public:
     
 protected:
     FilterValue _value;
-    const FilterValueVector* _options;
+    //const FilterValueVector* _options;
     unsigned _current;
-    const LCString& _name;   // TODO: Get rid of this field from the class and instead put it outside the class
 };
 
 inline Filter::~Filter() {}  // defined even though it's pure virtual; it's faster this way; trust me

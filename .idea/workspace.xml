@@ -2,28 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AccountsOpenPast24Months.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AmountRequested.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AmountRequested.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/AnnualIncome.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/AnnualIncome.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/CreditGrade.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/CreditGrade.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/DebtToIncomeRatio.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/DebtToIncomeRatio.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Delinquencies.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Delinquencies.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/EarliestCreditLine.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/EarliestCreditLine.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/EmploymentLength.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/EmploymentLength.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Filter.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Filter.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/HomeOwnership.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/HomeOwnership.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/IncomeValidated.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/IncomeValidated.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/InqueriesLast6Months.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/InqueriesLast6Months.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj.filters" afterPath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj.filters" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj" afterPath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LoanPurpose.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LoanPurpose.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/MonthsSinceLastDelinquency.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/MonthsSinceLastDelinquency.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/PublicRecordsOnFile.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/PublicRecordsOnFile.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/RevolvingLineUtilization.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/RevolvingLineUtilization.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/State.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/State.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/StubFilter.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/StubFilter.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/TotalCreditLines.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/TotalCreditLines.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/WordsInDescription.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/WordsInDescription.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="LendingClub.iws" />
@@ -672,7 +650,11 @@
       <created>1409539920557</created>
       <updated>1409539920557</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="move name to a virtual function out of the filter class, which should pack filter even more">
+      <created>1409609547998</created>
+      <updated>1409609547998</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -734,7 +716,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="updates for linux" />
     <MESSAGE value="code fixes" />
     <MESSAGE value="many performance improvements and bug fixes" />
     <MESSAGE value="add missing file" />
@@ -759,7 +740,8 @@
     <MESSAGE value="got rid of current and array accesses during inner core. Improving performance" />
     <MESSAGE value="add missing source files" />
     <MESSAGE value="cleanup and attempt at using folly" />
-    <option name="LAST_COMMIT_MESSAGE" value="cleanup and attempt at using folly" />
+    <MESSAGE value="move name to a virtual function out of the filter class, which should pack filter even more" />
+    <option name="LAST_COMMIT_MESSAGE" value="move name to a virtual function out of the filter class, which should pack filter even more" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

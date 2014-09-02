@@ -26,11 +26,11 @@ public:
     static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
+    static const FilterValueVector* options;
 
-    LoanPurpose() : Filter(name)
+    LoanPurpose() : Filter()
     {
-        static FilterValueVector options;
-        if (options.empty()) {
+        if (options == nullptr) {
             _conversion_table["other"] = 1 << 0;
             _conversion_table["debt_consolidation"] = 1 << 1;
             _conversion_table["educational"] = 1 << 2;
@@ -50,10 +50,22 @@ public:
 
             for (unsigned i = 0; i < 14; ++i) {
                 purpose_bitmap.push_back(1 << i);
-            }            
-            options = power_bitset(purpose_bitmap);
+            }      
+            options = new FilterValueVector(power_bitset(purpose_bitmap));
         }
-        Filter::initialize(&options);
+    }
+
+    virtual const FilterValueVector& get_options()
+    {
+        return *options;
+    }
+
+    virtual void set_options(const FilterValueVector* new_options)
+    {
+        assert(new_options != nullptr);
+        assert(new_options->empty() == false);
+        options = new_options;
+        set_current(0);
     }
 
     virtual FilterValue convert(const LCString& raw_data) const

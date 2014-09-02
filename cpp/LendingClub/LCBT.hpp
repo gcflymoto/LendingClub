@@ -27,7 +27,6 @@ public:
     LCBT(const LoanTypeVector& conversion_filters, const int worker_idx) :
         _args(LCArguments::Get()),
         _filters(conversion_filters.size()),
-        _test_filters(nullptr),
         _worker_idx(worker_idx),
         _loan_data(conversion_filters, worker_idx)
     {
@@ -41,24 +40,23 @@ public:
     LoanReturn test(FilterPtrVector& test_filters)
     {
         _invested.clear();
-        _test_filters = &test_filters;
+
+        auto begin = test_filters.begin();
+        auto end = test_filters.end();
+        auto it = test_filters.begin();
 
         for (auto& loan : _loan_data.get_loans()) {
-            if (consider(loan)) {
+            for (it = begin; it != end; ++it) {
+                if (!((*it)->apply(loan))) {
+                    break;
+                }
+            }
+            if (it == end) {
                 _invested.push_back(loan.rowid);
-            }
+            }            
         }
-        return _loan_data.get_nar(_invested);
-    }
 
-    bool consider(const Loan& loan) 
-    {
-        for (auto& lc_filter : *_test_filters) {
-            if (!lc_filter->apply(loan)) {
-                return false;
-            }
-        }
-        return true;
+        return _loan_data.get_nar(_invested);
     }
 
     void debug_msg(const LCString& msg) 
@@ -75,7 +73,6 @@ public:
 private:
     const Arguments&						_args;
     FilterPtrVector					        _filters;
-    FilterPtrVector*                        _test_filters;
     const int								_worker_idx;
     LoanData								_loan_data;
     LoanValueVector                         _invested;

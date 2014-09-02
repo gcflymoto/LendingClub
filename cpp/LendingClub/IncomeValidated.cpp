@@ -17,3 +17,4 @@ using namespace lc;
 const LCString IncomeValidated::sqlite_type = "INT";
 const LCString IncomeValidated::csv_name = "is_inc_v";
 const LCString IncomeValidated::name = "IncomeValidated";
+const FilterValueVector* IncomeValidated::options = nullptr;

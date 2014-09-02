@@ -19,3 +19,4 @@ const LCString CreditGrade::csv_name = "grade";
 const LCString CreditGrade::name = "CreditGrade";
 std::map<LCString, FilterValue> CreditGrade::_converation_table;
 std::map<FilterValue, LCString> CreditGrade::_reverse_table;
+const FilterValueVector* CreditGrade::options = nullptr;

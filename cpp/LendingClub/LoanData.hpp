@@ -291,9 +291,14 @@ public:
         FilterValueVector filter_value;
         FilterValue avg = sum / (end_index - start_index + 1);
         filter_value.push_back(avg);
-        filter[0]->initialize(&filter_value);
+
+
+        const FilterValueVector& static_options = filter[0]->get_options();
+        filter[0]->set_options(&filter_value);
 
         info_msg("Avg " + filter[0]->get_name() + "=" + boost::lexical_cast<LCString>(static_cast<double>(sum) / (end_index - start_index + 1)) + " filter is " + filter[0]->get_string_value());
+
+        filter[0]->set_options(&static_options);
     }
 
     virtual bool normalize_loan_data(const RawLoan& raw_loan, Loan& loan, LoanInfo& loan_info)

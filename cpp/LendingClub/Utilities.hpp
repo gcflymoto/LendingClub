@@ -17,7 +17,8 @@ Created on July 28, 2014
 #include <map>
 #include "Types.hpp"
 
-namespace lc {
+namespace lc
+{
 
 const std::vector<unsigned long long>* create_range(const unsigned start, const unsigned stop, const unsigned step);
 LCString map_to_str(const std::map<LCString, LCString>& m);

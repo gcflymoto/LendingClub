@@ -17,3 +17,4 @@ using namespace lc;
 const LCString InqueriesLast6Months::sqlite_type = "INT";
 const LCString InqueriesLast6Months::csv_name = "inq_last_6mths";
 const LCString InqueriesLast6Months::name = "InqueriesLast6Months";
+const FilterValueVector* InqueriesLast6Months::options = nullptr;

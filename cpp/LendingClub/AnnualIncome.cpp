@@ -17,3 +17,4 @@ using namespace lc;
 const LCString AnnualIncome::sqlite_type = "INT";
 const LCString AnnualIncome::csv_name = "annual_inc";
 const LCString AnnualIncome::name = "AnnualIncome";
+const FilterValueVector* AnnualIncome::options = nullptr;

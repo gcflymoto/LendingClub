@@ -17,3 +17,4 @@ using namespace lc;
 const LCString PublicRecordsOnFile::sqlite_type = "INT";
 const LCString PublicRecordsOnFile::csv_name = "pub_rec";
 const LCString PublicRecordsOnFile::name = "PublicRecordsOnFile";
+const FilterValueVector* PublicRecordsOnFile::options = nullptr;

@@ -18,3 +18,4 @@ const LCString State::sqlite_type = "INT";
 const LCString State::csv_name = "addr_state";
 const LCString State::name = "State";
 std::map<LCString, FilterValue> State::_conversion_table;
+const FilterValueVector* State::options = nullptr;

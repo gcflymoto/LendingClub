@@ -26,11 +26,26 @@ public:
     static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
+    static const FilterValueVector* options;
 
-    EmploymentLength() : Filter(name)
+    EmploymentLength() : Filter()
     {
-        static const FilterValueVector* options = create_range(0, 12, 1);
-        Filter::initialize(options);
+        if (options == nullptr) {
+            options = create_range(0, 12, 1);
+        }
+    }
+
+    virtual const FilterValueVector& get_options()
+    {
+        return *options;
+    }
+
+    virtual void set_options(const FilterValueVector* new_options)
+    {
+        assert(new_options != nullptr);
+        assert(new_options->empty() == false);
+        options = new_options;
+        set_current(0);
     }
 
     virtual FilterValue convert(const LCString& raw_data) const

@@ -48,3 +48,12 @@ No current, and direct _value lookup
 
 With PGO
 [iteration 50/50 5.948 sec/iter] Matched 1677/318062 loans (0/mo.) test at 12.9% APY. 78 loans defaulted (4.651%, $19.63 avg loss) 9.391% net APY
+Without name in the filter class
+[iteration 50/600 3.845 sec/iter] Matched 1411/320382 loans (0/mo.) test at 13.54% APY. 76 loans defaulted (5.386%, $20.47 avg loss) 9.156% net APY
+
+[iteration 600/600 6.607 sec/iter] Matched 1000/320382 loans (0/mo.) test at 13.24% APY. 32 loans defaulted (3.2%, $18.14 avg loss) 10.81% net APY
+
+Move options out of the filter class
+[iteration 600/600 5.832 sec/iter] Matched 1000/320382 loans (0/mo.) test at 13.24% APY. 32 loans defaulted (3.2%, $18.14 avg loss) 10.81% net APY
+
+Hoist consider() into main loop

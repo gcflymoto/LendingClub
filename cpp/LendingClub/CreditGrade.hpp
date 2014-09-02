@@ -27,11 +27,10 @@ public:
     static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
+    static const FilterValueVector* options;
 
-    CreditGrade() : Filter(name)
+    CreditGrade() : Filter()
     {
-        static FilterValueVector options;
-
         if (_converation_table.empty()) {
             _converation_table["A"] = 1 << 0;
             _converation_table["B"] = 1 << 1;
@@ -51,13 +50,13 @@ public:
 
             const auto& args = LCArguments::Get();
 
-            LCString all_grades = args["grades"].as<LCString>();
-            size_t num_grades = all_grades.size();
+            LCString test_grades = args["grades"].as<LCString>();
+            size_t num_grades = test_grades.size();
             
             for (size_t i = 0; i < num_grades + 1; ++i) {
                 for (size_t j = 0; j < num_grades; ++j) {
                     if ((j + i) <= num_grades) {
-                        LCString grades = all_grades.substr(j, i+1);
+                        LCString grades = test_grades.substr(j, i+1);
                         FilterValue grades_bit_value = 0;
                         for (auto grade : grades) {
                             grades_bit_value += _converation_table[LCString(1, grade)];
@@ -69,11 +68,26 @@ public:
             }
         }
 
-        for (auto it : _converation_table) {
-            options.push_back(it.second);
+        if (options == nullptr) {
+            auto new_options = new FilterValueVector;
+            for (auto it : _converation_table) {
+                new_options->push_back(it.second);
+            }
+            options = new_options;
         }
+    }
 
-        Filter::initialize(&options);
+    virtual const FilterValueVector& get_options()
+    {
+        return *options;
+    }
+
+    virtual void set_options(const FilterValueVector* new_options)
+    {
+        assert(new_options != nullptr);
+        assert(new_options->empty() == false);
+        options = new_options;
+        set_current(0);
     }
 
     virtual FilterValue convert(const LCString& raw_data) const

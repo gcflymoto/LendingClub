@@ -17,3 +17,4 @@ using namespace lc;
 const LCString MonthsSinceLastDelinquency::sqlite_type = "INT";
 const LCString MonthsSinceLastDelinquency::csv_name = "mths_since_last_delinq";
 const LCString MonthsSinceLastDelinquency::name = "MonthsSinceLastDelinquency";
+const FilterValueVector* MonthsSinceLastDelinquency::options = nullptr;

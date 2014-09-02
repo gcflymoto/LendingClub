@@ -13,6 +13,8 @@ Created on July 28, 2014
 #ifndef __LC_STATE_HPP__
 #define __LC_STATE_HPP__
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 #include "Filter.hpp"
 #include "Loan.hpp"
 #include "Utilities.hpp"
@@ -26,11 +28,11 @@ public:
     static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
+    static const FilterValueVector* options;
 
-    State() : Filter(name)
+    State() : Filter()
     {
-        static FilterValueVector options;
-        if (options.empty()) {               
+        if (options == nullptr) {               
             _conversion_table["AK"] = 1ull << 0;
             _conversion_table["AL"] = 1ull << 1;
             _conversion_table["AR"] = 1ull << 2;
@@ -63,40 +65,60 @@ public:
             _conversion_table["NH"] = 1ull << 29;
             _conversion_table["NJ"] = 1ull << 30;
             _conversion_table["NM"] = 1ull << 31;
-            _conversion_table["NV"] = 1ull << 32;
-            _conversion_table["NY"] = 1ull << 33;
-            _conversion_table["OH"] = 1ull << 34;
-            _conversion_table["OK"] = 1ull << 35;
-            _conversion_table["OR"] = 1ull << 36;
-            _conversion_table["PA"] = 1ull << 37;
-            _conversion_table["RI"] = 1ull << 38;
-            _conversion_table["SC"] = 1ull << 39;
-            _conversion_table["SD"] = 1ull << 40;
-            _conversion_table["TN"] = 1ull << 41;
-            _conversion_table["TX"] = 1ull << 42;
-            _conversion_table["UT"] = 1ull << 43;
-            _conversion_table["VA"] = 1ull << 44;
-            _conversion_table["VT"] = 1ull << 45;
-            _conversion_table["WA"] = 1ull << 46;
-            _conversion_table["WI"] = 1ull << 47;
-            _conversion_table["WV"] = 1ull << 48;
-            _conversion_table["WY"] = 1ull << 49;
-            _conversion_table["NULL"] = 1ull << 50;
+            _conversion_table["NO"] = 1ull << 32;
+            _conversion_table["NV"] = 1ull << 33;
+            _conversion_table["NY"] = 1ull << 34;
+            _conversion_table["OH"] = 1ull << 35;
+            _conversion_table["OK"] = 1ull << 36;
+            _conversion_table["OR"] = 1ull << 37;
+            _conversion_table["PA"] = 1ull << 38;
+            _conversion_table["RI"] = 1ull << 39;
+            _conversion_table["SC"] = 1ull << 40;
+            _conversion_table["SD"] = 1ull << 41;
+            _conversion_table["TN"] = 1ull << 42;
+            _conversion_table["TX"] = 1ull << 43;
+            _conversion_table["UT"] = 1ull << 44;
+            _conversion_table["VA"] = 1ull << 45;
+            _conversion_table["VT"] = 1ull << 46;
+            _conversion_table["WA"] = 1ull << 47;
+            _conversion_table["WI"] = 1ull << 48;
+            _conversion_table["WV"] = 1ull << 49;
+            _conversion_table["WY"] = 1ull << 50;
+            _conversion_table["NULL"] = 1ull << 51;
+
+            const auto& args = LCArguments::Get();
+
+            LCString test_states = args["states"].as<LCString>();
+
+            std::vector<std::string> states;
+            boost::split(states, test_states, boost::is_any_of(","));
 
             FilterValueVector state_bitmap;
-            state_bitmap.push_back(_conversion_table["CA"]);
-            state_bitmap.push_back(_conversion_table["AZ"]);
-            state_bitmap.push_back(_conversion_table["FL"]);
-            state_bitmap.push_back(_conversion_table["GA"]);
-            state_bitmap.push_back(_conversion_table["IL"]);
-            state_bitmap.push_back(_conversion_table["MD"]);
-            state_bitmap.push_back(_conversion_table["NO"]);
-            state_bitmap.push_back(_conversion_table["NV"]);
-            state_bitmap.push_back(_conversion_table["TX"]);
-            state_bitmap.push_back(_conversion_table["NY"]);                
-            options = power_bitset(state_bitmap);
-        }
-        Filter::initialize(&options);
+            for (auto& state :states) {
+                if (_conversion_table.find(state) == _conversion_table.end()) {
+                    std::cout << "Error: not a valid state: " << state << std::endl;
+                    exit(-1);
+                }
+                else {
+                    state_bitmap.push_back(_conversion_table[state]);
+                }
+            }
+            
+            options = new FilterValueVector(power_bitset(state_bitmap));
+        }       
+    }
+
+    virtual const FilterValueVector& get_options()
+    {
+        return *options;
+    }
+
+    virtual void set_options(const FilterValueVector* new_options)
+    {
+        assert(new_options != nullptr);
+        assert(new_options->empty() == false);
+        options = new_options;
+        set_current(0);
     }
 
     virtual FilterValue convert(const LCString& raw_data) const

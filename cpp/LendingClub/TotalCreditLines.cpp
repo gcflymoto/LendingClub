@@ -17,3 +17,4 @@ using namespace lc;
 const LCString TotalCreditLines::sqlite_type = "INT";
 const LCString TotalCreditLines::csv_name = "total_acc";
 const LCString TotalCreditLines::name = "TotalCreditLines";
+const FilterValueVector* TotalCreditLines::options = nullptr;
