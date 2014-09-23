@@ -13,9 +13,8 @@ Created on July 27, 2014
 #define __LC_TYPES_HPP__
 
 #include <map>
-#include <vector>
 
-#ifdef FB_FOLLY
+#ifdef FB_FOLLY_STRING
 //////////////////////////////////////////////////////////////////////////
 // Building glog - DOES NOT WORK
 // aclocal -I . -I `pwd`/m4 && autoheader && autoconf && automake
@@ -43,6 +42,34 @@ namespace lc
 };
 #endif
 
+#ifdef FB_FOLLY_VECTOR
+#include <folly/FBVector.h>
+namespace lc
+{
+    typedef unsigned long long FilterValue;
+    typedef folly::fbvector<FilterValue> FilterValueVector;
+    typedef folly::fbvector<FilterValueVector> FilterValueVectorVector;
+
+    class Filter;
+    typedef folly::fbvector<Filter> FilterVector;
+    typedef folly::fbvector<Filter*> FilterPtrVector;
+
+    struct Loan;
+    struct LoanInfo;
+    typedef folly::fbvector<Loan> LoanVector;
+    typedef folly::fbvector<LoanInfo> LoanInfoVector;
+
+    typedef unsigned long long LoanValue;
+    typedef folly::fbvector<LoanValue> LoanValueVector;
+
+    typedef folly::fbvector<LCString> StringVector;
+
+    struct LoanReturn;
+    typedef folly::fbvector<std::pair<LoanReturn, FilterPtrVector>> PopulationType;
+};
+#else
+
+#include <vector>
 namespace lc
 {
     typedef unsigned long long FilterValue;
@@ -66,5 +93,6 @@ namespace lc
     struct LoanReturn;
     typedef std::vector<std::pair<LoanReturn, FilterPtrVector>> PopulationType;
 };
+#endif
 
 #endif

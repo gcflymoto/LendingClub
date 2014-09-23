@@ -14,7 +14,7 @@ int lcmain(int argc, char* argv[])
     boost::program_options::options_description desc("Allowed options");
     desc.add_options()
         ("help,h", "Produce help message")
-        ("verbose,v", "Set verbosity level")
+        ("verbose,v", boost::program_options::bool_switch()->default_value(false), "Verbose mode")
         ("version,V", boost::program_options::value<string>()->default_value("0.7"), "Program version")
         ("grades,g", boost::program_options::value<string>()->default_value("ABCDEFG"), "Credit grades to test")
         ("states,a", boost::program_options::value<string>()->default_value("CA,AZ,FL,GA,IL,MD,NO,NV,TX,NY"), "Comma separated list of states to test")
@@ -85,7 +85,7 @@ int lcmain(int argc, char* argv[])
 
     unsigned population_size = args["population_size"].as<unsigned>();
     
-    if ((workers > population_size) || (population_size % workers != 0)) {
+    if (workers > population_size) {
         cout << "The population size: " << population_size << " must be a multiple of the number of workers: " << workers << '\n';
         return 1;
     }
@@ -148,12 +148,19 @@ int lcmain(int argc, char* argv[])
     conversion_filters.push_back(Loan::TOTAL_ACC);
     conversion_filters.push_back(Loan::DESC_WORD_COUNT);
 
-    LCBT lcbt(conversion_filters, -1);
-    lcbt.initialize();
-
     LoanTypeVector backtest_filters = conversion_filters;
 
-    GATest ga_test(backtest_filters, lcbt);
+    LCBT* lcbt = NULL;
+
+    if (workers > 1) {
+        lcbt = new ParallelManagerLCBT(conversion_filters);
+    } else {
+        lcbt = new LCBT(conversion_filters, -1);
+    }
+
+    lcbt->initialize();
+
+    GATest ga_test(backtest_filters, *lcbt);
     ga_test.run();
 
     return 0;

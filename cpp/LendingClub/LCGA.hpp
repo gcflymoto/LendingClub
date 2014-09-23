@@ -87,7 +87,6 @@ public:
         }
 
         _csv_file << "expected_apy,num_loans,num_defaulted,pct_defaulted,avg_default_loss,net_apy\n";
-
     }
 
     void run()
@@ -107,6 +106,8 @@ public:
             print_best();
             mate();
         }
+
+        _lcbt.finish();
     }
 
     void calculate_fitness()
@@ -175,7 +176,7 @@ public:
 
         std::cout << "Best Filter: " << filters << '\n';
         std::cout << "[iteration " << (_iteration + 1) << '/' << _iterations << ' ' << std::setprecision(4) << _iteration_time.count() / (_iteration + 1);
-        std::cout << " sec/iter] Matched " << best_results.num_loans << '/' << _lcbt.total_loans() << " loans ";
+        std::cout << " sec/iter] Matched " << best_results.num_loans << '/' << _lcbt.num_loans() << " loans ";
         std::cout << "(" << loans_per_month << "/mo.) test at " << std::setprecision(4) << expected_apy << "% APY. ";
         std::cout << std::setprecision(4) << num_defaulted << " loans defaulted (" << pct_defaulted << "%, $";
         std::cout << avg_default_loss << " avg loss) " << net_apy << "% net APY\n";
@@ -237,8 +238,8 @@ public:
     }
 
     LCBT&                                                       _lcbt;
-    const Arguments&						                    _args;
-    FilterPtrVector     					                    _filters;
+    const Arguments&                                            _args;
+    FilterPtrVector                                             _filters;
     PopulationType                                              _population;
     PopulationType                                              _mate_population;
     unsigned                                                    _iteration;

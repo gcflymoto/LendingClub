@@ -51,3 +51,4 @@ Some of the performance figures on my laptop
 
 ### Future improvements  ###
 - Verify based on www.lendstats.com
+- Python Lending Club API http://python-lendingclub.readthedocs.org/en/latest/

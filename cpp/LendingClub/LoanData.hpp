@@ -49,19 +49,20 @@ public:
         _loan_infos.reserve(350000);
         
         // Create each of the filters and use its conversion utility for normalizing the data
+        //
         for (auto& filter_type : conversion_filters) {
             _filters.resize(filter_type + 1);
             FilterPtrVector::iterator filter_it = _filters.begin() + filter_type;
             construct_filter(filter_type, filter_it);
         }
 
-        _now = boost::posix_time::second_clock::local_time(); //use the clock 
+        _now = boost::posix_time::second_clock::local_time();
         boost::gregorian::date_duration delta(_args["young_loans_in_days"].as<unsigned>() + 30);
 
         _last_date_for_full_month_for_volume = _now.date() - delta;
     }
 
-    void info_msg(const LCString& msg)
+    void info_msg(const LCString& msg) const
     {
         std::cout << "Worker[" << _worker_idx << "] " << msg << '\n';
     }
@@ -188,6 +189,7 @@ public:
                 bool parsed_loan_ok = normalize_loan_data(raw_loan, loan, loan_info);
                 if (parsed_loan_ok) {
                     // Assign the rowid of the loan to be the current last index in the loans list
+                    //
                     loan.rowid = _loans.size();
                     _loans.push_back(loan);
                     _loan_infos.push_back(loan_info);
@@ -232,6 +234,7 @@ public:
         }
 
         // Only look at loans with a valid issue date
+        //
         boost::gregorian::date issue_d(boost::gregorian::from_simple_string(loan.issue_d));		
         if (issue_d.is_not_a_date()) {
             info_msg("Skipping loan, did not find issue_d:" + loan.to_str());
@@ -240,6 +243,7 @@ public:
         }
 
         // Ignore loans that are too young for consideration
+        //
         boost::gregorian::date_duration young_loans_in_days(_args["young_loans_in_days"].as<unsigned>());
         boost::gregorian::date young_date = _now.date() - young_loans_in_days;
 
@@ -249,6 +253,7 @@ public:
         }
 
         // Ignore loans that didn't event start
+        //
         if ((loan.loan_status == "Removed") || (loan.loan_status == "Expired")) {
             ++_removed_expired_loans;
             return false;
@@ -256,7 +261,7 @@ public:
         return true;
     }
 
-    virtual void find_average(Loan::LoanType loan_value_type)
+    virtual void find_average(Loan::LoanType loan_value_type) const
     {
         LoanValueVector data;
         data.reserve(_loans.size());
@@ -264,8 +269,9 @@ public:
         // Step 1. Pull all the values in a new list
         //
         for (auto& loan : _loans) {
-            LoanValue* lv = &(loan.rowid);
-            // move the pointer from the struct variable in the loan to the one we are looking to average
+            const LoanValue* lv = &(loan.rowid);
+            // Move the pointer from the struct variable in the loan to the one we are looking to average
+            //
             lv += loan_value_type;
             data.push_back(*lv);
         }
@@ -366,6 +372,7 @@ public:
         while (elapsed > 0) {
             --elapsed;
             // Interest and service charge for the whole loan (not just me)
+            //
             double interest = balance * rate / 1200.0;
             double service = 0.01 * monthly_payment;
             payments += monthly_payment;
@@ -376,6 +383,7 @@ public:
             }
 
             // Compute my ratio of the profit
+            //
             loan_profit += (interest - service) * ratio;
             loan_principal += balance * ratio;
             balance -= monthly_payment;
@@ -391,7 +399,7 @@ public:
         return true;
     }
 
-    LoanReturn get_nar(const LoanValueVector& invested)
+    LoanReturn get_nar(const LoanValueVector& invested) const
     {
         unsigned defaulted = 0, per_month = 0;
         double profit = 0.0, principal = 0.0, lost = 0.0, rate = 0.0;
@@ -404,6 +412,7 @@ public:
             defaulted += _loan_infos[idx].defaulted;
             rate += _loan_infos[idx].int_rate;
             // Count loan volume
+            //
             if ((_loan_infos[idx].issue_datetime.year() == _last_date_for_full_month_for_volume.year()) &&
                 (_loan_infos[idx].issue_datetime.month() == _last_date_for_full_month_for_volume.month())) {
                 ++per_month;
@@ -420,6 +429,7 @@ public:
             }
             else {
                 // Calculate the Net APR
+                //
                 loan_return.net_apy = 100.0 * (pow(1.0 + profit / principal, 12) - 1.0);
             }
 
@@ -437,14 +447,14 @@ public:
         return _loans;
     }
 
-    unsigned total_loans() const
+    unsigned num_loans() const
     {
         return _loans.size();
     }
 
 private:
-        const Arguments&						_args;
-        FilterPtrVector     					_filters;
+        const Arguments&                        _args;
+        FilterPtrVector                         _filters;
         const int								_worker_idx;
         unsigned								_row;
         unsigned								_skipped_loans;

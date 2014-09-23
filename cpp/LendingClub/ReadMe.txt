@@ -55,5 +55,6 @@ Without name in the filter class
 
 Move options out of the filter class
 [iteration 600/600 5.832 sec/iter] Matched 1000/320382 loans (0/mo.) test at 13.24% APY. 32 loans defaulted (3.2%, $18.14 avg loss) 10.81% net APY
-
 Hoist consider() into main loop
+
+No iterators

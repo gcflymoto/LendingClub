@@ -27,23 +27,15 @@ namespace lc
 class Filter
 {
 public:
-    Filter() :
-        _value(0),
-        _current(0)
-    {
-    }
+    Filter() : _value(0), _current(0) {}
 
     virtual ~Filter() = 0;
 
     Filter& operator=(const Filter& other)
     {
-        if (this != &other) // protect against invalid self-assignment
-        {
-            _value = other._value;
-            //_options = other._options;
-            //_name = other._name;
-            _current = other._current;
-        }
+        _value = other._value;
+        _current = other._current;
+
         // by convention, always return *this
         return *this;
     }
@@ -127,13 +119,13 @@ public:
         return result;
     }
 
-    Filter* increment(FilterVector& filters)
+    Filter* increment(FilterPtrVector& filters)
     {
         for (auto& filter : filters) {
-            if (!filter.next()) {
+            if (!filter->next()) {
                 continue;
             }
-            return &filter;
+            return filter;
         }
         return nullptr;
     }
@@ -142,7 +134,6 @@ public:
     
 protected:
     FilterValue _value;
-    //const FilterValueVector* _options;
     unsigned _current;
 };
 
