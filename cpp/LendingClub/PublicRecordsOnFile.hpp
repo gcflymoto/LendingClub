@@ -32,7 +32,7 @@ public:
     {
         if (options == nullptr) {
             auto new_options = new FilterValueVector;
-            new_options->push_back(1);
+            new_options->push_back(0);
             options = new_options;
         }
     }
@@ -62,7 +62,7 @@ public:
 
     inline bool apply(const Loan& loan) const
     {
-        return (!loan.pub_rec);
+        return (loan.pub_rec <= get_value());
     }
 
     virtual const LCString& get_name() const

@@ -50,6 +50,19 @@ public:
 
     virtual void process_loans(FilterPtrVector& test_filters)
     {        
+        //
+        // What this algorithm does is convert all relations to a linear code so that we don't have to call
+        // the filters themselves, or call their virtual functions. This also allows us to iterate over the 
+        // individual loan data values here in this tight loop
+        // 
+        // The magic is to convert filter relations like 
+        //
+        // A >  B
+        // A >= B
+        // A <  B
+        // A <= B
+        //
+
         _invested.clear();
 
         auto first_filter = &(test_filters[0]);
@@ -61,11 +74,11 @@ public:
 
         for (auto i = _start_range; i < _end_range; ++i, ++loan) {
             Filter** f = first_filter;
-            size_t j = 0;
-            for (; j < num_filters && ((*f)->apply(*loan)); ++j, ++f) {
-                ; // everything is done in the for loop definition
+            size_t j = num_filters;
+            for (; j != 0 && ((*f)->apply(*loan)); --j, ++f) {
+                ; // everything is done in the for loop declaration
             }
-            if (j == num_filters) {
+            if (j == 0) {
                 _invested.push_back(loan->rowid);
             }
         }

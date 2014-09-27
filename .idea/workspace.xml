@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f08edf79-0c8d-4385-a776-4b1fbae1236f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Filter.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Filter.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LCBT.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LCBT.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LCGA.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LCGA.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub.sln" afterPath="$PROJECT_DIR$/cpp/LendingClub.sln" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj" afterPath="$PROJECT_DIR$/cpp/LendingClub/LendingClub.vcxproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/LoanData.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/LoanData.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/ReadMe.txt" afterPath="$PROJECT_DIR$/cpp/LendingClub/ReadMe.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/Types.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/Types.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/main.cpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/main.cpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cpp/LendingClub/PublicRecordsOnFile.hpp" afterPath="$PROJECT_DIR$/cpp/LendingClub/PublicRecordsOnFile.hpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="LendingClub.iws" />
@@ -68,7 +60,7 @@
       <file leaf-file-name="CreditGrade.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/py/CreditGrade.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="1581">
+            <state vertical-scroll-proportion="0.0" vertical-offset="663" max-vertical-offset="1581">
               <caret line="39" column="14" selection-start-line="39" selection-start-column="14" selection-end-line="39" selection-end-column="14" />
               <folding />
             </state>
@@ -118,23 +110,10 @@
       <file leaf-file-name="lcbt.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/py/lcbt.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.57156676" vertical-offset="8113" max-vertical-offset="12886">
-              <caret line="518" column="22" selection-start-line="518" selection-start-column="22" selection-end-line="535" selection-end-column="49" />
+            <state vertical-scroll-proportion="0.5732484" vertical-offset="8113" max-vertical-offset="12886">
+              <caret line="515" column="0" selection-start-line="515" selection-start-column="0" selection-end-line="515" selection-end-column="0" />
               <folding />
             </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="README.md" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="93" max-vertical-offset="1003">
-              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-          <provider editor-type-id="MarkdownPreviewEditor">
-            <state />
           </provider>
         </entry>
       </file>
@@ -212,10 +191,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="3831" />
+    <option name="x" value="-9" />
     <option name="y" value="-9" />
-    <option name="width" value="1618" />
-    <option name="height" value="1218" />
+    <option name="width" value="1846" />
+    <option name="height" value="1098" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -263,7 +242,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -298,6 +276,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -643,7 +622,11 @@
       <created>1409630848575</created>
       <updated>1409630848575</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="add support for multi-threading and more performance improvements">
+      <created>1411435656523</created>
+      <updated>1411435656523</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -667,14 +650,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="3831" y="-9" width="1618" height="1218" extended-state="6" />
-    <editor active="false" />
+    <frame x="-9" y="-9" width="1846" height="1098" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32923076" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2575" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22538294" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -705,7 +688,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="many performance improvements and bug fixes" />
     <MESSAGE value="fix the types" />
     <MESSAGE value="fix linux bugs" />
     <MESSAGE value="final cpp bug fixes" />
@@ -730,7 +712,8 @@
     <MESSAGE value="move name to a virtual function out of the filter class, which should pack filter even more" />
     <MESSAGE value="more performance improvements" />
     <MESSAGE value="add missing file" />
-    <option name="LAST_COMMIT_MESSAGE" value="add missing file" />
+    <MESSAGE value="add support for multi-threading and more performance improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="add support for multi-threading and more performance improvements" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1090,20 +1073,20 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="93" max-vertical-offset="1003">
+        <state vertical-scroll-proportion="0.38204834" vertical-offset="93" max-vertical-offset="1003">
           <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
           <folding />
         </state>
       </provider>
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/py/lcbt.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.57156676" vertical-offset="8113" max-vertical-offset="12886">
-          <caret line="518" column="22" selection-start-line="518" selection-start-column="22" selection-end-line="535" selection-end-column="49" />
+        <state vertical-scroll-proportion="0.5732484" vertical-offset="8113" max-vertical-offset="12886">
+          <caret line="515" column="0" selection-start-line="515" selection-start-column="0" selection-end-line="515" selection-end-column="0" />
           <folding />
         </state>
       </provider>
