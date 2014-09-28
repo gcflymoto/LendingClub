@@ -27,6 +27,7 @@ public:
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
+	static const Relation relation;
 
     IncomeValidated() : Filter()
     {
@@ -71,7 +72,7 @@ public:
 
     inline bool apply(const Loan& loan) const
     {
-        return (loan.income_validated != get_value());
+        return (loan.income_validated == get_value());
     }
 
     virtual const LCString& get_name() const

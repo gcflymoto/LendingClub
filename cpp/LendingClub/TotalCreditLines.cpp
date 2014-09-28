@@ -18,3 +18,4 @@ const LCString TotalCreditLines::sqlite_type = "INT";
 const LCString TotalCreditLines::csv_name = "total_acc";
 const LCString TotalCreditLines::name = "TotalCreditLines";
 const FilterValueVector* TotalCreditLines::options = nullptr;
+const Filter::Relation TotalCreditLines::relation = Filter::Relation::LESS_THAN_EQUAL;

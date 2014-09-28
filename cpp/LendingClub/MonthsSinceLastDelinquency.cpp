@@ -18,3 +18,4 @@ const LCString MonthsSinceLastDelinquency::sqlite_type = "INT";
 const LCString MonthsSinceLastDelinquency::csv_name = "mths_since_last_delinq";
 const LCString MonthsSinceLastDelinquency::name = "MonthsSinceLastDelinquency";
 const FilterValueVector* MonthsSinceLastDelinquency::options = nullptr;
+const Filter::Relation MonthsSinceLastDelinquency::relation = Filter::Relation::GREATER_THAN_EQUAL;

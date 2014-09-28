@@ -18,3 +18,4 @@ const LCString WordsInDescription::sqlite_type = "INT";
 const LCString WordsInDescription::csv_name = "desc";
 const LCString WordsInDescription::name = "WordsInDescription";
 const FilterValueVector* WordsInDescription::options = nullptr;
+const Filter::Relation WordsInDescription::relation = Filter::Relation::GREATER_THAN_EQUAL;

@@ -18,3 +18,4 @@ const LCString RevolvingLineUtilization::sqlite_type = "INT";
 const LCString RevolvingLineUtilization::csv_name = "revol_util";
 const LCString RevolvingLineUtilization::name = "RevolvingLineUtilization";
 const FilterValueVector* RevolvingLineUtilization::options = nullptr;
+const Filter::Relation RevolvingLineUtilization::relation = Filter::Relation::LESS_THAN_EQUAL;

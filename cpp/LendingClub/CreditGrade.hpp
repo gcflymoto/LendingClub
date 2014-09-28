@@ -28,6 +28,7 @@ public:
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
+	static const Relation relation;
 
     CreditGrade() : Filter()
     {

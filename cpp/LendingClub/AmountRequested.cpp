@@ -18,3 +18,4 @@ const LCString AmountRequested::sqlite_type = "INT";
 const LCString AmountRequested::csv_name = "funded_amnt";
 const LCString AmountRequested::name = "AmountRequested";
 const FilterValueVector* AmountRequested::options = nullptr;
+const Filter::Relation AmountRequested::relation = Filter::Relation::LESS_THAN_EQUAL;

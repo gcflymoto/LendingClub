@@ -18,3 +18,4 @@ const LCString DebtToIncomeRatio::sqlite_type = "INT";
 const LCString DebtToIncomeRatio::csv_name = "dti";
 const LCString DebtToIncomeRatio::name = "DebtToIncomeRatio";
 const FilterValueVector* DebtToIncomeRatio::options = nullptr;
+const Filter::Relation DebtToIncomeRatio::relation = Filter::Relation::LESS_THAN_EQUAL;

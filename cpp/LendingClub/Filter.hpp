@@ -13,6 +13,7 @@ Created on July 27, 2014
 #ifndef __LC_FILTER_HPP__
 #define __LC_FILTER_HPP__
 
+#include <cstdint>
 #include <cassert>
 #include <cstdlib>
 #include <algorithm>
@@ -27,6 +28,8 @@ namespace lc
 class Filter
 {
 public:
+	enum class Relation : std::int8_t { LESS_THAN = 0, LESS_THAN_EQUAL = 1, GREATER_THAN = 3, GREATER_THAN_EQUAL = 4, MASK = 5, EQUAL = 6, NOT_EQUAL = 7 };
+
     Filter() : _value(0), _current(0) {}
 
     virtual ~Filter() = 0;

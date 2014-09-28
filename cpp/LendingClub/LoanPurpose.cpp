@@ -19,3 +19,4 @@ const LCString LoanPurpose::csv_name = "purpose";
 const LCString LoanPurpose::name = "LoanPurpose";
 std::map<LCString, FilterValue> LoanPurpose::_conversion_table;
 const FilterValueVector* LoanPurpose::options = nullptr;
+const Filter::Relation LoanPurpose::relation = Filter::Relation::MASK;

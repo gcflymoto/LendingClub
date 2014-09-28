@@ -18,3 +18,4 @@ const LCString Delinquencies::sqlite_type = "INT";
 const LCString Delinquencies::csv_name = "delinq_2yrs";
 const LCString Delinquencies::name = "Delinquencies";
 const FilterValueVector* Delinquencies::options = nullptr;
+const Filter::Relation Delinquencies::relation = Filter::Relation::MASK;

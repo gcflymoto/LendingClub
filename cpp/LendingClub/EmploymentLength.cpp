@@ -18,3 +18,4 @@ const LCString EmploymentLength::sqlite_type = "INT";
 const LCString EmploymentLength::csv_name = "emp_length";
 const LCString EmploymentLength::name = "EmploymentLength";
 const FilterValueVector* EmploymentLength::options = nullptr;
+const Filter::Relation EmploymentLength::relation = Filter::Relation::LESS_THAN_EQUAL;

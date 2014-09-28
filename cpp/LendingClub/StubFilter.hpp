@@ -26,6 +26,7 @@ public:
     //static const LCString sqlite_type;
     static const LCString name;
     static const FilterValueVector* options;
+	static const Relation relation;
 
     StubFilter() : Filter() 
     {

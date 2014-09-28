@@ -16,3 +16,5 @@ using namespace lc;
 
 const LCString StubFilter::name = "State";
 const FilterValueVector* StubFilter::options = nullptr;
+const Filter::Relation StubFilter::relation = Filter::Relation::LESS_THAN_EQUAL;
+
