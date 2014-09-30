@@ -114,11 +114,13 @@ int lcmain(int argc, char* argv[])
         return 1;
     }
 
+	/*
     unsigned young_loans_in_days = args["young_loans_in_days"].as<unsigned>();
     if (young_loans_in_days == 0) {
         cout << "The number of young loans days must be greater than 0\n";
         return 1;
     }
+	*/
 
     unsigned work_batch = args["work_batch"].as<unsigned>();
     if (work_batch == 0) {

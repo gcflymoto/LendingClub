@@ -57,7 +57,7 @@ public:
         }
 
         _now = boost::posix_time::second_clock::local_time();
-        boost::gregorian::date_duration delta(_args["young_loans_in_days"].as<unsigned>() + 30);
+        boost::gregorian::date_duration delta(_args["young_loans_in_days"].as<unsigned>());
 
         _last_date_for_full_month_for_volume = _now.date() - delta;
     }
