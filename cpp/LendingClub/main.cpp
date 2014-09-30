@@ -129,6 +129,8 @@ int lcmain(int argc, char* argv[])
     srand(args["seed"].as<unsigned>());
 
     LoanTypeVector conversion_filters;
+	// The order of these must must must match the layout of the Loan stuct, as the inner core algorithm makes some assumptions
+	//
     conversion_filters.push_back(Loan::ACC_OPEN_PAST_24MTHS);
     conversion_filters.push_back(Loan::FUNDED_AMNT);
     conversion_filters.push_back(Loan::ANNUAL_INCOME);

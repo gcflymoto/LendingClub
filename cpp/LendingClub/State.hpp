@@ -29,6 +29,7 @@ public:
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
+	static const Relation relation;
 
     State() : Filter()
     {
@@ -107,6 +108,11 @@ public:
             options = new FilterValueVector(power_bitset(state_bitmap));
         }       
     }
+
+	virtual Relation get_relation()
+	{
+		return relation;
+	}
 
     virtual const FilterValueVector& get_options()
     {

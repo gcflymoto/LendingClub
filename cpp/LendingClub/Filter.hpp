@@ -47,6 +47,7 @@ public:
     virtual void set_options(const FilterValueVector* new_options) = 0;
     virtual bool apply(const Loan& loan) const = 0;
     virtual FilterValue convert(const LCString& raw_data) const = 0;
+	virtual Relation get_relation() = 0;
 
     inline const FilterValue get_value() const
     {

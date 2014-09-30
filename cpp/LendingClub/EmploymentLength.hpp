@@ -36,6 +36,11 @@ public:
         }
     }
 
+	virtual Relation get_relation()
+	{
+		return relation;
+	}
+
     virtual const FilterValueVector& get_options()
     {
         return *options;
@@ -81,7 +86,7 @@ public:
             return ">1 year";
         }
         else if (value == 10) {
-            return ">10 years";
+            return "10 years";
         }
         else if (value == 11) {
             return ">10 years";
@@ -93,7 +98,7 @@ public:
 
     inline bool apply(const Loan& loan) const
     {
-        return (loan.emp_length <= get_value());
+        return (loan.emp_length >= get_value());
     }
 
     virtual const LCString& get_name() const

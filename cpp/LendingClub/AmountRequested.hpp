@@ -36,11 +36,16 @@ public:
         }
     }
 
+	virtual Relation get_relation()
+	{
+		return relation;
+	}
+
     virtual const FilterValueVector& get_options()
     {
         return *options;
     }
-
+	
     virtual void set_options(const FilterValueVector* new_options)
     {
         assert(new_options != nullptr);
