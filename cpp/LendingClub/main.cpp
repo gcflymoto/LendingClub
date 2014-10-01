@@ -114,13 +114,13 @@ int lcmain(int argc, char* argv[])
         return 1;
     }
 
-	/*
+    /*
     unsigned young_loans_in_days = args["young_loans_in_days"].as<unsigned>();
     if (young_loans_in_days == 0) {
         cout << "The number of young loans days must be greater than 0\n";
         return 1;
     }
-	*/
+    */
 
     unsigned work_batch = args["work_batch"].as<unsigned>();
     if (work_batch == 0) {
@@ -131,8 +131,8 @@ int lcmain(int argc, char* argv[])
     srand(args["seed"].as<unsigned>());
 
     LoanTypeVector conversion_filters;
-	// The order of these must must must match the layout of the Loan stuct, as the inner core algorithm makes some assumptions
-	//
+    // The order of these must must must match the layout of the Loan stuct, as the inner core algorithm makes some assumptions
+    //
     conversion_filters.push_back(Loan::ACC_OPEN_PAST_24MTHS);
     conversion_filters.push_back(Loan::FUNDED_AMNT);
     conversion_filters.push_back(Loan::ANNUAL_INCOME);

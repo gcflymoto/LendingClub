@@ -27,7 +27,7 @@ public:
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
-	static const Relation relation;
+    static const Relation relation;
 
     MonthsSinceLastDelinquency() : Filter()
     {
@@ -41,10 +41,10 @@ public:
         }
     }
 
-	virtual Relation get_relation()
-	{
-		return relation;
-	}
+    virtual Relation get_relation()
+    {
+        return relation;
+    }
 
     virtual const FilterValueVector& get_options()
     {

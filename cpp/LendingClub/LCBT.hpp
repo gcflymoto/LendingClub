@@ -49,32 +49,32 @@ public:
         _end_range = _loan_data->num_loans();
     }
 
-	virtual void process_loans(FilterPtrVector& test_filters)
-	{
-		_invested.clear();
+    virtual void old_process_loans(FilterPtrVector& test_filters)
+    {
+        _invested.clear();
 
-		unsigned num_filters = test_filters.size();
+        unsigned num_filters = test_filters.size();
 
-		auto first_filter_p = &(test_filters[0]);
+        auto first_filter_p = &(test_filters[0]);
 
-		auto& loans = _loan_data->get_loans();
-		const Loan* loan = &(loans[_start_range]);
+        auto& loans = _loan_data->get_loans();
+        const Loan* loan = &(loans[_start_range]);
 
-		for (auto i = _start_range; i < _end_range; ++i, ++loan) {
-			Filter** f_p = first_filter_p;
-			bool filter_matches_b = true;
-			for (auto j = num_filters; j != 0 && filter_matches_b; --j, ++f_p) {
-				filter_matches_b = (*f_p)->apply(*loan);
-			}
+        for (auto i = _start_range; i < _end_range; ++i, ++loan) {
+            Filter** f_p = first_filter_p;
+            bool filter_matches_b = true;
+            for (auto j = num_filters; j != 0 && filter_matches_b; --j, ++f_p) {
+                filter_matches_b = (*f_p)->apply(*loan);
+            }
 
-			if (filter_matches_b) {
-				_invested.push_back(loan->rowid);
-			}
-		}
-	}
+            if (filter_matches_b) {
+                _invested.push_back(loan->rowid);
+            }
+        }
+    }
 
 
-	virtual void old_process_loans(FilterPtrVector& test_filters)
+    virtual void process_loans(FilterPtrVector& test_filters)
     {        
         //
         // What I want this algorithm to do is convert all relations to a linear code so that we don't have to
@@ -87,51 +87,51 @@ public:
         // A <  B
         // A <= B
         // A == B
-		// A &  B
+        // A &  B
 
         _invested.clear();
 
-		unsigned num_filters = test_filters.size();
+        unsigned num_filters = test_filters.size();
 
-		FilterValue* filter_values = static_cast<FilterValue*>(alloca(num_filters * sizeof(FilterValue)));
-		for (unsigned i = 0, size = num_filters; i < size; ++i) {
-			filter_values[i] = test_filters[i]->get_value();
-		}
+        FilterValue* filter_values = static_cast<FilterValue*>(alloca(num_filters * sizeof(FilterValue)));
+        for (unsigned i = 0, size = num_filters; i < size; ++i) {
+            filter_values[i] = test_filters[i]->get_value();
+        }
 
-		Filter::Relation* relations = static_cast<Filter::Relation*>(alloca(num_filters * sizeof(Filter::Relation)));
-		for (unsigned i = 0, size = num_filters; i < size; ++i) {
-			relations[i] = test_filters[i]->get_relation();
-		}
+        Filter::Relation* relations = static_cast<Filter::Relation*>(alloca(num_filters * sizeof(Filter::Relation)));
+        for (unsigned i = 0, size = num_filters; i < size; ++i) {
+            relations[i] = test_filters[i]->get_relation();
+        }
 
-		auto first_relation_p = &(relations[0]);
-		auto first_filter_p = &(test_filters[0]);
-		auto first_filter_value_p = &(filter_values[0]);
+        auto first_relation_p = &(relations[0]);
+        auto first_filter_p = &(test_filters[0]);
+        auto first_filter_value_p = &(filter_values[0]);
 
         auto& loans = _loan_data->get_loans();
         const Loan* loan = &(loans[_start_range]);        
 
         for (auto i = _start_range; i < _end_range; ++i, ++loan) {
 
-			const LoanValue* loan_data_value_p = &(loan->acc_open_past_24mths);
-			auto filter_value_p = first_filter_value_p;
-			auto relation_value_p = first_relation_p;
+            const LoanValue* loan_data_value_p = &(loan->acc_open_past_24mths);
+            auto filter_value_p = first_filter_value_p;
+            auto relation_value_p = first_relation_p;
 
-			LoanValue filter_matches = 1;
-			for (unsigned k = num_filters; k != 0 && filter_matches; --k, ++relation_value_p, ++loan_data_value_p, ++filter_value_p) {
-				switch (*relation_value_p) {
-				case Filter::Relation::LESS_THAN:          filter_matches = ((*loan_data_value_p) <  (*filter_value_p)); break;
-				case Filter::Relation::LESS_THAN_EQUAL:    filter_matches = ((*loan_data_value_p) <= (*filter_value_p)); break;
-				case Filter::Relation::GREATER_THAN:       filter_matches = ((*loan_data_value_p) >  (*filter_value_p)); break;
-				case Filter::Relation::GREATER_THAN_EQUAL: filter_matches = ((*loan_data_value_p) >= (*filter_value_p)); break;
-				case Filter::Relation::MASK:               filter_matches = ((*loan_data_value_p) &  (*filter_value_p)); break;
-				case Filter::Relation::EQUAL:              filter_matches = ((*loan_data_value_p) == (*filter_value_p)); break;
-				case Filter::Relation::NOT_EQUAL:          filter_matches = ((*loan_data_value_p) != (*filter_value_p)); break;
-				}
-			}
+            LoanValue filter_matches = 1;
+            for (unsigned k = num_filters; k != 0 && filter_matches; --k, ++relation_value_p, ++loan_data_value_p, ++filter_value_p) {
+                switch (*relation_value_p) {
+                case Filter::Relation::LESS_THAN_EQUAL:    filter_matches = ((*loan_data_value_p) <= (*filter_value_p)); break;
+                case Filter::Relation::LESS_THAN:          filter_matches = ((*loan_data_value_p) <  (*filter_value_p)); break;
+                case Filter::Relation::GREATER_THAN:       filter_matches = ((*loan_data_value_p) >  (*filter_value_p)); break;
+                case Filter::Relation::GREATER_THAN_EQUAL: filter_matches = ((*loan_data_value_p) >= (*filter_value_p)); break;
+                case Filter::Relation::MASK:               filter_matches = ((*loan_data_value_p) &  (*filter_value_p)); break;
+                case Filter::Relation::EQUAL:              filter_matches = ((*loan_data_value_p) == (*filter_value_p)); break;
+                case Filter::Relation::NOT_EQUAL:          filter_matches = ((*loan_data_value_p) != (*filter_value_p)); break;
+                }
+            }
 
-			if (filter_matches) {
-				_invested.push_back(loan->rowid);
-			}
+            if (filter_matches) {
+                _invested.push_back(loan->rowid);
+            }
         }
     }
 

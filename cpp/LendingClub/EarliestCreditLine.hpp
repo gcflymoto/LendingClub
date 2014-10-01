@@ -31,7 +31,7 @@ public:
     static const FilterValueVector* options;
     static const int multiplier = 60 * 60 * 24 * 365;
     static const boost::posix_time::ptime now; // = boost::posix_time::second_clock::local_time(); //use the clock 
-	static const Relation relation;
+    static const Relation relation;
 
     EarliestCreditLine() : Filter()
     {
@@ -47,10 +47,10 @@ public:
         }
     }
 
-	virtual Relation get_relation()
-	{
-		return relation;
-	}
+    virtual Relation get_relation()
+    {
+        return relation;
+    }
 
     virtual const FilterValueVector& get_options()
     {

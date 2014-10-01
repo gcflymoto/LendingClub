@@ -28,7 +28,7 @@ namespace lc
 class Filter
 {
 public:
-	enum class Relation : std::int8_t { LESS_THAN = 0, LESS_THAN_EQUAL = 1, GREATER_THAN = 3, GREATER_THAN_EQUAL = 4, MASK = 5, EQUAL = 6, NOT_EQUAL = 7 };
+    enum class Relation : std::int8_t { LESS_THAN_EQUAL = 0, LESS_THAN = 1, GREATER_THAN = 3, GREATER_THAN_EQUAL = 4, MASK = 5, EQUAL = 6, NOT_EQUAL = 7 };
 
     Filter() : _value(0), _current(0) {}
 
@@ -47,7 +47,7 @@ public:
     virtual void set_options(const FilterValueVector* new_options) = 0;
     virtual bool apply(const Loan& loan) const = 0;
     virtual FilterValue convert(const LCString& raw_data) const = 0;
-	virtual Relation get_relation() = 0;
+    virtual Relation get_relation() = 0;
 
     inline const FilterValue get_value() const
     {
