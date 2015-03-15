@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LendingClub", "LendingClub\LendingClub.vcxproj", "{3E0C97BB-78BE-402B-9641-FD52C4607DC5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppLoanMiner", "LendingClub\LendingClub.vcxproj", "{3E0C97BB-78BE-402B-9641-FD52C4607DC5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCLLoanMiner", "OpenCLLoanMiner\OpenCLLoanMiner.vcxproj", "{33585222-571B-4782-B847-6A65EC4C293F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +20,12 @@ Global
 		{3E0C97BB-78BE-402B-9641-FD52C4607DC5}.Release|Win32.Build.0 = Release|Win32
 		{3E0C97BB-78BE-402B-9641-FD52C4607DC5}.ReleasePGOInstrument|Win32.ActiveCfg = ReleasePGO|Win32
 		{3E0C97BB-78BE-402B-9641-FD52C4607DC5}.ReleasePGOInstrument|Win32.Build.0 = ReleasePGO|Win32
+		{33585222-571B-4782-B847-6A65EC4C293F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{33585222-571B-4782-B847-6A65EC4C293F}.Debug|Win32.Build.0 = Debug|Win32
+		{33585222-571B-4782-B847-6A65EC4C293F}.Release|Win32.ActiveCfg = Release|Win32
+		{33585222-571B-4782-B847-6A65EC4C293F}.Release|Win32.Build.0 = Release|Win32
+		{33585222-571B-4782-B847-6A65EC4C293F}.ReleasePGOInstrument|Win32.ActiveCfg = Release|Win32
+		{33585222-571B-4782-B847-6A65EC4C293F}.ReleasePGOInstrument|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
