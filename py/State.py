@@ -16,12 +16,13 @@ Created on May 30, 2013
   * CA, AZ, FL, GA, IL, MD, MO, NV,
   */
 """
-import LoanEnum, Filter
+import LoanEnum
+import Filter
 
 
 class State(Filter.Filter):
     """
-    classdocs
+    class doc
     """
     sqlite_type = "INT"
     name = "addr_state"

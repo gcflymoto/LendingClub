@@ -9,12 +9,13 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-import LoanEnum, Filter
+import LoanEnum
+import Filter
 
 
 class TotalCreditLines(Filter.Filter):
     """
-    classdocs
+    class docs
     """
     sqlite_type = "INT"
     name = "total_acc"

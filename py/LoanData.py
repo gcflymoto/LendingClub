@@ -20,7 +20,8 @@ import math
 
 import utilities
 from LoanEnum import *
-
+import zipfile
+import io
 
 class LCLoanData:
     def __init__(self, conversion_filters, args, worker_idx):
@@ -54,47 +55,46 @@ class LCLoanData:
         pass
 
     def initialize(self):
-        # Check serialized file cache.
-        csv_mod = os.path.getmtime(self.args.stats)
 
         pickle_name = "loans_serialized_python%d.bin" % sys.version_info.major
-
         serialized_mod = os.path.getmtime(pickle_name) if os.path.exists(pickle_name) else 0
-        if serialized_mod and serialized_mod > csv_mod:
+
+        # Check modification time for all the stats files passed in. If any of them is newer then the cached data
+        # reload them all
+        reload_csv_files = False
+        for csv_stats_file in self.args.stats.split(','):
+            csv_mod = os.path.getmtime(csv_stats_file)
+            if csv_mod > serialized_mod:
+                reload_csv_files = True
+
+        if serialized_mod and not reload_csv_files:
             self.info_msg("Initializing from %s ..." % pickle_name)
             with open(pickle_name, "rb") as fh:
                 self.loans = pickle.load(fh)
 
             self.mid_stage_initialize()
-            self.info_msg("Initializing done")
+            self.info_msg("Initializing from %s done ..." % pickle_name)
 
-        # double cache miss
-        elif os.path.exists(self.args.stats):
-            self.info_msg("Initializing from %s ..." % self.args.stats)
-
+        else:
             loans = []
+            for csv_stats_file in self.args.stats.split(','):
+                if os.path.exists(csv_stats_file):
+                    if zipfile.is_zipfile(csv_stats_file):
+                        csv_file_name = os.path.splitext(os.path.basename(csv_stats_file))[0]
+                        self.info_msg("Initializing from %s inside %s ..." % (csv_file_name, csv_stats_file))
+                        with zipfile.ZipFile(csv_stats_file) as lc_stats_zip:
+                            with lc_stats_zip.open(csv_file_name) as fh:
+                                csv_reader = utilities.UnicodeCSVReader(fh, encoding="latin-1", wrapper=True)
+                                self.parse_lc_csv(csv_reader, loans)
+                    else:
+                        self.info_msg("Initializing from %s ..." % csv_stats_file)
+                        with utilities.csv_open(csv_stats_file) as fh:
+                            csv_reader = utilities.UnicodeCSVReader(fh, encoding="latin-1", wrapper=False)
+                            self.parse_lc_csv(csv_reader, loans)
 
-            if sys.version_info.major >= 3:
-                fh = open(self.args.stats, newline='', encoding="latin-1")
-                csv_reader = csv.reader(fh)
-            else:
-                fh = open(self.args.stats)
-                csv_reader = utilities.UnicodeReader(fh, encoding="latin-1")
-
-            for data in csv_reader:
-                # Skip the first row after reading the first rows field labels
-                if self.get_labels(data):
-                    continue
-                raw_loan, parsed_row_ok = self.get_loan(data)
-                if not parsed_row_ok:
-                    continue
-                loan, parsed_loan_ok = self.normalize_loan_data(raw_loan)
-                if parsed_loan_ok:
-                    # Assign the rowid of the loan to be the current last index in the loans list
-                    loan[LOAN_ENUM_rowid] = len(loans)
-                    loans.append(loan)
-
-            fh.close()
+                else:
+                    self.info_msg(csv_stats_file + " not found ... exiting")
+                    sys.exit(-1)
 
             with open(pickle_name, "wb") as fh:
                 pickle.dump(loans, fh)
@@ -106,9 +106,21 @@ class LCLoanData:
                           str(len(loans)) + " Skipped non-parseable Loans:" + str(self.skipped_loans) +
                           " Skipped Young Loans:" + str(self.young_loans) + " Skipped Removed or Expired Loans:" +
                           str(self.removed_expired_loans))
-        else:
-            self.info_msg(self.args.stats + " not found")
-            sys.exit(-1)
+
+    def parse_lc_csv(self, csv_reader, loans):
+        for data in csv_reader:
+            # Skip the first row after reading the first rows field labels
+            if self.get_labels(data):
+                continue
+            raw_loan, parsed_row_ok = self.get_loan(data)
+            if not parsed_row_ok:
+                continue
+            loan, parsed_loan_ok = self.normalize_loan_data(raw_loan)
+            if parsed_loan_ok:
+                # Assign the rowid of the loan to be the current last index in the loans list
+                loan[LOAN_ENUM_rowid] = len(loans)
+                loans.append(loan)
+        return loans
 
     def get_labels(self, data):
         # First row in the data is a garbage comment
@@ -125,7 +137,7 @@ class LCLoanData:
 
         return True
 
-    def get_loan(self, data, issue_d_re=re.compile("^\d{4}-\d{2}-\d{2}$").match):
+    def get_loan(self, data, issue_d_re=re.compile("^\S{3}-\d{4}$").match):
         loan = dict()
         for c in range(len(data)):
             loan[self.labels[c]] = data[c]
@@ -137,12 +149,12 @@ class LCLoanData:
 
         # Only look at loans with a valid issue date
         if not issue_d_re(loan["issue_d"]):
-            self.info_msg("Skipping loan, did not find issue_d:" + str(loan))
+            self.info_msg("Skipping loan, did not parse issue_d:" + str(loan))
             self.skipped_loans += 1
             return loan, False
 
         # Ignore loans that are too young for consideration
-        tot_seconds = (self.now - self.datetime.strptime(loan["issue_d"], "%Y-%m-%d")).total_seconds()
+        tot_seconds = (self.now - self.datetime.strptime(loan["issue_d"], "%b-%Y")).total_seconds()
         if tot_seconds < (86400 * self.args.young_loans_in_days):
             self.young_loans += 1
             return loan, False
@@ -200,38 +212,44 @@ class LCLoanData:
         conversion_filters = self.filters
         try:
             loan_info[LOAN_ENUM_acc_open_past_24mths] = conversion_filters[LOAN_ENUM_acc_open_past_24mths].convert(
-                raw_loan["acc_open_past_24mths"])
+                raw_loan["open_acc"])
             loan_info[LOAN_ENUM_funded_amnt] = conversion_filters[LOAN_ENUM_funded_amnt].convert(
                 raw_loan["funded_amnt"])
             loan_info[LOAN_ENUM_annual_income] = conversion_filters[LOAN_ENUM_annual_income].convert(
                 raw_loan["annual_inc"])
-            loan_info[LOAN_ENUM_grade] = conversion_filters[LOAN_ENUM_grade].convert(raw_loan["grade"])
+            loan_info[LOAN_ENUM_grade] = conversion_filters[LOAN_ENUM_grade].convert(
+                raw_loan["grade"])
             loan_info[LOAN_ENUM_debt_to_income_ratio] = conversion_filters[LOAN_ENUM_debt_to_income_ratio].convert(
                 raw_loan["dti"])
             loan_info[LOAN_ENUM_delinq_2yrs] = conversion_filters[LOAN_ENUM_delinq_2yrs].convert(
                 raw_loan["delinq_2yrs"])
             loan_info[LOAN_ENUM_earliest_credit_line] = conversion_filters[LOAN_ENUM_earliest_credit_line].convert(
                 raw_loan["earliest_cr_line"])
-            loan_info[LOAN_ENUM_emp_length] = conversion_filters[LOAN_ENUM_emp_length].convert(raw_loan["emp_length"])
+            loan_info[LOAN_ENUM_emp_length] = conversion_filters[LOAN_ENUM_emp_length].convert(
+                raw_loan["emp_length"])
             loan_info[LOAN_ENUM_home_ownership] = conversion_filters[LOAN_ENUM_home_ownership].convert(
                 raw_loan["home_ownership"])
             loan_info[LOAN_ENUM_income_validated] = conversion_filters[LOAN_ENUM_income_validated].convert(
                 raw_loan["is_inc_v"])
             loan_info[LOAN_ENUM_inq_last_6mths] = conversion_filters[LOAN_ENUM_inq_last_6mths].convert(
                 raw_loan["inq_last_6mths"])
-            loan_info[LOAN_ENUM_purpose] = conversion_filters[LOAN_ENUM_purpose].convert(raw_loan["purpose"])
+            loan_info[LOAN_ENUM_purpose] = conversion_filters[LOAN_ENUM_purpose].convert(
+                raw_loan["purpose"])
             loan_info[LOAN_ENUM_mths_since_last_delinq] = conversion_filters[LOAN_ENUM_mths_since_last_delinq].convert(
                 raw_loan["mths_since_last_delinq"])
-            loan_info[LOAN_ENUM_pub_rec] = conversion_filters[LOAN_ENUM_pub_rec].convert(raw_loan["pub_rec"])
+            loan_info[LOAN_ENUM_pub_rec] = conversion_filters[LOAN_ENUM_pub_rec].convert(
+                raw_loan["pub_rec"])
             loan_info[LOAN_ENUM_revol_utilization] = conversion_filters[LOAN_ENUM_revol_utilization].convert(
                 raw_loan["revol_util"])
-            loan_info[LOAN_ENUM_addr_state] = conversion_filters[LOAN_ENUM_addr_state].convert(raw_loan["addr_state"])
-            loan_info[LOAN_ENUM_total_acc] = conversion_filters[LOAN_ENUM_total_acc].convert(raw_loan["total_acc"])
+            loan_info[LOAN_ENUM_addr_state] = conversion_filters[LOAN_ENUM_addr_state].convert(
+                raw_loan["addr_state"])
+            loan_info[LOAN_ENUM_total_acc] = conversion_filters[LOAN_ENUM_total_acc].convert(
+                raw_loan["total_acc"])
             loan_info[LOAN_ENUM_desc_word_count] = conversion_filters[LOAN_ENUM_desc_word_count].convert(
                 raw_loan["desc"])
 
             loan_info[LOAN_ENUM_loan_status] = raw_loan["loan_status"]
-            loan_info[LOAN_ENUM_issue_datetime] = self.datetime.strptime(raw_loan["issue_d"], "%Y-%m-%d")
+            loan_info[LOAN_ENUM_issue_datetime] = self.datetime.strptime(raw_loan["issue_d"], "%b-%Y")
             loan_info[LOAN_ENUM_number_of_payments] = int(raw_loan["term"].strip().split()[0])
             loan_info[LOAN_ENUM_installment] = float(raw_loan["installment"])
             loan_info[LOAN_ENUM_int_rate] = float(raw_loan["int_rate"][:-1])

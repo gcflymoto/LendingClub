@@ -52,3 +52,17 @@ Some of the performance figures on my laptop
 ### Future improvements  ###
 - Verify based on www.lendstats.com
 - Python Lending Club API http://python-lendingclub.readthedocs.org/en/latest/
+
+Setting up Pypy
+===============
+```
+$ curl -O http://python-distribute.org/distribute_setup.py
+$ curl -O https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py
+$ ./pypy-2.1/bin/pypy distribute_setup.py
+$ ./pypy-2.1/bin/pypy get-pip.py
+$ ./pypy-2.1/bin/pip install pygments
+$ ./pypy-2.1/bin/pip install zmqpy
+$ ./pypy-2.1/bin/pip install pyzmq
+
+C:\\Users\gczajkow\boost\boost_1_53_0>.\b2 toolset=msvc-12.0 install --prefix=C:\\Users\gczajkow\boost\boost_1_53_0.release
+```

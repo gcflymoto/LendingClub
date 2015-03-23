@@ -13,8 +13,11 @@ import sys
 import platform
 import time
 import csv
+import io
+import codecs
 
 zmq = None
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 def check_for_zmqpy():
@@ -38,7 +41,7 @@ def check_for_zmqpy():
             sys.stderr.write("Did not find zmqpy module installed, disabling parallel workers\n")
             enable_zmqpy = 0
 
-    #if enable_zmqpy:
+    # if enable_zmqpy:
     #    print("Found zmqpy")
 
     return enable_zmqpy
@@ -68,7 +71,7 @@ def check_for_pyzmq():
             sys.stderr.write("Did not find pyzmq module installed, disabling parallel workers\n")
             enable_pyzmq = 0
 
-    #if enable_pyzmq:
+    # if enable_pyzmq:
     #    print("Found pyzmq")
 
     return enable_pyzmq
@@ -123,15 +126,14 @@ class Timer(object):
 
 if sys.version_info.major < 3:
     from StringIO import StringIO
-
     stringio = StringIO
 else:
     from io import StringIO
-
     stringio = StringIO
 
 if sys.version_info.major < 3:
-    import codecs
+    def csv_open(filename):
+        return open(filename)
 
     class UTF8Recoder(object):
         """
@@ -147,22 +149,47 @@ if sys.version_info.major < 3:
         def next(self):
             return self.reader.next().encode("utf-8")
 
-    class UnicodeReader(object):
+    class UnicodeCSVReader(object):
         """
         A CSV reader which will iterate over lines in the CSV file "f",
         which is encoded in the given encoding.
         """
 
-        def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
-            f = UTF8Recoder(f, encoding)
-            self.reader = csv.reader(f, dialect=dialect, **kwds)
+        def __init__(self, f, dialect=csv.excel, encoding="utf-8", wrapper=False, **kwds):
+            fh = UTF8Recoder(f, encoding)
+            self.reader = csv.reader(fh, dialect=dialect, **kwds)
 
         # Do this weird way to get at unicode so Eclipse's pyDev does not complain about undefined
         # function under python3.2
         # def next(self, unicode=__builtins__.__dict__['unicode']):
         def next(self):
             row = self.reader.next()
-            return [unicode(s, "utf-8") for s in row]
+            return [unicode(r, "utf-8") for r in row]
+
+        def __iter__(self):
+            return self
+else:
+    def csv_open(filename):
+        return open(filename, newline='', encoding="latin-1")
+
+    class UnicodeCSVReader(object):
+        """
+        A CSV reader which will iterate over lines in the CSV file "f",
+        which is encoded in the given encoding.
+        """
+
+        def __init__(self, f, dialect=csv.excel, encoding="utf-8", wrapper=False, **kwds):
+            if wrapper:
+                fh = io.TextIOWrapper(f, encoding=encoding, newline='')
+            else:
+                fh = f
+            self.reader = csv.reader(fh, dialect=dialect, **kwds)
+
+        # Do this weird way to get at unicode so Eclipse's pyDev does not complain about undefined
+        # function under python3.2
+        # def next(self, unicode=__builtins__.__dict__['unicode']):
+        def __next__(self):
+            return self.reader.__next__()
 
         def __iter__(self):
             return self
@@ -185,7 +212,7 @@ class CLIError(Exception):
 def download_data(url, file_name):
     if sys.version_info.major == 2:
         import urllib2 as urllib
-        #import urlparse
+        # import urlparse
 
         uo = urllib.urlopen(url)
         meta = uo.info()
@@ -193,7 +220,7 @@ def download_data(url, file_name):
         file_size = int(content_length[0]) if content_length else 0
     else:
         import urllib.request as urllib
-        #import urllib.parse as urlparse
+        # import urllib.parse as urlparse
 
         uo = urllib.urlopen(url)
         content_length = int(uo.getheader("Content-Length", default=0))

@@ -45,11 +45,11 @@ class Filter(object):
         #
         # if self.current is None:
         #    self.current = 0
-        #elif self.current + 1 < self.size:
+        # elif self.current + 1 < self.size:
         #    self.current += 1
-        #else:
+        # else:
         #    self.current = None
-        #return self.current is not None
+        # return self.current is not None
 
         # #
         # # Switched to an algorithm which uses an index that is out of bounds as None

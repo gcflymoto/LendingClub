@@ -9,12 +9,13 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-import LoanEnum, Filter
+import LoanEnum
+import Filter
 
 
 class MonthsSinceLastDelinquency(Filter.Filter):
     """
-    classdocs
+    class docs
     """
     sqlite_type = "INT"
     name = "mths_since_last_delinq"

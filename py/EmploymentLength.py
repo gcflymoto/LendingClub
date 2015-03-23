@@ -9,7 +9,9 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-import LoanEnum, Filter, utilities
+import LoanEnum
+import Filter
+import utilities
 
 
 class EmploymentLength(Filter.Filter):

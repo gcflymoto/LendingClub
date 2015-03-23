@@ -9,7 +9,8 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-import LoanEnum, Filter
+import LoanEnum
+import Filter
 
 
 class InquiriesLast6Months(Filter.Filter):

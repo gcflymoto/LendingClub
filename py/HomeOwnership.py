@@ -9,7 +9,8 @@ Created on May 30, 2013
 
 @contact:    gregczajkowski at yahoo.com
 """
-import LoanEnum, Filter
+import LoanEnum
+import Filter
 
 
 class HomeOwnership(Filter.Filter):
@@ -29,9 +30,9 @@ class HomeOwnership(Filter.Filter):
 
         Filter.Filter.__init__(self, args, options, current)
 
-        self.reverse_table = ["MORTGAGE", "OWN", "RENT", "OTHER", "NONE", "NULL"]
+        self.reverse_table = ["MORTGAGE", "OWN", "RENT", "OTHER", "ANY", "NONE", "NULL"]
 
-    def convert(self, raw_data, conversion_table={"MORTGAGE": 0, "OWN": 1, "RENT": 2, "OTHER": 3, "NONE": 4, "": 5}):
+    def convert(self, raw_data, conversion_table={"MORTGAGE": 0, "OWN": 1, "RENT": 2, "OTHER": 3, "ANY": 4, "NONE": 4, "": 5}):
         return conversion_table[str(raw_data)]
 
     def __str__(self):

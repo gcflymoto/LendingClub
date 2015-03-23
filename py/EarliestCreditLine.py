@@ -36,7 +36,7 @@ class EarliestCreditLine(Filter.Filter):
 
     def convert(self, raw_data):
         if raw_data:
-            raw_value = (self.now - self.datetime.strptime(raw_data, "%Y-%m-%d %H:%M")).total_seconds()
+            raw_value = (self.now - self.datetime.strptime(raw_data, "%b-%Y")).total_seconds()
             return int(raw_value)
         else:
             return 0

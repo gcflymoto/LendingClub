@@ -13,17 +13,6 @@ criteria for finding the loans which have the lowest default rate and highest re
 @license:    Licensed under the Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
 
 @contact:    gregczajkowski at yahoo.com
-
-Setting up Pypy
-$ curl -O http://python-distribute.org/distribute_setup.py
-$ curl -O https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py
-$ ./pypy-2.1/bin/pypy distribute_setup.py
-$ ./pypy-2.1/bin/pypy get-pip.py
-$ ./pypy-2.1/bin/pip install pygments
-$ ./pypy-2.1/bin/pip install zmqpy
-$ ./pypy-2.1/bin/pip install pyzmq
-
-C:\Users\gczajkow\boost\boost_1_53_0>.\b2 toolset=msvc-12.0 install --prefix=C:\Users\gczajkow\boost\boost_1_53_0.release
 """
 import sys
 import os
@@ -41,10 +30,28 @@ from argparse import RawDescriptionHelpFormatter
 from multiprocessing import Process, cpu_count
 from multiprocessing import Queue as MultiProcessingQueue
 
-import AccountsOpenPast24Months, AmountRequested, Delinquencies, MonthsSinceLastDelinquency, DebtToIncomeRatio, \
-    HomeOwnership, LoanPurpose, IncomeValidated, PublicRecordsOnFile, EarliestCreditLine, CreditGrade, EmploymentLength, \
-    InquiriesLast6Months, AnnualIncome, TotalCreditLines, LoanData, SqliteLoanData, \
-    RevolvingLineUtilization, State, WordsInDescription, utilities, StubFilter
+import AccountsOpenPast24Months
+import AmountRequested
+import Delinquencies
+import MonthsSinceLastDelinquency
+import DebtToIncomeRatio
+import HomeOwnership
+import LoanPurpose
+import IncomeValidated
+import PublicRecordsOnFile
+import EarliestCreditLine
+import CreditGrade
+import EmploymentLength
+import InquiriesLast6Months
+import AnnualIncome
+import TotalCreditLines
+import LoanData
+import SqliteLoanData
+import RevolvingLineUtilization
+import State
+import WordsInDescription
+import utilities
+import StubFilter
 from LoanEnum import *
 
 BackTestFilters = {
@@ -72,9 +79,9 @@ BackTestFilters = {
 ConversionFilters = copy.copy(BackTestFilters)
 
 __all__ = []
-__version__ = 1.1
+__version__ = 2.0
 __date__ = '2013-05-29'
-__updated__ = '2014-06-14'
+__updated__ = '2015-03-22'
 
 DEBUG = 0
 TESTRUN = 0
@@ -193,7 +200,7 @@ class GATest:
         for citizen in self.population:
             citizen['result'] = self.lcbt.test(citizen['filters'])
             # sys.stdout.write('.')
-            #sys.stdout.write('\n')
+            # sys.stdout.write('\n')
 
     def sort_by_fitness(self):
 
@@ -234,7 +241,7 @@ class GATest:
             self.args.iterations,
             self.iteration_time / (self.iteration + 1),
             best_results['num_loans'],
-            len(self.lcbt.loan_data.loans),
+            len(self.lcbt.test.get_loan_data().loans),
             best_results['loans_per_month'],
             best_results['expected_apy']))
         sys.stdout.write('%d loans defaulted (%0.2f%%, $%0.2f avg loss) ' % (
@@ -424,6 +431,77 @@ class ZmqGATest(GATest):
         self.info_msg('Calculate complete')
 
 
+class BaseLoanDataTester:
+    def __init__(self, lcbt, filters):
+        self.lcbt = lcbt
+        self.filters = filters
+        self.loan_data = None
+
+    def set_loan_data(self, loan_data):
+        self.loan_data = loan_data
+
+    def get_loan_data(self):
+        return self.loan_data
+
+
+class PythonLoanDataTester(BaseLoanDataTester):
+    def __init__(self, lcbt, filters, conversion_filters, args, worker_idx):
+        BaseLoanDataTester.__init__(self, lcbt, filters)
+        self.set_loan_data(LoanData.LCLoanData(conversion_filters, args, worker_idx))
+
+    def __call__(self, filters):
+        self.lcbt.filters = filters
+        consider = self.lcbt.consider
+        invested = [loan for loan in self.loan_data.loans if consider(loan)]
+
+        return self.loan_data.get_nar(invested)
+
+
+class SqliteLoanDataTester(BaseLoanDataTester):
+    def __init__(self, lcbt, filters, conversion_filters, args, worker_idx):
+        BaseLoanDataTester.__init__(self, lcbt, filters)
+
+        # Generate the Sqlite Query
+        self.sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join(
+            [lc_filter.query for lc_filter in self.filters if lc_filter.query])
+        # print(self.sql_query)
+
+        self.named_sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join(
+            [lc_filter.named_query for lc_filter in self.filters if lc_filter.query])
+
+        """
+        This ends up being a lot slower
+        SELECT * FROM table1 WHERE rowid IN
+         (SELECT rowid FROM table1 WHERE a=5
+           INTERSECT SELECT rowid FROM table1 WHERE b=11);
+        """
+        # http://www.sqlite.org/cvstrac/wiki?p=PerformanceTuning
+        self.expanded_query = "SELECT Id FROM Loans WHERE Id IN\n (" + '\n INTERSECT '.join(
+            ['SELECT Id from Loans WHERE %s' % lc_filter.query for lc_filter in self.filters if
+             lc_filter.query]) + ')'
+        # print(self.expanded_query)
+
+        self.set_loan_data(SqliteLoanData.SqliteLCLoanData(conversion_filters, args, worker_idx))
+
+    def __call__(self, filters):
+        # print(self.sql_query)
+        params = tuple(lc_filter.get_value() for lc_filter in filters if '?' in lc_filter.query)
+        # print([type(param) for param in params])
+        self.loan_data.cursor.execute(self.sql_query, params)
+        invested = [self.loan_data.loans[row[0]] for row in self.loan_data.cursor.fetchall()]
+
+        #
+        # params = dict()
+        # for lc_filter in filters:
+        #    if '?' in lc_filter.query:
+        #        params[lc_filter.name] = lc_filter.get_current()
+        # #print(self.named_sql_query)
+        # self.loan_data.cursor.execute(self.named_sql_query, params)
+        # invested = [self.loan_data.loans[row[0]] for row in self.loan_data.cursor.fetchall()]
+
+        return self.loan_data.get_nar(invested)
+
+
 class LCBT:
     def __init__(self, conversion_filters, args, worker_idx):
 
@@ -434,60 +512,15 @@ class LCBT:
             self.filters[filter_idx] = lc_filter(args)
 
         if args.sqlite:
-            self.test = self.test_sqlite
-            # Generate the Sqlite Query
-            self.sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join(
-                [lc_filter.query for lc_filter in self.filters if lc_filter.query])
-            # print(self.sql_query)
-
-            self.named_sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join(
-                [lc_filter.named_query for lc_filter in self.filters if lc_filter.query])
-
-            """
-            This ends up being a lot slower
-            SELECT * FROM table1 WHERE rowid IN
-             (SELECT rowid FROM table1 WHERE a=5
-               INTERSECT SELECT rowid FROM table1 WHERE b=11);
-            """
-            # http://www.sqlite.org/cvstrac/wiki?p=PerformanceTuning
-            self.expanded_query = "SELECT Id FROM Loans WHERE Id IN\n (" + '\n INTERSECT '.join(
-                ['SELECT Id from Loans WHERE %s' % lc_filter.query for lc_filter in self.filters if
-                 lc_filter.query]) + ')'
-            #print(self.expanded_query)
-
-            self.loan_data = SqliteLoanData.SqliteLCLoanData(conversion_filters, args, worker_idx)
+            self.test = SqliteLoanDataTester(self, self.filters, conversion_filters, args, worker_idx)
         else:
-            self.test = self.test_python
-            self.loan_data = LoanData.LCLoanData(conversion_filters, args, worker_idx)
+            self.test = PythonLoanDataTester(self, self.filters, conversion_filters, args, worker_idx)
 
         self.args = args
         self.worker_idx = worker_idx
 
     def initialize(self):
-        self.loan_data.initialize()
-
-    def test_python(self, filters):
-        self.filters = filters
-        invested = [loan for loan in self.loan_data.loans if self.consider(loan)]
-
-        return self.loan_data.get_nar(invested)
-
-    def test_sqlite(self, filters):
-        # print(self.sql_query)
-        params = tuple(lc_filter.get_value() for lc_filter in filters if '?' in lc_filter.query)
-        #print([type(param) for param in params])
-        self.loan_data.cursor.execute(self.sql_query, params)
-        invested = [self.loan_data.loans[row[0]] for row in self.loan_data.cursor.fetchall()]
-
-        #params = dict()
-        #for lc_filter in filters:
-        #    if '?' in lc_filter.query:
-        #        params[lc_filter.name] = lc_filter.get_current()
-        ##print(self.named_sql_query)
-        #self.loan_data.cursor.execute(self.named_sql_query, params)
-        #invested = [self.loan_data.loans[row[0]] for row in self.loan_data.cursor.fetchall()]
-
-        return self.loan_data.get_nar(invested)
+        self.test.get_loan_data().initialize()
 
     def consider(self, loan):
         for lc_filter in self.filters:
@@ -537,6 +570,14 @@ class ParallelLCBT(LCBT, Process):
 
 
 class ZmqLCBT(LCBT):
+    def __init__(self, conversion_filters, args, worker_idx):
+        LCBT.__init__(self, conversion_filters, args, worker_idx)
+        self.context = None
+        self.work_receiver = None
+        self.results_sender = None
+        self.control_receiver = None
+        self.poller = None
+
     def setup_zmq(self):
 
         # Initialize a zeromq context
@@ -606,7 +647,7 @@ class ZmqLCBT(LCBT):
                     self.debug_msg("received FINSHED, quitting!")
                     break
 
-                self.debug_msg("Exiting. Unknown control_message received %s", control_message)
+                self.debug_msg("Exiting. Unknown control_message received %s" % control_message)
                 sys.exit(-1)
 
 
@@ -651,7 +692,7 @@ USAGE
 
     # ----------------------------------------------------------------------------------------------------------------------
     enable_workers = (cpu_count() > 1)
-    #----------------------------------------------------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------------------------------------------
 
     # Setup argument parser
     parser = ArgumentParser(description=program_license, formatter_class=RawDescriptionHelpFormatter)
@@ -662,9 +703,9 @@ USAGE
                         help="String with the allowed credit grades [default: %(default)s]")
     parser.add_argument('-s', '--seed', default=100, help="Random Number Generator Seed [default: %(default)s]")
     parser.add_argument('-d', '--data',
-                        default="https://www.lendingclub.com/fileDownload.action?file=LoanStatsNew.csv&type=gen",
-                        help="Download path for the notes data file [default: %(default)s]")
-    parser.add_argument('-l', '--stats', default="LoanStatsNew.csv",
+                        default="https://resources.lendingclub.com/LoanStats3a.csv.zip,https://resources.lendingclub.com/LoanStats3b.csv.zip,https://resources.lendingclub.com/LoanStats3c.csv.zip",
+                        help="Comma separated download path for the notes data files [default: %(default)s]")
+    parser.add_argument('-l', '--stats', default="LoanStats3a.csv.zip,LoanStats3b.csv.zip,LoanStats3c.csv.zip",
                         help="Input Loan Stats CSV file [default: %(default)s]")
     parser.add_argument('-c', '--csvresults', default="lc_best.csv",
                         help="Output best results CSV file [default: %(default)s]")
@@ -693,7 +734,7 @@ USAGE
     # Process arguments
     args = parser.parse_args()
 
-    if (args.population_size < args.workers):
+    if args.population_size < args.workers:
         args.workers = 1
         enable_workers = 0
 
@@ -704,10 +745,21 @@ USAGE
 
     random.seed(args.seed)
 
-    if os.path.exists(args.stats):
-        sys.stdout.write("Using %s as the data file\n" % args.stats)
-    else:
-        utilities.download_data(args.data, args.stats)
+    csv_download_files = args.data.split(',')
+    csv_stats_files = args.stats.split(',')
+
+    for i in range(len(csv_stats_files)):
+        if os.path.exists(csv_stats_files[i]):
+            sys.stdout.write("Using %s as the stats file\n" % csv_stats_files[i])
+        else:
+            if i > len(csv_download_files):
+                sys.stderr.write("This file does not exist locally: ", csv_stats_files[i],
+                                 "but the corresponding download url does not exist either.",
+                                 "Make sure the the number of comma separated download urls",
+                                 "matches the comma seperate stats files", csv_stats_files)
+                sys.exit(-1)
+            sys.stdout.write("Downloading %s as data file\n" % csv_download_files[i])
+            utilities.download_data(csv_download_files[i], csv_stats_files[i])
 
     if enable_workers:
         if enable_zmq:

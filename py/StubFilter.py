@@ -14,7 +14,7 @@ import Filter
 
 class StubFilter(Filter.Filter):
     """
-    classdocs
+    class docs
     """
     sqlite_type = "INT"
     name = "Id"
