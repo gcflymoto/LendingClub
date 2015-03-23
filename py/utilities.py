@@ -190,6 +190,7 @@ else:
         # def next(self, unicode=__builtins__.__dict__['unicode']):
         def __next__(self):
             return self.reader.__next__()
+        next=__next__
 
         def __iter__(self):
             return self

@@ -123,13 +123,14 @@ class LCLoanData:
         return loans
 
     def get_labels(self, data):
-        # First row in the data is a garbage comment
-        # Second row is where we have the labels
         self.row += 1
 
         # Print some status to the user that we are processing data
         if self.row % 10000 == 0:
             sys.stdout.write('.')
+
+        # First row in the data is a garbage comment
+        # Second row is where we have the labels
         if self.row > 2:
             return False
         if self.row == 2:
@@ -149,7 +150,7 @@ class LCLoanData:
 
         # Only look at loans with a valid issue date
         if not issue_d_re(loan["issue_d"]):
-            self.info_msg("Skipping loan, did not parse issue_d:" + str(loan))
+            self.info_msg("Skipping loan on row %d, did not parse issue_d: %s" % (self.row, loan))
             self.skipped_loans += 1
             return loan, False
 
