@@ -14,7 +14,6 @@ import platform
 import time
 import csv
 import io
-import codecs
 
 zmq = None
 
@@ -132,6 +131,8 @@ else:
     stringio = StringIO
 
 if sys.version_info.major < 3:
+    import codecs
+
     def csv_open(filename):
         return open(filename)
 
