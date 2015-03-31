@@ -197,3 +197,6 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 .idea/workspace.xml
+
+LoanStats3*csv*
+loans_serialized_*.bin
