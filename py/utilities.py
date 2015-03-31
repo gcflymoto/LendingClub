@@ -17,35 +17,6 @@ import io
 
 zmq = None
 
-
-# ---------------------------------------------------------------------------------------------------------------------
-def check_for_zmqpy():
-    enable_zmqpy = 1
-    #
-    # SET VS90COMNTOOLS=%VS100COMNTOOLS%
-    # C:\Python27\python.exe -O lcbt.py
-    # zmqpy does not work on windows
-    # C:\Python27\lib\site-packages\zmqpy\__pycache__\_cffi__x88b86722x954aa029.c(153) :
-    # fatal error C1083: Cannot open include file: 'zmq.h': No such file or directory
-    #
-    if sys.platform == 'win32' or sys.platform == 'cygwin':
-        enable_zmqpy = 0
-
-    if enable_zmqpy:
-        global zmq
-        try:
-            import zmqpy as zmq
-        except ImportError:
-            zmq = None
-            sys.stderr.write("Did not find zmqpy module installed, disabling parallel workers\n")
-            enable_zmqpy = 0
-
-    # if enable_zmqpy:
-    #    print("Found zmqpy")
-
-    return enable_zmqpy
-
-
 # ----------------------------------------------------------------------------------------------------------------------
 def check_for_sqlite():
     if platform.python_implementation() == 'PyPy':
@@ -55,6 +26,7 @@ def check_for_sqlite():
     return enable_sqlite
 
 
+# ---------------------------------------------------------------------------------------------------------------------
 def check_for_pyzmq():
     enable_pyzmq = 1
 

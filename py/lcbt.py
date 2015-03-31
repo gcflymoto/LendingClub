@@ -285,10 +285,10 @@ class GATest:
 
     def debug_msg(self, msg):
         if self.args.verbose:
-            sys.stdout.write('GA: %s\n' % msg)
+            sys.stdout.write('GeneticAlgorithm: %s\n' % msg)
 
     def info_msg(self, msg):
-        sys.stdout.write('GA: %s\n' % msg)
+        sys.stdout.write('GeneticAlgorithm: %s\n' % msg)
 
 
 class ParallelGATest(GATest):
@@ -739,7 +739,7 @@ USAGE
         enable_workers = 0
 
     if args.workers > 0 and args.zmq:
-        enable_zmq = utilities.check_for_zmqpy() or utilities.check_for_pyzmq()
+        enable_zmq = utilities.check_for_pyzmq()
     else:
         enable_zmq = False
 
