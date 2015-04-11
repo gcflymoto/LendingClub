@@ -25,7 +25,7 @@ struct Loan
     {
         // These enums are used for conversions and back-testing
         ROWID = 0, 
-        ACC_OPEN_PAST_24MTHS = 1,
+        OPEN_ACCOUNTS = 1,
         FUNDED_AMNT = 2,
         ANNUAL_INCOME = 3,
         GRADE = 4,
@@ -61,7 +61,7 @@ struct Loan
 
     // These variables are used for conversions and back-testing
     LoanValue                       rowid;
-    LoanValue                       acc_open_past_24mths;
+    LoanValue                       open_acc;
     LoanValue                       funded_amnt;
     LoanValue                       annual_income;
     LoanValue                       grade;

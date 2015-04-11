@@ -10,8 +10,8 @@ Created on July 28, 2014
 @contact:    gregczajkowski at yahoo.com
 */
 
-#ifndef __LC_ACCOUNTS_OPEN_PAST_24_MONTHS_HPP__
-#define __LC_ACCOUNTS_OPEN_PAST_24_MONTHS_HPP__
+#ifndef __LC_OPEN_ACCOUNTS_HPP__
+#define __LC_OPEN_ACCOUNTS_HPP__
 
 #include "Filter.hpp"
 #include "Loan.hpp"
@@ -20,7 +20,7 @@ Created on July 28, 2014
 namespace lc
 {
 
-class AccountsOpenPast24Months : public Filter
+class OpenAccounts : public Filter
 {
 public:
     static const LCString sqlite_type;
@@ -29,10 +29,10 @@ public:
     static const FilterValueVector* options;
     static const Relation relation;
 
-    AccountsOpenPast24Months() : Filter()
+    OpenAccounts() : Filter()
     {
         if (options == nullptr) {
-            options = create_range(0, 8, 1);
+            options = create_range(0, 25, 5);
         }
     }
 
@@ -71,7 +71,7 @@ public:
 
     inline bool apply(const Loan& loan) const
     {
-        return (loan.acc_open_past_24mths <= get_value());
+        return (loan.OPEN_ACCOUNTS <= get_value());
     }
 
     virtual const LCString& get_name() const
@@ -82,4 +82,4 @@ public:
 
 };
 
-#endif // __LC_ACCOUNTS_OPEN_PAST_24_MONTHS_HPP__
+#endif // __LC_OPEN_ACCOUNTS_HPP__

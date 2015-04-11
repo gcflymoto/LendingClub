@@ -62,16 +62,22 @@ public:
         _last_date_for_full_month_for_volume = _now.date() - delta;
     }
 
-    void info_msg(const LCString& msg) const
+    virtual void info_msg(const LCString& msg) const
     {
         std::cout << "Worker[" << _worker_idx << "] " << msg << '\n';
+    }
+
+    virtual void error_msg(const LCString& msg) const
+    {
+        std::cerr << "Worker[" << _worker_idx << "] error: " << msg << '\n';
+        exit(-1);
     }
 
     virtual void mid_stage_initialization() {}
 
     struct RawLoan
     {
-        LCString acc_open_past_24mths;
+        LCString open_acc;
         LCString funded_amnt;
         LCString annual_inc;
         LCString grade;
@@ -102,7 +108,7 @@ public:
         LCString to_str() const 
         {
             LCString str;
-            str += "acc_open_past_24mths=" + acc_open_past_24mths + ',';
+            str += "OPEN_ACCOUNTS=" + open_acc + ',';
             str += "funded_amnt=" + funded_amnt + ',';
             str += "annual_inc=" + annual_inc + ',';
             str += "grade=" + grade + ',';
@@ -135,83 +141,117 @@ public:
 
     virtual void initialize() 
     {
-        boost::filesystem::path stats_file_path = _args["stats"].as<LCString>();
-        if (boost::filesystem::exists(stats_file_path)) {
-            info_msg("Initializing from " + stats_file_path.string());
-            
-            io::CSVReader<28, io::trim_chars<' ', '\t'>, io::double_quote_escape<',', '\"'>, io::throw_on_overflow, io::single_line_comment<'N','L','\0'> > in(stats_file_path.string().c_str());
-            in.read_header(io::ignore_extra_column, "acc_open_past_24mths", "funded_amnt", "annual_inc", "grade", 
-                "dti", "delinq_2yrs", "earliest_cr_line", "emp_length", "home_ownership", "is_inc_v", "inq_last_6mths",
-                "purpose", "mths_since_last_delinq", "pub_rec", "revol_util", "addr_state", "total_acc", "desc",
-                "loan_status", "issue_d", "term", "installment", "int_rate", "total_pymnt", "out_prncp", "out_prncp_inv",
-                "total_rec_int", "total_rec_prncp");
+        std::vector<LCString> stats_paths;
+        boost::split(stats_paths, _args["stats"].as<LCString>(), boost::is_any_of(","));
 
-            RawLoan raw_loan;
+        for (auto& stats_path : stats_paths) {
 
-            while (in.read_row(
-                raw_loan.acc_open_past_24mths,
-                raw_loan.funded_amnt,
-                raw_loan.annual_inc,
-                raw_loan.grade,
-                raw_loan.dti,
-                raw_loan.delinq_2yrs, 
-                raw_loan.earliest_cr_line, 
-                raw_loan.emp_length, 
-                raw_loan.home_ownership,
-                raw_loan.is_inc_v,
-                raw_loan.inq_last_6mths,
-                raw_loan.purpose, 
-                raw_loan.mths_since_last_delinq, 
-                raw_loan.pub_rec,
-                raw_loan.revol_util, 
-                raw_loan.addr_state,
-                raw_loan.total_acc,
-                raw_loan.desc,
-                raw_loan.loan_status,
-                raw_loan.issue_d,
-                raw_loan.term,
-                raw_loan.installment, 
-                raw_loan.int_rate,
-                raw_loan.total_pymnt,
-                raw_loan.out_prncp,
-                raw_loan.out_prncp_inv,
-                raw_loan.total_rec_int,
-                raw_loan.total_rec_prncp)) {
+            boost::filesystem::path stats_file_path = stats_path;
+            if (boost::filesystem::exists(stats_file_path)) {
+                info_msg("Initializing from " + stats_file_path.string());
 
-                bool parsed_row_ok = check_loan(raw_loan);
-                if (!parsed_row_ok) {
-                    continue;
+                io::CSVReader<28, io::trim_chars<' ', '\t'>, io::double_quote_escape<',', '\"'>, io::throw_on_overflow, io::single_line_comment<'N', 'L', '\0'> > in(stats_file_path.string().c_str());
+                try
+                {
+                    in.read_header(io::ignore_extra_column, "open_acc", "funded_amnt", "annual_inc", "grade",
+                        "dti", "delinq_2yrs", "earliest_cr_line", "emp_length", "home_ownership", "is_inc_v", "inq_last_6mths",
+                        "purpose", "mths_since_last_delinq", "pub_rec", "revol_util", "addr_state", "total_acc", "desc",
+                        "loan_status", "issue_d", "term", "installment", "int_rate", "total_pymnt", "out_prncp", "out_prncp_inv",
+                        "total_rec_int", "total_rec_prncp");
+                }
+                catch (io::error::base& err)
+                {
+                    error_msg(err.what());
                 }
 
-                Loan loan;
-                LoanInfo loan_info;
-                
-                bool parsed_loan_ok = normalize_loan_data(raw_loan, loan, loan_info);
-                if (parsed_loan_ok) {
-                    // Assign the rowid of the loan to be the current last index in the loans list
-                    //
-                    loan.rowid = _loans.size();
-                    _loans.push_back(loan);
-                    _loan_infos.push_back(loan_info);
+                RawLoan raw_loan;
+
+                while (true) {
+                    try {
+                        bool result = in.read_row(
+                            raw_loan.open_acc,
+                            raw_loan.funded_amnt,
+                            raw_loan.annual_inc,
+                            raw_loan.grade,
+                            raw_loan.dti,
+                            raw_loan.delinq_2yrs,
+                            raw_loan.earliest_cr_line,
+                            raw_loan.emp_length,
+                            raw_loan.home_ownership,
+                            raw_loan.is_inc_v,
+                            raw_loan.inq_last_6mths,
+                            raw_loan.purpose,
+                            raw_loan.mths_since_last_delinq,
+                            raw_loan.pub_rec,
+                            raw_loan.revol_util,
+                            raw_loan.addr_state,
+                            raw_loan.total_acc,
+                            raw_loan.desc,
+                            raw_loan.loan_status,
+                            raw_loan.issue_d,
+                            raw_loan.term,
+                            raw_loan.installment,
+                            raw_loan.int_rate,
+                            raw_loan.total_pymnt,
+                            raw_loan.out_prncp,
+                            raw_loan.out_prncp_inv,
+                            raw_loan.total_rec_int,
+                            raw_loan.total_rec_prncp);
+
+                        if (!result) {
+                            break;
+                        }
+                    }
+                    catch (io::error::too_few_columns&) {
+                        std::stringstream ss;
+                        ss << "missing column while parsing row " << in.get_file_line() << " in file " 
+                            << stats_file_path.string() << " skipping.";
+                        info_msg(ss.str());
+                        continue;
+                    }
+                    
+                    try
+                    {
+                        bool parsed_row_ok = check_loan(raw_loan);
+                        if (!parsed_row_ok) {
+                            continue;
+                        }
+                    }
+                    catch (std::exception &err)
+                    {
+                        error_msg(err.what());
+                    }
+
+                    Loan loan;
+                    LoanInfo loan_info;
+
+                    bool parsed_loan_ok = normalize_loan_data(raw_loan, loan, loan_info);
+                    if (parsed_loan_ok) {
+                        // Assign the rowid of the loan to be the current last index in the loans list
+                        //
+                        loan.rowid = _loans.size();
+                        _loans.push_back(loan);
+                        _loan_infos.push_back(loan_info);
+                    }
                 }
+
+                info_msg("Initializing from " + stats_file_path.string() + " done.");
+                find_average(Loan::OPEN_ACCOUNTS);
+                find_average(Loan::FUNDED_AMNT);
+                find_average(Loan::ANNUAL_INCOME);
+                find_average(Loan::DEBT_TO_INCOME_RATIO);
+                find_average(Loan::DELINQ_2YRS);
+                find_average(Loan::EARLIEST_CREDIT_LINE);
+                find_average(Loan::EMP_LENGTH);
+                find_average(Loan::INQ_LAST_6MTHS);
+                find_average(Loan::MTHS_SINCE_LAST_DELINQ);
+                find_average(Loan::REVOL_UTILIZATION);
+                find_average(Loan::TOTAL_ACC);
+                find_average(Loan::DESC_WORD_COUNT);
             }
-
-            info_msg("Initializing from " + stats_file_path.string() + " done.");
-            find_average(Loan::ACC_OPEN_PAST_24MTHS);
-            find_average(Loan::FUNDED_AMNT);
-            find_average(Loan::ANNUAL_INCOME);
-            find_average(Loan::DEBT_TO_INCOME_RATIO);
-            find_average(Loan::DELINQ_2YRS);
-            find_average(Loan::EARLIEST_CREDIT_LINE);
-            find_average(Loan::EMP_LENGTH);
-            find_average(Loan::INQ_LAST_6MTHS);
-            find_average(Loan::MTHS_SINCE_LAST_DELINQ);
-            find_average(Loan::REVOL_UTILIZATION);
-            find_average(Loan::TOTAL_ACC);
-            find_average(Loan::DESC_WORD_COUNT);
-        } else {
-            info_msg("error: " + stats_file_path.string() + " not found");
-            exit(-1);
+            else {
+                error_msg(stats_file_path.string() + " not found");
+            }
         }
     }
 
@@ -234,8 +274,8 @@ public:
         }
 
         // Only look at loans with a valid issue date
-        //
-        boost::gregorian::date issue_d(boost::gregorian::from_simple_string(loan.issue_d));		
+        // We hack this a bit as issue_d has the format of "Dec-2011" so parse it as 1-Dec-2011
+        boost::gregorian::date issue_d(boost::gregorian::from_uk_string("1-" + loan.issue_d));
         if (issue_d.is_not_a_date()) {
             info_msg("Skipping loan, did not find issue_d:" + loan.to_str());
             ++_skipped_loans;
@@ -309,7 +349,7 @@ public:
 
     virtual bool normalize_loan_data(const RawLoan& raw_loan, Loan& loan, LoanInfo& loan_info)
     {
-        loan.acc_open_past_24mths = _filters[Loan::ACC_OPEN_PAST_24MTHS]->convert(raw_loan.acc_open_past_24mths);
+        loan.open_acc = _filters[Loan::OPEN_ACCOUNTS]->convert(raw_loan.open_acc);
         loan.funded_amnt = _filters[Loan::FUNDED_AMNT]->convert(raw_loan.funded_amnt);
         loan.annual_income = _filters[Loan::ANNUAL_INCOME]->convert(raw_loan.annual_inc);
         loan.grade = _filters[Loan::GRADE]->convert(raw_loan.grade);
@@ -329,7 +369,11 @@ public:
         loan.desc_word_count = _filters[Loan::DESC_WORD_COUNT]->convert(raw_loan.desc);
 
         loan_info.loan_status = raw_loan.loan_status;
-        loan_info.issue_datetime = boost::gregorian::date(boost::gregorian::from_simple_string(raw_loan.issue_d));		
+        // 
+        // Have to hack the date a bout as it's given in the form of Dec-2011 so normalize it
+        // to 1-Dec-2011 so boost can parse it
+        // 
+        loan_info.issue_datetime = boost::gregorian::date(boost::gregorian::from_uk_string("1-" + raw_loan.issue_d));		
 
         if (raw_loan.term == " 36 months") {
             loan_info.number_of_payments = 36;
@@ -337,7 +381,7 @@ public:
         else if (raw_loan.term == " 60 months") {
             loan_info.number_of_payments = 60;
         } else {
-            std::cout << "unknown number of payments: " << raw_loan.term << "expecting 36 or 60, skipping\n";
+            std::cerr << "unknown number of payments: " << raw_loan.term << "expecting 36 or 60, skipping\n";
             return false;
         }
 
@@ -399,7 +443,7 @@ public:
         return true;
     }
 
-    LoanReturn get_nar(const LoanValueVector& invested) const
+    virtual LoanReturn get_nar(const LoanValueVector& invested) const
     {
         unsigned defaulted = 0, per_month = 0;
         double profit = 0.0, principal = 0.0, lost = 0.0, rate = 0.0;
@@ -442,12 +486,12 @@ public:
         return loan_return;
     }
 
-    const LoanVector& get_loans() const
+    virtual const LoanVector& get_loans() const
     {
         return _loans;
     }
 
-    unsigned num_loans() const
+    virtual unsigned num_loans() const
     {
         return _loans.size();
     }

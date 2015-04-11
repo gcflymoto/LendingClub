@@ -56,7 +56,7 @@ public:
 
     virtual FilterValue convert(const LCString& raw_data) const
     {
-        if (raw_data == "TRUE") {
+        if ((raw_data == "Source Verified") || (raw_data == "TRUE") || (raw_data == "Verified")) {
             return 1;
         }
         else {
@@ -67,7 +67,7 @@ public:
     virtual const LCString get_string_value() const
     {
         auto value = get_value();
-        if (value == 0) {
+        if (value == 1) {
             return "income validated";
         }
         else {

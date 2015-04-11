@@ -32,7 +32,7 @@ public:
     EmploymentLength() : Filter()
     {
         if (options == nullptr) {
-            options = create_range(0, 12, 1);
+            options = create_range(0, 13, 1);
         }
     }
 
@@ -63,10 +63,10 @@ public:
             return 1;
         }
         else if (raw_data == "10 years") {
-            return 10;
+            return 11;
         }
         else if (raw_data == "10+ years") {
-            return 11;
+            return 12;
         }
         else {
             unsigned result = (raw_data[0] - '0') + 1;
@@ -83,16 +83,16 @@ public:
             return "<1 year";
         }
         else if (value == 2) {
-            return ">1 year";
-        }
-        else if (value == 10) {
-            return "10 years";
+            return "1 year";
         }
         else if (value == 11) {
+            return "10 years";
+        }
+        else if (value == 12) {
             return ">10 years";
         }
         else {
-            return '>' + boost::lexical_cast<LCString>(value) + " years";
+            return boost::lexical_cast<LCString>(value - 1) + " years";
         }
     }
 

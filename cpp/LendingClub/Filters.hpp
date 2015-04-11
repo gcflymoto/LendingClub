@@ -18,7 +18,7 @@ Created on July 27, 2014
 
 #include "Loan.hpp"
 
-#include "AccountsOpenPast24Months.hpp"
+#include "OpenAccounts.hpp"
 #include "AmountRequested.hpp"
 #include "AnnualIncome.hpp"
 #include "CreditGrade.hpp"
@@ -45,8 +45,8 @@ void construct_filter(const Loan::LoanType filter_type,
     FilterPtrVector::iterator& it)
 {
     switch (filter_type) {
-    case Loan::ACC_OPEN_PAST_24MTHS:
-        (*it) = new AccountsOpenPast24Months();
+    case Loan::OPEN_ACCOUNTS:
+        (*it) = new OpenAccounts();
         break;
     case Loan::FUNDED_AMNT:
         (*it) = new AmountRequested();

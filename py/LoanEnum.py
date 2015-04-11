@@ -12,7 +12,7 @@ Created on May 30, 2013
 
 # These enums are used for conversions and backtesting
 LOAN_ENUM_rowid = 0
-LOAN_ENUM_acc_open_past_24mths = 1
+LOAN_ENUM_open_acc = 1
 LOAN_ENUM_funded_amnt = 2
 LOAN_ENUM_annual_income = 3
 LOAN_ENUM_grade = 4

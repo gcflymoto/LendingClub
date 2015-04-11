@@ -34,7 +34,7 @@ public:
     WordsInDescription() : Filter()
     {
         if (options == nullptr) {
-            options = create_range(25, 110, 10);
+            options = create_range(25, 250, 50);
         }
     }
 

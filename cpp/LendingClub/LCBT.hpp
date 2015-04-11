@@ -94,11 +94,15 @@ public:
         unsigned num_filters = test_filters.size();
 
         FilterValue* filter_values = static_cast<FilterValue*>(alloca(num_filters * sizeof(FilterValue)));
+        assert(filter_values);
+
         for (unsigned i = 0, size = num_filters; i < size; ++i) {
             filter_values[i] = test_filters[i]->get_value();
         }
 
         Filter::Relation* relations = static_cast<Filter::Relation*>(alloca(num_filters * sizeof(Filter::Relation)));
+        assert(relations);
+
         for (unsigned i = 0, size = num_filters; i < size; ++i) {
             relations[i] = test_filters[i]->get_relation();
         }
@@ -112,12 +116,12 @@ public:
 
         for (auto i = _start_range; i < _end_range; ++i, ++loan) {
 
-            const LoanValue* loan_data_value_p = &(loan->acc_open_past_24mths);
+            const LoanValue* loan_data_value_p = &(loan->open_acc);
             auto filter_value_p = first_filter_value_p;
             auto relation_value_p = first_relation_p;
 
             LoanValue filter_matches = 1;
-            for (unsigned k = num_filters; k != 0 && filter_matches; --k, ++relation_value_p, ++loan_data_value_p, ++filter_value_p) {
+            for (int k = num_filters; filter_matches && k; --k, ++relation_value_p, ++loan_data_value_p, ++filter_value_p) {
                 switch (*relation_value_p) {
                 case Filter::Relation::LESS_THAN_EQUAL:    filter_matches = ((*loan_data_value_p) <= (*filter_value_p)); break;
                 case Filter::Relation::LESS_THAN:          filter_matches = ((*loan_data_value_p) <  (*filter_value_p)); break;

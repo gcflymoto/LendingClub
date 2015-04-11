@@ -50,7 +50,7 @@ public:
             FilterValueVector purpose_bitmap;
 
             for (unsigned i = 0; i < 14; ++i) {
-                purpose_bitmap.push_back(1 << i);
+                purpose_bitmap.push_back(1ull << i);
             }      
             options = new FilterValueVector(power_bitset(purpose_bitmap));
         }

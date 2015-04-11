@@ -32,7 +32,7 @@ public:
     InqueriesLast6Months() : Filter()
     {
         if (options == nullptr) {
-            options = create_range(0, 5, 1);
+            options = create_range(0, 11, 1);
         }
     }
 

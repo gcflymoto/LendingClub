@@ -15,12 +15,12 @@ int lcmain(int argc, char* argv[])
     desc.add_options()
         ("help,h", "Produce help message")
         ("verbose,v", boost::program_options::bool_switch()->default_value(false), "Verbose mode")
-        ("version,V", boost::program_options::value<string>()->default_value("0.7"), "Program version")
+        ("version,V", boost::program_options::value<string>()->default_value("2.0"), "Program version")
         ("grades,g", boost::program_options::value<string>()->default_value("ABCDEFG"), "Credit grades to test")
         ("states,a", boost::program_options::value<string>()->default_value("CA,AZ,FL,GA,IL,MD,NO,NV,TX,NY"), "Comma separated list of states to test")
         ("seed,s", boost::program_options::value<unsigned>()->default_value(100), "Random Number Generator Seed")
-        ("data,d", boost::program_options::value<string>()->default_value("https://www.lendingclub.com/fileDownload.action?file=LoanStatsNew.csv&type=gen"), "Download path for the notes data file")
-        ("stats,l", boost::program_options::value<string>()->default_value("LoanStatsNew.csv"), "Input Loan Stats CSV file")
+        ("data,d", boost::program_options::value<string>()->default_value("https://resources.lendingclub.com/LoanStats3a.csv.zip,https://resources.lendingclub.com/LoanStats3b.csv.zip,https://resources.lendingclub.com/LoanStats3c.csv.zip"), "Download path for the notes data file")
+        ("stats,l", boost::program_options::value<string>()->default_value("LoanStats3a_securev1.csv,LoanStats3b_securev1.csv,LoanStats3c_securev1.csv"), "Input Loan Stats CSV file")
         ("csvresults,c", boost::program_options::value<string>()->default_value("lc_best.csv"), "Output best results CSV file")
         ("population_size,p", boost::program_options::value<unsigned>()->default_value(512), "population size")
         ("iterations,i", boost::program_options::value<unsigned>()->default_value(4096), "how many Genetic Algorithm iterations to perform")
@@ -133,7 +133,7 @@ int lcmain(int argc, char* argv[])
     LoanTypeVector conversion_filters;
     // The order of these must must must match the layout of the Loan stuct, as the inner core algorithm makes some assumptions
     //
-    conversion_filters.push_back(Loan::ACC_OPEN_PAST_24MTHS);
+    conversion_filters.push_back(Loan::OPEN_ACCOUNTS);
     conversion_filters.push_back(Loan::FUNDED_AMNT);
     conversion_filters.push_back(Loan::ANNUAL_INCOME);
     conversion_filters.push_back(Loan::GRADE);

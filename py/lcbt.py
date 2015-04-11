@@ -30,7 +30,7 @@ from argparse import RawDescriptionHelpFormatter
 from multiprocessing import Process, cpu_count
 from multiprocessing import Queue as MultiProcessingQueue
 
-import AccountsOpenPast24Months
+import OpenAccounts
 import AmountRequested
 import Delinquencies
 import MonthsSinceLastDelinquency
@@ -56,7 +56,7 @@ from LoanEnum import *
 
 BackTestFilters = {
     LOAN_ENUM_rowid: StubFilter.StubFilter,
-    LOAN_ENUM_acc_open_past_24mths: AccountsOpenPast24Months.AccountsOpenLast24Months,
+    LOAN_ENUM_open_acc: OpenAccounts.OpenAccounts,
     LOAN_ENUM_funded_amnt: AmountRequested.AmountRequested,
     LOAN_ENUM_annual_income: AnnualIncome.AnnualIncome,
     LOAN_ENUM_grade: CreditGrade.CreditGrade,
@@ -86,7 +86,7 @@ __updated__ = '2015-03-22'
 DEBUG = 0
 TESTRUN = 0
 PROFILE = 0
-
+MEMORY = 0
 
 class ProfileGuidedOptimization(object):
     def __init__(self, f, initial_value):
@@ -299,7 +299,7 @@ class ParallelGATest(GATest):
         self.response_queue = response_queue
 
         self.range_filters = range(len(backtest_filters))
-        self.pgo = ProfileGuidedOptimization(self.calculate, args.work_batch)
+        # self.pgo = ProfileGuidedOptimization(self.calculate, args.work_batch)
 
     def run(self):
         GATest.run(self)
@@ -344,13 +344,12 @@ class ParallelGATest(GATest):
             self.debug_msg("Population Count: %d Results Count: %d" % (population_count, results_count))
             result_message = self.response_queue.get()
             new_results_count = len(result_message['results'])
-            self.debug_msg("Worker[%i] returned %d results" %
-                           (result_message['worker'], new_results_count))
+            self.debug_msg("Worker[%i] returned %d results" % (result_message['worker'], new_results_count))
             for citizen_idx, result in result_message['results']:
                 # sys.stderr.write("results[%d]=%s\n" % (citizen_idx, result))
                 self.population[citizen_idx]['result'] = result
             results_count += new_results_count
-        self.debug_msg('Calculate complete')
+        self.debug_msg('calculate() complete')
 
 
 class ZmqGATest(GATest):
@@ -381,7 +380,7 @@ class ZmqGATest(GATest):
             self.results_receiver.recv_json()
             self.debug_msg('Received Setup confirmation from %d' % idx)
         self.info_msg('Workers are setup')
-        self.pgo = ProfileGuidedOptimization(self.calculate, args.work_batch)
+        # self.pgo = ProfileGuidedOptimization(self.calculate, args.work_batch)
 
     def run(self):
         GATest.run(self)
@@ -423,12 +422,11 @@ class ZmqGATest(GATest):
         results_receiver = self.results_receiver
         for _ in range(self.args.workers):
             results_message = results_receiver.recv_json()
-            self.debug_msg("Worker[%i] returned %d results" %
-                           (results_message['worker'], len(results_message['results'])))
+            self.debug_msg("Worker[%i] returned %d results" % (results_message['worker'], len(results_message['results'])))
             for citizen_idx, result in results_message['results']:
                 # sys.stderr.write("results[%d]=%s\n" % (citizen_idx, result))
                 self.population[citizen_idx]['result'] = result
-        self.info_msg('Calculate complete')
+        self.info_msg('calculate() complete')
 
 
 class BaseLoanDataTester:
@@ -453,7 +451,6 @@ class PythonLoanDataTester(BaseLoanDataTester):
         self.lcbt.filters = filters
         consider = self.lcbt.consider
         invested = [loan for loan in self.loan_data.loans if consider(loan)]
-
         return self.loan_data.get_nar(invested)
 
 
@@ -498,7 +495,6 @@ class SqliteLoanDataTester(BaseLoanDataTester):
         # #print(self.named_sql_query)
         # self.loan_data.cursor.execute(self.named_sql_query, params)
         # invested = [self.loan_data.loans[row[0]] for row in self.loan_data.cursor.fetchall()]
-
         return self.loan_data.get_nar(invested)
 
 
@@ -511,10 +507,8 @@ class LCBT:
             # print(filter_idx, lc_filter.name)
             self.filters[filter_idx] = lc_filter(args)
 
-        if args.sqlite:
-            self.test = SqliteLoanDataTester(self, self.filters, conversion_filters, args, worker_idx)
-        else:
-            self.test = PythonLoanDataTester(self, self.filters, conversion_filters, args, worker_idx)
+        tester = SqliteLoanDataTester if args.sqlite else PythonLoanDataTester
+        self.test = tester(self, self.filters, conversion_filters, args, worker_idx)
 
         self.args = args
         self.worker_idx = worker_idx
@@ -544,7 +538,7 @@ class ParallelLCBT(LCBT, Process):
     def run(self):
         self.debug_msg("Started")
 
-        # do some initialization here
+        # do some initialization here done by base classes
         self.initialize()
 
         # do computation
@@ -807,4 +801,13 @@ if __name__ == "__main__":
             stats = p.strip_dirs().sort_stats('cumulative')
             stats.print_stats()
         sys.exit(0)
+    if MEMORY:
+        from guppy import hpy
+        hp = hpy()
+        res = main()
+        h = hp.heap()
+        sys.stdout.write(str(h))
+        sys.exit(res)
+
+    # Default setup we run the main and exit
     sys.exit(main())

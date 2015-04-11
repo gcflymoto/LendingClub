@@ -26,7 +26,7 @@ class TotalCreditLines(Filter.Filter):
         """
         Constructor
         """
-        options = [10, 20, 30]
+        options = range(10, 50, 10)
 
         Filter.Filter.__init__(self, args, options, current)
 

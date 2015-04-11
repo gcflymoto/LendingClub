@@ -13,14 +13,14 @@ import LoanEnum
 import Filter
 
 
-class AccountsOpenLast24Months(Filter.Filter):
+class OpenAccounts(Filter.Filter):
     """
     classdocs
     """
     sqlite_type = "INT"
-    name = "acc_open_past_24mths"
-    query = "(acc_open_past_24mths <= ?)"
-    named_query = "(acc_open_past_24mths <= :acc_open_past_24mths)"
+    name = "open_acc"
+    query = "(open_acc <= ?)"
+    named_query = "(open_acc <= :open_acc)"
 
     def __init__(self, args, current=None):
         """
@@ -30,5 +30,5 @@ class AccountsOpenLast24Months(Filter.Filter):
 
         Filter.Filter.__init__(self, args, options, current)
 
-    def apply(self, loan, acc_open_past_24mths=LoanEnum.LOAN_ENUM_acc_open_past_24mths):
-        return loan[acc_open_past_24mths] <= self.get_value()
+    def apply(self, loan, open_acc=LoanEnum.LOAN_ENUM_open_acc):
+        return loan[open_acc] <= self.get_value()

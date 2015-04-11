@@ -27,28 +27,31 @@ class EmploymentLength(Filter.Filter):
         """
         Constructor
         """
-        options = [i for i in range(0, 12)]
+        options = [i for i in range(0, 13)]
 
         Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
-        raw_data_s = utilities.s(raw_data)
         if raw_data == utilities.u('n/a'):
             return 0
         elif raw_data == utilities.u('< 1 year'):
             return 1
-        elif raw_data == utilities.u('10+ years'):
+        elif raw_data == utilities.u('10 years'):
             return 11
+        elif raw_data == utilities.u('10+ years'):
+            return 12
         return int(raw_data[0]) + 1
 
     def __str__(self):
         value = self.get_value()
         if value == 0:
             return '< 1 year'
-        elif value == 11:
-            return '10+ years'
         elif value == 1:
             return '1 year'
+        elif value == 11:
+            return '10 years'
+        elif value == 12:
+            return '10+ years'
         return '%d years' % value
 
     def apply(self, loan, emp_length=LoanEnum.LOAN_ENUM_emp_length):

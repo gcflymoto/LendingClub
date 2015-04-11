@@ -71,7 +71,11 @@ public:
             return 0;
         }
         else {
-            boost::posix_time::ptime raw_time(boost::gregorian::from_simple_string(raw_data));
+            // 
+            // Have to hack the date a bout as it's given in the form of Dec-2011 so normalize it
+            // to 1-Dec-2011 so boost can parse it
+            // 
+            boost::posix_time::ptime raw_time(boost::gregorian::from_uk_string("1-" + raw_data));
             return (now - raw_time).total_seconds();
         }
     }

@@ -200,3 +200,5 @@ $RECYCLE.BIN/
 
 LoanStats3*csv*
 loans_serialized_*.bin
+
+cpp/packages

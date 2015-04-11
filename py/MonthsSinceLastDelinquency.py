@@ -26,12 +26,11 @@ class MonthsSinceLastDelinquency(Filter.Filter):
         """
         Constructor
         """
-        options = [12, 24, 60]
+        options = [12, 24, 60, 84]
 
         Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
         return int(raw_data) if raw_data else 61
-
     def apply(self, loan, mths_since_last_delinq=LoanEnum.LOAN_ENUM_mths_since_last_delinq):
         return loan[mths_since_last_delinq] >= self.get_value()

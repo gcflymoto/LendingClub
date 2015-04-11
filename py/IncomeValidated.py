@@ -31,7 +31,7 @@ class IncomeValidated(Filter.Filter):
         Filter.Filter.__init__(self, args, options, current)
 
     def convert(self, raw_data):
-        if raw_data == 'TRUE':
+        if raw_data == 'Source Verified' or raw_data == 'Verified':
             return 1
         else:
             return 0

@@ -72,8 +72,9 @@ class LCLoanData:
             with open(pickle_name, "rb") as fh:
                 self.loans = pickle.load(fh)
 
+            self.info_msg("Initializing from %s done" % pickle_name)
             self.mid_stage_initialize()
-            self.info_msg("Initializing from %s done ..." % pickle_name)
+            self.info_msg("Initializing from %s really done ..." % pickle_name)
 
         else:
             loans = []
@@ -212,42 +213,42 @@ class LCLoanData:
         loan_info = [0] * LOAN_ENUM_SIZE
         conversion_filters = self.filters
         try:
-            loan_info[LOAN_ENUM_acc_open_past_24mths] = conversion_filters[LOAN_ENUM_acc_open_past_24mths].convert(
-                raw_loan["open_acc"])
+            loan_info[LOAN_ENUM_open_acc] = conversion_filters[LOAN_ENUM_open_acc].convert(
+                raw_loan[conversion_filters[LOAN_ENUM_open_acc].name])
             loan_info[LOAN_ENUM_funded_amnt] = conversion_filters[LOAN_ENUM_funded_amnt].convert(
-                raw_loan["funded_amnt"])
+                raw_loan[conversion_filters[LOAN_ENUM_funded_amnt].name])
             loan_info[LOAN_ENUM_annual_income] = conversion_filters[LOAN_ENUM_annual_income].convert(
-                raw_loan["annual_inc"])
+                raw_loan[conversion_filters[LOAN_ENUM_annual_income].name])
             loan_info[LOAN_ENUM_grade] = conversion_filters[LOAN_ENUM_grade].convert(
-                raw_loan["grade"])
+                raw_loan[conversion_filters[LOAN_ENUM_grade].name])
             loan_info[LOAN_ENUM_debt_to_income_ratio] = conversion_filters[LOAN_ENUM_debt_to_income_ratio].convert(
-                raw_loan["dti"])
+                raw_loan[conversion_filters[LOAN_ENUM_debt_to_income_ratio].name])
             loan_info[LOAN_ENUM_delinq_2yrs] = conversion_filters[LOAN_ENUM_delinq_2yrs].convert(
-                raw_loan["delinq_2yrs"])
+                raw_loan[conversion_filters[LOAN_ENUM_delinq_2yrs].name])
             loan_info[LOAN_ENUM_earliest_credit_line] = conversion_filters[LOAN_ENUM_earliest_credit_line].convert(
-                raw_loan["earliest_cr_line"])
+                raw_loan[conversion_filters[LOAN_ENUM_earliest_credit_line].name])
             loan_info[LOAN_ENUM_emp_length] = conversion_filters[LOAN_ENUM_emp_length].convert(
-                raw_loan["emp_length"])
+                raw_loan[conversion_filters[LOAN_ENUM_emp_length].name])
             loan_info[LOAN_ENUM_home_ownership] = conversion_filters[LOAN_ENUM_home_ownership].convert(
-                raw_loan["home_ownership"])
+                raw_loan[conversion_filters[LOAN_ENUM_home_ownership].name])
             loan_info[LOAN_ENUM_income_validated] = conversion_filters[LOAN_ENUM_income_validated].convert(
-                raw_loan["is_inc_v"])
+                raw_loan[conversion_filters[LOAN_ENUM_income_validated].name])
             loan_info[LOAN_ENUM_inq_last_6mths] = conversion_filters[LOAN_ENUM_inq_last_6mths].convert(
-                raw_loan["inq_last_6mths"])
+                raw_loan[conversion_filters[LOAN_ENUM_inq_last_6mths].name])
             loan_info[LOAN_ENUM_purpose] = conversion_filters[LOAN_ENUM_purpose].convert(
-                raw_loan["purpose"])
+                raw_loan[conversion_filters[LOAN_ENUM_purpose].name])
             loan_info[LOAN_ENUM_mths_since_last_delinq] = conversion_filters[LOAN_ENUM_mths_since_last_delinq].convert(
-                raw_loan["mths_since_last_delinq"])
+                raw_loan[conversion_filters[LOAN_ENUM_mths_since_last_delinq].name])
             loan_info[LOAN_ENUM_pub_rec] = conversion_filters[LOAN_ENUM_pub_rec].convert(
-                raw_loan["pub_rec"])
+                raw_loan[conversion_filters[LOAN_ENUM_pub_rec].name])
             loan_info[LOAN_ENUM_revol_utilization] = conversion_filters[LOAN_ENUM_revol_utilization].convert(
-                raw_loan["revol_util"])
+                raw_loan[conversion_filters[LOAN_ENUM_revol_utilization].name])
             loan_info[LOAN_ENUM_addr_state] = conversion_filters[LOAN_ENUM_addr_state].convert(
-                raw_loan["addr_state"])
+                raw_loan[conversion_filters[LOAN_ENUM_addr_state].name])
             loan_info[LOAN_ENUM_total_acc] = conversion_filters[LOAN_ENUM_total_acc].convert(
-                raw_loan["total_acc"])
+                raw_loan[conversion_filters[LOAN_ENUM_total_acc].name])
             loan_info[LOAN_ENUM_desc_word_count] = conversion_filters[LOAN_ENUM_desc_word_count].convert(
-                raw_loan["desc"])
+                raw_loan[conversion_filters[LOAN_ENUM_desc_word_count].name])
 
             loan_info[LOAN_ENUM_loan_status] = raw_loan["loan_status"]
             loan_info[LOAN_ENUM_issue_datetime] = self.datetime.strptime(raw_loan["issue_d"], "%b-%Y")
