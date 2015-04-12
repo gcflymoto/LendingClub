@@ -14,7 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const LCString EarliestCreditLine::sqlite_type = "INT";
 const LCString EarliestCreditLine::csv_name = "EarliestCreditLine";
 const LCString EarliestCreditLine::name = "EarliestCreditLine";
 const boost::posix_time::ptime EarliestCreditLine::now = boost::posix_time::second_clock::local_time(); //use the clock 

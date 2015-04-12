@@ -59,17 +59,21 @@ class CreditGrade(Filter.Filter):
 
         self.conversion_table = grades_bitmap.copy()
         self.reverse_table = {v: k for k, v in grades_bitmap.items()}
-        num_grades = len(args.grades)
+        test_grades = args.grades.split(',')
+        num_grades = len(test_grades)
         for i in range(1, num_grades + 1):
             for j in range(num_grades):
                 if (j + i) <= num_grades:
-                    grades = args.grades[j:j + i]
+                    grades = test_grades[j:j + i]
                     grades_bit_value = 0
+                    grades_lookup = ""
                     for grade in grades:
                         grades_bit_value += grades_bitmap[grade]
-                    options.append(grades_bit_value)
-                    self.conversion_table[grades] = grades_bit_value
-                    self.reverse_table[grades_bit_value] = grades
+                        grades_lookup += grade
+                    if grades_bit_value > 0:
+                        options.append(grades_bit_value)
+                        self.conversion_table[grades_lookup] = grades_bit_value
+                        self.reverse_table[grades_bit_value] = grades_lookup
 
         Filter.Filter.__init__(self, args, options, current)
 

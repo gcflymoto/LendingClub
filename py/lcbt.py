@@ -13,6 +13,8 @@ criteria for finding the loans which have the lowest default rate and highest re
 @license:    Licensed under the Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
 
 @contact:    gregczajkowski at yahoo.com
+
+# https://pypi.python.org/pypi/bitarray/
 """
 import sys
 import os
@@ -22,8 +24,6 @@ import math
 import functools
 import copy
 
-# from pretty_decimal import pretty_decimal
-# from decimal import Decimal
 
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter
@@ -45,13 +45,14 @@ import EmploymentLength
 import InquiriesLast6Months
 import AnnualIncome
 import TotalCreditLines
-import LoanData
-import SqliteLoanData
 import RevolvingLineUtilization
 import State
 import WordsInDescription
-import utilities
+import LoanTerm
 import StubFilter
+import utilities
+import LoanData
+import SqliteLoanData
 from LoanEnum import *
 
 BackTestFilters = {
@@ -74,14 +75,15 @@ BackTestFilters = {
     LOAN_ENUM_addr_state: State.State,
     LOAN_ENUM_total_acc: TotalCreditLines.TotalCreditLines,
     LOAN_ENUM_desc_word_count: WordsInDescription.WordsInDescription,
+    LOAN_ENUM_term: LoanTerm.LoanTerm,
 }
 
 ConversionFilters = copy.copy(BackTestFilters)
 
 __all__ = []
-__version__ = 2.0
+__version__ = 2.5
 __date__ = '2013-05-29'
-__updated__ = '2015-03-22'
+__updated__ = '2015-04-11'
 
 DEBUG = 0
 TESTRUN = 0
@@ -693,14 +695,18 @@ USAGE
     parser.add_argument("-v", "--verbose", dest="verbose", action="count",
                         help="set verbosity level [default: %(default)s]")
     parser.add_argument('-V', '--version', action='version', version=program_version_message)
-    parser.add_argument('-g', '--grades', default='ABCDEF',
-                        help="String with the allowed credit grades [default: %(default)s]")
+    parser.add_argument('-g', '--grades', default='A,B,C,D,E,F,G',
+                        help="Comma seperated list of credit grades to test [default: %(default)s]")
+    parser.add_argument('-a', '--states', default='CA,AZ,FL,GA,IL,MD,NV,TX,NY',
+                        help="Comma separated list of states to test [default: %(default)s]")
+    parser.add_argument('-t', '--terms', default='36,60',
+                        help="Comma separated list of loan terms to test [default: %(default)s]")
     parser.add_argument('-s', '--seed', default=100, help="Random Number Generator Seed [default: %(default)s]")
     parser.add_argument('-d', '--data',
                         default="https://resources.lendingclub.com/LoanStats3a.csv.zip,https://resources.lendingclub.com/LoanStats3b.csv.zip,https://resources.lendingclub.com/LoanStats3c.csv.zip",
-                        help="Comma separated download path for the notes data files [default: %(default)s]")
+                        help="Comma separated download paths for the notes data files [default: %(default)s]")
     parser.add_argument('-l', '--stats', default="LoanStats3a.csv.zip,LoanStats3b.csv.zip,LoanStats3c.csv.zip",
-                        help="Input Loan Stats CSV file [default: %(default)s]")
+                        help="Comma separated list of input Loan Stats CSV files [default: %(default)s]")
     parser.add_argument('-c', '--csvresults', default="lc_best.csv",
                         help="Output best results CSV file [default: %(default)s]")
     parser.add_argument('-p', '--population_size', default=512, type=int, help="population size [default: %(default)s]")

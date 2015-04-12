@@ -1,4 +1,3 @@
-LoanStatsNew.csv*
 lcbt
 lc_best.csv
 *.gcda
@@ -198,6 +197,7 @@ $RECYCLE.BIN/
 .DS_Store
 .idea/workspace.xml
 
+LoanStatsNew.csv*
 LoanStats3*csv*
 loans_serialized_*.bin
 

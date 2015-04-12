@@ -23,7 +23,6 @@ namespace lc
 class PublicRecordsOnFile : public Filter
 {
 public:
-    static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
@@ -68,7 +67,7 @@ public:
 
     inline bool apply(const Loan& loan) const
     {
-        return (loan.pub_rec <= get_value());
+        return (!loan.pub_rec);
     }
 
     virtual const LCString& get_name() const

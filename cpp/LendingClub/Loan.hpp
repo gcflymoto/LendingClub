@@ -23,7 +23,7 @@ struct Loan
 {
     enum LoanType 
     {
-        // These enums are used for conversions and back-testing
+        // These ENUMS are used for conversions and back-testing
         ROWID = 0, 
         OPEN_ACCOUNTS = 1,
         FUNDED_AMNT = 2,
@@ -43,10 +43,10 @@ struct Loan
         ADDR_STATE = 16,
         TOTAL_ACC = 17,
         DESC_WORD_COUNT = 18,
-        // These enums are only used for figuring profit
-        LOAN_STATUS = 19,
-        ISSUE_DATETIME = 20,
-        NUMBER_OF_PAYMENTS = 21,
+        TERM = 19,
+        // These ENUMS are only used for figuring profit
+        LOAN_STATUS = 20,
+        ISSUE_DATETIME = 21,
         INSTALLMENT = 22,
         INT_RATE = 23,
         TOTAL_PYMNT = 24,
@@ -79,6 +79,7 @@ struct Loan
     LoanValue                       addr_state;
     LoanValue                       total_acc;
     LoanValue                       desc_word_count;
+    LoanValue                       term;
 };
 
 typedef std::vector<Loan::LoanType> LoanTypeVector;
@@ -86,9 +87,8 @@ typedef std::vector<Loan::LoanType> LoanTypeVector;
 struct LoanInfo
 {
     // These variables are only used for conversions
-    LCString                     loan_status;
+    LCString                        loan_status;
     boost::gregorian::date          issue_datetime;
-    unsigned                        number_of_payments;
     double                          installment;
     double                          int_rate;
     double                          total_pymnt;

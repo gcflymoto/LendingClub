@@ -10,6 +10,11 @@ Created on July 28, 2014
 @contact:    gregczajkowski at yahoo.com
 */
 
-#include "Arguments.hpp"
+#include "LoanTerm.hpp"
 
 using namespace lc;
+
+const LCString LoanTerm::csv_name = "term";
+const LCString LoanTerm::name = "LoanTerm";
+const FilterValueVector* LoanTerm::options = nullptr;
+const Filter::Relation LoanTerm::relation = Filter::Relation::MASK;

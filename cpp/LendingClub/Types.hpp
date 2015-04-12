@@ -67,11 +67,15 @@ namespace lc
     struct LoanReturn;
     typedef folly::fbvector<std::pair<LoanReturn, FilterPtrVector>> PopulationType;
 };
+
 #else
 
 #include <vector>
 namespace lc
 {
+    typedef unsigned long long UllValue;
+    typedef std::vector<UllValue> UllValueVector;
+
     typedef unsigned long long FilterValue;
     typedef std::vector<FilterValue> FilterValueVector;
     typedef std::vector<FilterValueVector> FilterValueVectorVector;
@@ -92,7 +96,11 @@ namespace lc
 
     struct LoanReturn;
     typedef std::vector<std::pair<LoanReturn, FilterPtrVector>> PopulationType;
+
+    struct LCBT_ThreadData;
+    typedef std::vector<LCBT_ThreadData*> ThreadDataVector;
 };
+
 #endif
 
 #endif

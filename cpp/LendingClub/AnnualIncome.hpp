@@ -23,7 +23,6 @@ namespace lc
 class AnnualIncome : public Filter
 {
 public:
-    static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
@@ -61,12 +60,12 @@ public:
 
     virtual const LCString get_string_value() const
     {
-        return ">=" + boost::lexical_cast<LCString>(get_value());
+        return "<=" + boost::lexical_cast<LCString>(get_value());
     }
 
     inline bool apply(const Loan& loan) const
     {
-        return (loan.annual_income >= get_value());
+        return (loan.annual_income <= get_value());
     }
 
     virtual const LCString& get_name() const

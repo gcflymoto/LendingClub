@@ -14,7 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const LCString CreditGrade::sqlite_type = "INT";
 const LCString CreditGrade::csv_name = "grade";
 const LCString CreditGrade::name = "CreditGrade";
 std::map<LCString, FilterValue> CreditGrade::_converation_table;

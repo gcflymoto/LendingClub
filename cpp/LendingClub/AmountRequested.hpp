@@ -23,7 +23,6 @@ namespace lc
 class AmountRequested : public Filter
 {
 public:
-    static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;

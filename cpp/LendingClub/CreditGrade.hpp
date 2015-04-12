@@ -13,6 +13,8 @@ Created on July 28, 2014
 #ifndef __LC_CREDIT_GRADE_HPP__
 #define __LC_CREDIT_GRADE_HPP__
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 #include "Filter.hpp"
 #include "Arguments.hpp"
 #include "Loan.hpp"
@@ -24,7 +26,6 @@ namespace lc
 class CreditGrade : public Filter
 {
 public:
-    static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
@@ -52,18 +53,26 @@ public:
             const auto& args = LCArguments::Get();
 
             LCString test_grades = args["grades"].as<LCString>();
-            size_t num_grades = test_grades.size();
+            
+            StringVector all_grades;
+            boost::split(all_grades, test_grades, boost::is_any_of(","));
+
+            size_t num_grades = all_grades.size();
             
             for (size_t i = 0; i < num_grades + 1; ++i) {
                 for (size_t j = 0; j < num_grades; ++j) {
                     if ((j + i) <= num_grades) {
-                        LCString grades = test_grades.substr(j, i+1);
+                        StringVector grades(all_grades.begin() + j, all_grades.begin() + j + i);
                         FilterValue grades_bit_value = 0;
+                        LCString grades_lookup;
                         for (auto grade : grades) {
-                            grades_bit_value += _converation_table[LCString(1, grade)];
+                            grades_bit_value += _converation_table[grade];
+                            grades_lookup += grade;
                         }
-                        _converation_table[grades] = grades_bit_value;
-                        _reverse_table[grades_bit_value] = grades;
+                        if (grades_bit_value > 0) {
+                            _converation_table[grades_lookup] = grades_bit_value;
+                            _reverse_table[grades_bit_value] = grades_lookup;
+                        }                        
                     }
                 }
             }

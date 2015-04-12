@@ -14,8 +14,7 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const LCString AnnualIncome::sqlite_type = "INT";
 const LCString AnnualIncome::csv_name = "annual_inc";
 const LCString AnnualIncome::name = "AnnualIncome";
 const FilterValueVector* AnnualIncome::options = nullptr;
-const Filter::Relation AnnualIncome::relation = Filter::Relation::GREATER_THAN_EQUAL;
+const Filter::Relation AnnualIncome::relation = Filter::Relation::LESS_THAN_EQUAL;

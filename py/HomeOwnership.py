@@ -26,7 +26,7 @@ class HomeOwnership(Filter.Filter):
         """
         Constructor
         """
-        options = [0, 1, 2, 3, 4, 5]
+        options = range(0, 6)
 
         Filter.Filter.__init__(self, args, options, current)
 

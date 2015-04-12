@@ -126,6 +126,9 @@
     <ClInclude Include="OpenAccounts.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LoanTerm.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -198,6 +201,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OpenAccounts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoanTerm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

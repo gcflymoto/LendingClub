@@ -27,7 +27,7 @@ class EmploymentLength(Filter.Filter):
         """
         Constructor
         """
-        options = [i for i in range(0, 13)]
+        options = list(range(0, 13))
 
         Filter.Filter.__init__(self, args, options, current)
 

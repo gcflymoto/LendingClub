@@ -26,7 +26,7 @@ class RevolvingLineUtilization(Filter.Filter):
         """
         Constructor
         """
-        options = [float(n) for n in range(5 * 100, 105 * 100, 5 * 100)]
+        options = list(range(5 * 100, 105 * 100, 5 * 100))
 
         Filter.Filter.__init__(self, args, options, current)
 

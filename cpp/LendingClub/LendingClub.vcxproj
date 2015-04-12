@@ -133,6 +133,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LoanTerm.hpp" />
     <ClInclude Include="OpenAccounts.hpp" />
     <ClInclude Include="AmountRequested.hpp" />
     <ClInclude Include="AnnualIncome.hpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="WordsInDescription.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="LoanTerm.cpp" />
     <ClCompile Include="OpenAccounts.cpp" />
     <ClCompile Include="AmountRequested.cpp" />
     <ClCompile Include="AnnualIncome.cpp" />

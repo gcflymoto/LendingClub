@@ -45,8 +45,9 @@ class State(Filter.Filter):
         self.conversion_table = state_bitmap
 
         options = self.power_bitset(
-            [state_bitmap[state] for state in ["CA", "AZ", "FL", "GA", "IL", "MD", "MO", "NV", "TX", "NY"]])
+            [state_bitmap[state] for state in args.states.split(",")])
 
+        # This is too costly to compute
         # self.options = self.powerSet(["AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
         # "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME",
         # "MI", "MN", "MO", "MS", "MT", "NC", "NE", "NH", "NJ", "NM", "NV",

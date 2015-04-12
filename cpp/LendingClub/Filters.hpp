@@ -36,6 +36,7 @@ Created on July 27, 2014
 #include "State.hpp"
 #include "TotalCreditLines.hpp"
 #include "WordsInDescription.hpp"
+#include "LoanTerm.hpp"
 #include "StubFilter.hpp"
 
 namespace lc
@@ -98,6 +99,9 @@ void construct_filter(const Loan::LoanType filter_type,
         break;
     case Loan::DESC_WORD_COUNT:
         (*it) = new WordsInDescription();
+        break;
+    case Loan::TERM:
+        (*it) = new LoanTerm();
         break;
     default:
         assert(filter_type < Loan::SIZE);

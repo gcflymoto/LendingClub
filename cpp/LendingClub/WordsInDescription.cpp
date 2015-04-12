@@ -14,7 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const LCString WordsInDescription::sqlite_type = "INT";
 const LCString WordsInDescription::csv_name = "desc";
 const LCString WordsInDescription::name = "WordsInDescription";
 const FilterValueVector* WordsInDescription::options = nullptr;

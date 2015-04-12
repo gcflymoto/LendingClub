@@ -13,11 +13,10 @@ Created on July 27, 2014
 #ifndef __LC_LCBT_HPP__
 #define __LC_LCBT_HPP__
 
-#include <vector>
-#include <string>
 #include <cmath>
 #include <future>
 #include <malloc.h>
+#include "Types.hpp"
 #include "Loan.hpp"
 #include "LoanData.hpp"
 
@@ -27,10 +26,8 @@ namespace lc
 class LCBT
 {
 public:
-    LCBT(const LoanTypeVector& conversion_filters, const int worker_idx) :
-        _conversion_filters(conversion_filters),
+    LCBT(const int worker_idx) :
         _args(LCArguments::Get()),
-        _filters(conversion_filters.size()),		
         _loan_data(NULL),
         _worker_idx(worker_idx),
         _start_range(0),
@@ -41,10 +38,6 @@ public:
 
     virtual void initialize()
     {
-        // This is the non-parallel version of initialize
-        //
-        _loan_data = new LoanData(_conversion_filters, _worker_idx);
-        _loan_data->initialize();
         _start_range = 0;
         _end_range = _loan_data->num_loans();
     }
@@ -63,7 +56,7 @@ public:
         for (auto i = _start_range; i < _end_range; ++i, ++loan) {
             Filter** f_p = first_filter_p;
             bool filter_matches_b = true;
-            for (auto j = num_filters; j != 0 && filter_matches_b; --j, ++f_p) {
+            for (auto j = num_filters; filter_matches_b && j != 0; --j, ++f_p) {
                 filter_matches_b = (*f_p)->apply(*loan);
             }
 
@@ -184,13 +177,12 @@ public:
     const LoanValueVector& get_invested() const
     {
         return _invested;
-    }
+    }    
 
 private:
-    const LoanTypeVector&                   _conversion_filters;
+    //const LoanTypeVector&                   _conversion_filters;
     const Arguments&                        _args;
     bool                                    _verbose;
-    FilterPtrVector                         _filters;
     const int                               _worker_idx;
     unsigned                                _start_range;
     unsigned                                _end_range;
@@ -215,21 +207,20 @@ struct LCBT_ThreadData {
 class ParallelWorkerLCBT : public LCBT
 {
 public:
-    ParallelWorkerLCBT(const LoanTypeVector& conversion_filters, const int worker_idx) : LCBT(conversion_filters, worker_idx),
-        _args(LCArguments::Get())
+    ParallelWorkerLCBT(const int worker_idx) : LCBT(worker_idx)
     {
     }
 
     virtual void initialize() {
-        // Worker threads do not need to initialize the data        
-        //
+        LCBT::initialize();
+
         auto& loans = get_loan_data().get_loans();
         auto num_loans = loans.size();
 
         // Split up the work among all the threads
         // we use ceil here to so that at worst case end range is a bit over the number of loans
         //
-        auto work_size = static_cast<size_t>(std::ceil(static_cast<double>(num_loans) / _args["workers"].as<unsigned>()));
+        auto work_size = static_cast<size_t>(std::ceil(static_cast<double>(num_loans) / LCArguments::Get()["workers"].as<unsigned>()));
 
         auto start_range = work_size * get_worker_idx();
 
@@ -272,25 +263,19 @@ public:
             thread_data->p.set_value(true);
         }
     }
-
-private:
-    const Arguments&                        _args;
-    FilterPtrVector*                        _test_filters;
 };
 
 
 class ParallelManagerLCBT : public LCBT
 {
 public:
-    ParallelManagerLCBT(const LoanTypeVector& conversion_filters) : LCBT(conversion_filters, -1),
-        _conversion_filters(conversion_filters),
+    ParallelManagerLCBT() : LCBT(-1),
         _num_workers(LCArguments::Get()["workers"].as<unsigned>())
     {
     }
 
     virtual void initialize()
     {
-        // Initialize the data
         LCBT::initialize();
 
         LoanData* loan_data = const_cast<LoanData*>(&get_loan_data());
@@ -304,7 +289,7 @@ public:
 
             // Create all the workers
             //
-            td.lcbt = new ParallelWorkerLCBT(_conversion_filters, i);
+            td.lcbt = new ParallelWorkerLCBT(i);
 
             // Set their data pointer
             //
@@ -343,7 +328,8 @@ public:
         //
         for (unsigned i = 0; i < _num_workers; ++i) {
             _threads[i]->f.get();
-            // For each worker grab the invested loan information to determine the nar
+            
+            // For each worker grab the invested loan information to determine the NAR
             //
             auto results = _threads[i]->lcbt->get_invested();
             _parallel_invested.reserve(_parallel_invested.size() + results.size());
@@ -370,10 +356,9 @@ public:
     }
 
 private:
-    const LoanTypeVector&                   _conversion_filters;
     const unsigned                          _num_workers;
     LoanValueVector                         _parallel_invested;
-    std::vector<LCBT_ThreadData*>           _threads;
+    ThreadDataVector                        _threads;
 };
 
 };

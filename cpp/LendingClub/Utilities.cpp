@@ -2,11 +2,11 @@
 
 using namespace lc;
 
-const std::vector<unsigned long long>* lc::create_range(const unsigned start, const unsigned stop, const unsigned step)
+const UllValueVector* lc::create_range(const unsigned start, const unsigned stop, const unsigned step)
 {
     assert(start <= stop);
 
-    std::vector<unsigned long long>* result = new std::vector<unsigned long long>;
+    UllValueVector* result = new UllValueVector;
 
     for (unsigned idx = start; idx < stop; idx += step) {
         result->push_back(idx);

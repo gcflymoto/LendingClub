@@ -14,7 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const LCString RevolvingLineUtilization::sqlite_type = "INT";
 const LCString RevolvingLineUtilization::csv_name = "revol_util";
 const LCString RevolvingLineUtilization::name = "RevolvingLineUtilization";
 const FilterValueVector* RevolvingLineUtilization::options = nullptr;

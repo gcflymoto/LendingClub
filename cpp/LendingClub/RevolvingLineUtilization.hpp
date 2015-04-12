@@ -23,7 +23,6 @@ namespace lc
 class RevolvingLineUtilization : public Filter
 {
 public:
-    static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
@@ -32,7 +31,7 @@ public:
     RevolvingLineUtilization() : Filter()
     {
         if (options == nullptr) {
-            options = create_range(5 * 100, 100 * 100, 5 * 100);
+            options = create_range(5 * 100, 105 * 100, 5 * 100);
         }
     }
 

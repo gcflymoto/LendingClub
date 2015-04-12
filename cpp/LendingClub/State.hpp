@@ -25,7 +25,6 @@ namespace lc
 class State : public Filter
 {
 public:
-    static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
@@ -66,32 +65,31 @@ public:
             _conversion_table["NH"] = 1ull << 29;
             _conversion_table["NJ"] = 1ull << 30;
             _conversion_table["NM"] = 1ull << 31;
-            _conversion_table["NO"] = 1ull << 32;
-            _conversion_table["NV"] = 1ull << 33;
-            _conversion_table["NY"] = 1ull << 34;
-            _conversion_table["OH"] = 1ull << 35;
-            _conversion_table["OK"] = 1ull << 36;
-            _conversion_table["OR"] = 1ull << 37;
-            _conversion_table["PA"] = 1ull << 38;
-            _conversion_table["RI"] = 1ull << 39;
-            _conversion_table["SC"] = 1ull << 40;
-            _conversion_table["SD"] = 1ull << 41;
-            _conversion_table["TN"] = 1ull << 42;
-            _conversion_table["TX"] = 1ull << 43;
-            _conversion_table["UT"] = 1ull << 44;
-            _conversion_table["VA"] = 1ull << 45;
-            _conversion_table["VT"] = 1ull << 46;
-            _conversion_table["WA"] = 1ull << 47;
-            _conversion_table["WI"] = 1ull << 48;
-            _conversion_table["WV"] = 1ull << 49;
-            _conversion_table["WY"] = 1ull << 50;
-            _conversion_table["NULL"] = 1ull << 51;
+            _conversion_table["NV"] = 1ull << 32;
+            _conversion_table["NY"] = 1ull << 33;
+            _conversion_table["OH"] = 1ull << 34;
+            _conversion_table["OK"] = 1ull << 35;
+            _conversion_table["OR"] = 1ull << 36;
+            _conversion_table["PA"] = 1ull << 37;
+            _conversion_table["RI"] = 1ull << 38;
+            _conversion_table["SC"] = 1ull << 39;
+            _conversion_table["SD"] = 1ull << 40;
+            _conversion_table["TN"] = 1ull << 41;
+            _conversion_table["TX"] = 1ull << 42;
+            _conversion_table["UT"] = 1ull << 43;
+            _conversion_table["VA"] = 1ull << 44;
+            _conversion_table["VT"] = 1ull << 45;
+            _conversion_table["WA"] = 1ull << 46;
+            _conversion_table["WI"] = 1ull << 47;
+            _conversion_table["WV"] = 1ull << 48;
+            _conversion_table["WY"] = 1ull << 49;
+            _conversion_table["NULL"] = 1ull << 50;
 
             const auto& args = LCArguments::Get();
 
             LCString test_states = args["states"].as<LCString>();
 
-            std::vector<std::string> states;
+            StringVector states;
             boost::split(states, test_states, boost::is_any_of(","));
 
             FilterValueVector state_bitmap;

@@ -30,12 +30,12 @@ LOAN_ENUM_revol_utilization = 15
 LOAN_ENUM_addr_state = 16
 LOAN_ENUM_total_acc = 17
 LOAN_ENUM_desc_word_count = 18
+LOAN_ENUM_term = 19
 
 # These enums are only used for conversions
 
-LOAN_ENUM_loan_status = 19
-LOAN_ENUM_issue_datetime = 20
-LOAN_ENUM_number_of_payments = 21
+LOAN_ENUM_loan_status = 20
+LOAN_ENUM_issue_datetime = 21
 LOAN_ENUM_installment = 22
 LOAN_ENUM_int_rate = 23
 LOAN_ENUM_total_pymnt = 24

@@ -13,15 +13,13 @@ Created on July 27, 2014
 #ifndef __LC_LCGA_HPP__
 #define __LC_LCGA_HPP__
 
-#include <vector>
-#include <string>
 #include <chrono>
 #include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <functional>
 #include <map>
-
+#include "Types.hpp"
 #include "Arguments.hpp"
 #include "LCBT.hpp"
 

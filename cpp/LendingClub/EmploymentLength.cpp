@@ -14,8 +14,7 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const LCString EmploymentLength::sqlite_type = "INT";
 const LCString EmploymentLength::csv_name = "emp_length";
 const LCString EmploymentLength::name = "EmploymentLength";
 const FilterValueVector* EmploymentLength::options = nullptr;
-const Filter::Relation EmploymentLength::relation = Filter::Relation::GREATER_THAN_EQUAL;
+const Filter::Relation EmploymentLength::relation = Filter::Relation::LESS_THAN_EQUAL;

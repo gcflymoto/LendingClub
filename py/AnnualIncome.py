@@ -26,7 +26,7 @@ class AnnualIncome(Filter.Filter):
         """
         Constructor
         """
-        options = [i for i in range(0, 300000, 25000)]
+        options = list(range(0, 300000, 25000))
 
         Filter.Filter.__init__(self, args, options, current)
 

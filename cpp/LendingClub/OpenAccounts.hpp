@@ -23,7 +23,6 @@ namespace lc
 class OpenAccounts : public Filter
 {
 public:
-    static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
@@ -71,7 +70,7 @@ public:
 
     inline bool apply(const Loan& loan) const
     {
-        return (loan.OPEN_ACCOUNTS <= get_value());
+        return (loan.open_acc <= get_value());
     }
 
     virtual const LCString& get_name() const

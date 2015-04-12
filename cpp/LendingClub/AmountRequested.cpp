@@ -14,7 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const LCString AmountRequested::sqlite_type = "INT";
 const LCString AmountRequested::csv_name = "funded_amnt";
 const LCString AmountRequested::name = "AmountRequested";
 const FilterValueVector* AmountRequested::options = nullptr;

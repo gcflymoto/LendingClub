@@ -16,11 +16,12 @@ Created on July 28, 2014
 #include <cassert>
 #include <map>
 #include "Types.hpp"
+#include "Types.hpp"
 
 namespace lc
 {
 
-const std::vector<unsigned long long>* create_range(const unsigned start, const unsigned stop, const unsigned step);
+const UllValueVector* create_range(const unsigned start, const unsigned stop, const unsigned step);
 LCString map_to_str(const std::map<LCString, LCString>& m);
 
 // Returns random number a <= N <= b

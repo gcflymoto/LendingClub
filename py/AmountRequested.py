@@ -26,7 +26,7 @@ class AmountRequested(Filter.Filter):
         """
         Constructor
         """
-        options = [n for n in range(5000, 30000, 5000)]
+        options = list(range(5000, 30000, 5000))
 
         Filter.Filter.__init__(self, args, options, current)
 

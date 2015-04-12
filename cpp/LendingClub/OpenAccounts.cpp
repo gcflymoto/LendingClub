@@ -14,7 +14,6 @@ Created on July 28, 2014
 
 using namespace lc;
 
-const LCString OpenAccounts::sqlite_type = "INT";
 const LCString OpenAccounts::csv_name = "OPEN_ACCOUNTS";
 const LCString OpenAccounts::name = "OpenAccounts";
 const FilterValueVector* OpenAccounts::options = nullptr;

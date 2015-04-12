@@ -63,7 +63,7 @@ public:
     {
         assert(current < get_options().size());
         _current = current;
-        _value = get_options()[_current];
+        _value = get_options()[current];
     }
 
     virtual const LCString get_string_value() const = 0;

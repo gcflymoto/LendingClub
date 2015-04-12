@@ -25,7 +25,7 @@ class DebtToIncomeRatio(Filter.Filter):
         """
         Constructor
         """
-        options = [float(p) for p in range(10 * 100, 35 * 100, 5 * 100)]
+        options = list(range(10 * 100, 35 * 100, 5 * 100))
 
         Filter.Filter.__init__(self, args, options, current)
 

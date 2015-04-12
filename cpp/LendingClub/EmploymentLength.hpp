@@ -23,7 +23,6 @@ namespace lc
 class EmploymentLength : public Filter
 {
 public:
-    static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
@@ -89,7 +88,7 @@ public:
             return "10 years";
         }
         else if (value == 12) {
-            return ">10 years";
+            return "10+ years";
         }
         else {
             return boost::lexical_cast<LCString>(value - 1) + " years";
@@ -98,7 +97,7 @@ public:
 
     inline bool apply(const Loan& loan) const
     {
-        return (loan.emp_length >= get_value());
+        return (loan.emp_length <= get_value());
     }
 
     virtual const LCString& get_name() const

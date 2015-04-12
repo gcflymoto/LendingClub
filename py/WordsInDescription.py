@@ -27,7 +27,7 @@ class WordsInDescription(Filter.Filter):
         """
         Constructor
         """
-        options = list(range(25, 250, 50))
+        options = list(range(25, 200, 25))
 
         Filter.Filter.__init__(self, args, options, current)
 

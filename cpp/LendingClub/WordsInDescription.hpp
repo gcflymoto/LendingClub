@@ -25,7 +25,6 @@ template<char Remove> bool BothAreSpaces(char lhs, char rhs) { return (lhs == rh
 class WordsInDescription : public Filter
 {
 public:
-    static const LCString sqlite_type;
     static const LCString csv_name;
     static const LCString name;
     static const FilterValueVector* options;
@@ -34,7 +33,7 @@ public:
     WordsInDescription() : Filter()
     {
         if (options == nullptr) {
-            options = create_range(25, 250, 50);
+            options = create_range(25, 200, 25);
         }
     }
 

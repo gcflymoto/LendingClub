@@ -45,8 +45,8 @@ public:
             _young_loans(0),
             _removed_expired_loans(0)
     { 
-        _loans.reserve(350000);
-        _loan_infos.reserve(350000);
+        _loans.reserve(500000);
+        _loan_infos.reserve(500000);
         
         // Create each of the filters and use its conversion utility for normalizing the data
         //
@@ -141,7 +141,7 @@ public:
 
     virtual void initialize() 
     {
-        std::vector<LCString> stats_paths;
+        StringVector stats_paths;
         boost::split(stats_paths, _args["stats"].as<LCString>(), boost::is_any_of(","));
 
         for (auto& stats_path : stats_paths) {
@@ -236,23 +236,23 @@ public:
                 }
 
                 info_msg("Initializing from " + stats_file_path.string() + " done.");
-                find_average(Loan::OPEN_ACCOUNTS);
-                find_average(Loan::FUNDED_AMNT);
-                find_average(Loan::ANNUAL_INCOME);
-                find_average(Loan::DEBT_TO_INCOME_RATIO);
-                find_average(Loan::DELINQ_2YRS);
-                find_average(Loan::EARLIEST_CREDIT_LINE);
-                find_average(Loan::EMP_LENGTH);
-                find_average(Loan::INQ_LAST_6MTHS);
-                find_average(Loan::MTHS_SINCE_LAST_DELINQ);
-                find_average(Loan::REVOL_UTILIZATION);
-                find_average(Loan::TOTAL_ACC);
-                find_average(Loan::DESC_WORD_COUNT);
             }
             else {
                 error_msg(stats_file_path.string() + " not found");
             }
         }
+        find_average(Loan::OPEN_ACCOUNTS);
+        find_average(Loan::FUNDED_AMNT);
+        find_average(Loan::ANNUAL_INCOME);
+        find_average(Loan::DEBT_TO_INCOME_RATIO);
+        find_average(Loan::DELINQ_2YRS);
+        find_average(Loan::EARLIEST_CREDIT_LINE);
+        find_average(Loan::EMP_LENGTH);
+        find_average(Loan::INQ_LAST_6MTHS);
+        find_average(Loan::MTHS_SINCE_LAST_DELINQ);
+        find_average(Loan::REVOL_UTILIZATION);
+        find_average(Loan::TOTAL_ACC);
+        find_average(Loan::DESC_WORD_COUNT);
     }
 
     virtual bool check_loan(RawLoan& loan)
@@ -320,10 +320,10 @@ public:
         //
         std::sort(data.begin(), data.end());
 
-        // Step 3. Ignore the top and bottom 5% outliers
+        // Step 3. Ignore the top and bottom 2% outliers
         //
-        size_t start_index = static_cast<size_t>(data.size() * 0.05);
-        size_t end_index = static_cast<size_t>(data.size() * 0.95);
+        size_t start_index = static_cast<size_t>(data.size() * 0.02);
+        size_t end_index = static_cast<size_t>(data.size() * 0.98);
 
         // Step 4. Find the sum
         //
@@ -367,23 +367,14 @@ public:
         loan.addr_state = _filters[Loan::ADDR_STATE]->convert(raw_loan.addr_state);
         loan.total_acc = _filters[Loan::TOTAL_ACC]->convert(raw_loan.total_acc);
         loan.desc_word_count = _filters[Loan::DESC_WORD_COUNT]->convert(raw_loan.desc);
+        loan.term = _filters[Loan::TERM]->convert(raw_loan.term);
 
         loan_info.loan_status = raw_loan.loan_status;
         // 
-        // Have to hack the date a bout as it's given in the form of Dec-2011 so normalize it
+        // Have to hack the date a bit as it's given in the form of Dec-2011 so normalize it
         // to 1-Dec-2011 so boost can parse it
         // 
         loan_info.issue_datetime = boost::gregorian::date(boost::gregorian::from_uk_string("1-" + raw_loan.issue_d));		
-
-        if (raw_loan.term == " 36 months") {
-            loan_info.number_of_payments = 36;
-        }
-        else if (raw_loan.term == " 60 months") {
-            loan_info.number_of_payments = 60;
-        } else {
-            std::cerr << "unknown number of payments: " << raw_loan.term << "expecting 36 or 60, skipping\n";
-            return false;
-        }
 
         loan_info.installment = strtod(raw_loan.installment.c_str(), nullptr);
 
@@ -397,7 +388,7 @@ public:
 
         double defaulted_amount = 0.0;
         if ((loan_info.loan_status == "Charged Off") || (loan_info.loan_status == "Default")) {
-            defaulted_amount = ((loan_info.number_of_payments * loan_info.installment) - 
+            defaulted_amount = ((loan.term * loan_info.installment) - 
                                 (total_received_interest + total_received_principal)) * 0.99;
             loan_info.lost = defaulted_amount;
             loan_info.defaulted = 1;
@@ -407,7 +398,7 @@ public:
         }
 
         double loan_profit = 0.0, loan_principal = 0.0, loan_lost = 0.0;
-        unsigned elapsed = loan_info.number_of_payments;
+        unsigned elapsed = static_cast<unsigned>(loan.term);
         double balance = static_cast<double>(loan.funded_amnt);
         double monthly_payment = loan_info.installment;
         double rate = loan_info.int_rate;
