@@ -131,8 +131,9 @@ public:
 
     void sort_by_fitness()
     {
-        auto config_fitness_sort_num_loans = _args["fitness_sort_size"].as<unsigned>();
-        std::sort(_population.begin(), _population.end(), net_apy_cmp(config_fitness_sort_num_loans));
+        static auto config_fitness_sort_num_loans = _args["fitness_sort_size"].as<unsigned>();
+        static net_apy_cmp cmp(config_fitness_sort_num_loans);
+        std::sort(_population.begin(), _population.end(), cmp);
     }
 
     void print_best()
@@ -142,7 +143,9 @@ public:
 
         double expected_apy = 0.0, pct_defaulted = 0.0, net_apy = 0.0, avg_default_loss = 0.0;
         unsigned num_defaulted = 0, loans_per_month = 0;
-        if (best_results.num_loans >= _args["fitness_sort_size"].as<unsigned>()) {
+
+        auto fitness_sort_size = _args["fitness_sort_size"].as<unsigned>();
+        if (best_results.num_loans >= fitness_sort_size) {
             loans_per_month = best_results.loans_per_month;
             expected_apy = best_results.expected_apy;
             num_defaulted = best_results.num_defaulted;
@@ -165,19 +168,29 @@ public:
             _best_net_apy = net_apy;
         }
 
-        LCString filters = "";
+        LCString filters_results = "";
         for (auto& lc_filter : best_filters) {
             auto filter_name = lc_filter->get_name();
             auto filter_val_str = lc_filter->get_string_value();
-            filters += filter_name + " is " + filter_val_str + ',';
+            filters_results += filter_name + " is " + filter_val_str + ',';
         }
 
-        std::cout << "Best Filter: " << filters << '\n';
-        std::cout << "[iteration " << (_iteration + 1) << '/' << _iterations << ' ' << std::setprecision(4) << _iteration_time.count() / (_iteration + 1);
-        std::cout << " sec/iter] Matched " << best_results.num_loans << '/' << _lcbt.num_loans() << " loans ";
-        std::cout << "(" << loans_per_month << "/mo.) test at " << std::setprecision(4) << expected_apy << "% APY. ";
-        std::cout << std::setprecision(4) << num_defaulted << " loans defaulted (" << pct_defaulted << "%, $";
-        std::cout << avg_default_loss << " avg loss) " << net_apy << "% net APY\n";
+        //if (best_results.num_loans < fitness_sort_size) {
+        //    std::stringstream ss;
+        //    ss << "Best Filter for this round: " <<  << '\n';
+        //    ss << "[iteration " << (_iteration + 1) << '/' << _iterations;
+        //    ss << "] Matched " << best_results.num_loans << '\n';
+        //    Reporter::InfoMsg(ss.str());
+        //}
+
+        std::stringstream ss;
+        ss << "Best Overall Filter: " << filters_results << '\n';
+        ss << "[iteration " << (_iteration + 1) << '/' << _iterations << ' ' << std::setprecision(4) << _iteration_time.count() / (_iteration + 1);
+        ss << " sec/iter] Matched " << best_results.num_loans << '/' << _lcbt.num_loans() << " loans ";
+        ss << "(" << loans_per_month << "/mo.) test at " << std::setprecision(4) << expected_apy << "% APY. ";
+        ss << std::setprecision(4) << num_defaulted << " loans defaulted (" << pct_defaulted << "%, $";
+        ss << avg_default_loss << " avg loss) " << net_apy << "% net APY\n";
+        Reporter::InfoMsg(ss.str());
     }
 
     void copy_population(const PopulationType& from_population, PopulationType& to_population)

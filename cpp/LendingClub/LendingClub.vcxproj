@@ -133,6 +133,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Error.hpp" />
+    <ClInclude Include="LoanAnalysis.hpp" />
     <ClInclude Include="LoanTerm.hpp" />
     <ClInclude Include="OpenAccounts.hpp" />
     <ClInclude Include="AmountRequested.hpp" />
@@ -161,6 +163,7 @@
     <ClInclude Include="LoanPurpose.hpp" />
     <ClInclude Include="MonthsSinceLastDelinquency.hpp" />
     <ClInclude Include="PublicRecordsOnFile.hpp" />
+    <ClInclude Include="Reporter.hpp" />
     <ClInclude Include="RevolvingLineUtilization.hpp" />
     <ClInclude Include="State.hpp" />
     <ClInclude Include="stdafx.h" />

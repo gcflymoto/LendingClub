@@ -19,6 +19,7 @@ Created on July 27, 2014
 #include "Types.hpp"
 #include "Loan.hpp"
 #include "LoanData.hpp"
+#include "LoanAnalysis.hpp"
 
 namespace lc
 {
@@ -29,6 +30,7 @@ public:
     LCBT(const int worker_idx) :
         _args(LCArguments::Get()),
         _loan_data(NULL),
+        _loan_analysis(NULL),
         _worker_idx(worker_idx),
         _start_range(0),
         _end_range(0)
@@ -135,7 +137,7 @@ public:
     virtual LoanReturn test(FilterPtrVector& test_filters)
     {
         process_loans(test_filters);
-        return get_loan_data().get_nar(_invested);
+        return get_loan_analysis().get_nar(_invested);
     }
 
     virtual void finish()
@@ -146,13 +148,14 @@ public:
     void debug_msg(const LCString& msg)
     {
         if (_verbose) {
-            std::cout << "Worker[" << _worker_idx << "] " << msg << '\n';
+            Reporter::Worker(_worker_idx).InfoMsg(msg);            
         }
     }
     unsigned num_loans() const
     {
         return _loan_data->num_loans();
     }
+
     const LoanData& get_loan_data() const
     {
         return *_loan_data;
@@ -161,6 +164,16 @@ public:
     void set_loan_data(LoanData* loan_data)
     {
         _loan_data = loan_data;
+    }
+
+    const LoanAnalysis& get_loan_analysis() const
+    {
+        return *_loan_analysis;
+    }
+
+    void set_loan_analysis(LoanAnalysis* loan_analysis)
+    {
+        _loan_analysis = loan_analysis;
     }
 
     int get_worker_idx() const
@@ -187,6 +200,7 @@ private:
     unsigned                                _start_range;
     unsigned                                _end_range;
     LoanData*                               _loan_data;
+    LoanAnalysis*                           _loan_analysis;
     LoanValueVector                         _invested;
 };
 
@@ -336,7 +350,7 @@ public:
             _parallel_invested.insert(_parallel_invested.end(), results.begin(), results.end());
         }
         
-        return get_loan_data().get_nar(_parallel_invested);
+        return get_loan_analysis().get_nar(_parallel_invested);
     }
 
     virtual void finish()

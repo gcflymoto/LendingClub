@@ -95,7 +95,7 @@ public:
             FilterValueVector state_bitmap;
             for (auto& state :states) {
                 if (_conversion_table.find(state) == _conversion_table.end()) {
-                    std::cerr << "Error: not a valid state: " << state << std::endl;
+                    Reporter::ErrorMsg("not a valid state: " + state);
                     exit(-1);
                 }
                 else {

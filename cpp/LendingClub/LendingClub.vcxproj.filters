@@ -129,6 +129,15 @@
     <ClInclude Include="LoanTerm.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LoanAnalysis.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Reporter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Error.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

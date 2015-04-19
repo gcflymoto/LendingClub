@@ -19,6 +19,7 @@ Created on July 28, 2014
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string.hpp>
 #include "Types.hpp"
+#include "Reporter.hpp"
 
 namespace lc
 {
@@ -60,7 +61,7 @@ public:
             boost::program_options::notify(args);
         }
         catch (std::exception& e) {
-            std::cerr << "Error: " << e.what() << '\n';
+            Reporter::ExceptionMsg(e.what());
             return 1;
         }
 
@@ -72,7 +73,9 @@ public:
         auto& args = LCArguments::Get();
 
         if (args.count("help")) {
-            std::cout << desc << '\n';
+            std::stringstream ss;
+            ss << desc;
+            Reporter::InfoMsg(ss.str());
             return 1;
         }
 
@@ -87,25 +90,25 @@ public:
         boost::erase_all(grades, "G");
         boost::erase_all(grades, ",");
         if (!grades.empty()) {
-            std::cerr << "Unknown grade classes specified: " << grades << '\n';
+            Reporter::ErrorMsg("Unknown grade classes specified: " + grades);
             return 1;
         }
 
         LCString data = args["data"].as<LCString>();
         if (data.empty()) {
-            std::cerr << "The name of the data URL is empty\n";
+            Reporter::ErrorMsg("The name of the data URL argument is empty");
             return 1;
         }
 
         LCString stats = args["stats"].as<LCString>();
         if (stats.empty()) {
-            std::cerr << "The name of the CSV input data file is empty\n";
+            Reporter::ErrorMsg("The name of the CSV input data file argument is empty");
             return 1;
         }
 
         LCString csvresults = args["csvresults"].as<LCString>();
         if (csvresults.empty()) {
-            std::cerr << "The name of the CSV output results file is empty\n";
+            Reporter::ErrorMsg("The name of the CSV output results file argument is empty");
             return 1;
         }
 
@@ -114,7 +117,7 @@ public:
         boost::split(terms, test_terms, boost::is_any_of(","));
         for (auto& term : terms) {
             if (term != "36" && term != "60") {
-                std::cerr << "Error: not a valid loan term: " << term << std::endl;
+                Reporter::ErrorMsg("not a valid loan term: " + term);
                 return 1;
             }
         }
@@ -124,52 +127,54 @@ public:
         //
         unsigned workers = args["workers"].as<unsigned>();
         if (workers == 0) {
-            std::cerr << "The number of workers must be greater than 0\n";
+            Reporter::ErrorMsg("The number of workers argument must be greater than 0");
             return 1;
         }
 
         unsigned population_size = args["population_size"].as<unsigned>();
 
         if (workers > population_size) {
-            std::cerr << "The population size: " << population_size << " must be a multiple of the number of workers: " << workers << '\n';
+            std::stringstream ss;
+            ss << "The population size argument: " << population_size << " must be a multiple of the number of workers: " << workers;
+            Reporter::ErrorMsg(ss.str());
             return 1;
         }
 
         unsigned iterations = args["iterations"].as<unsigned>();
         if (iterations == 0) {
-            std::cerr << "The number of iterations must be greater than 0\n";
+            Reporter::ErrorMsg("The number of iterations argument must be greater than 0");
             return 1;
         }
 
         double elite_rate = args["elite_rate"].as<double>();
         if (elite_rate == 0.0 || elite_rate >= 1.0) {
-            std::cerr << "The elite rate must be greater than 0 and less than 1.0\n";
+            Reporter::ErrorMsg("The elite rate argument must be greater than 0 and less than 1.0");
             return 1;
         }
 
         double mutation_rate = args["mutation_rate"].as<double>();
         if (mutation_rate == 0.0 || mutation_rate >= 1.0) {
-            std::cerr << "The mutation rate must be greater than 0 and less than 1.0\n";
+            Reporter::ErrorMsg("The mutation rate argument must be greater than 0 and less than 1.0");
             return 1;
         }
 
         unsigned fitness_sort_size = args["fitness_sort_size"].as<unsigned>();
         if (fitness_sort_size == 0) {
-            std::cerr << "The number of fitness sort size must be greater than 0\n";
+            Reporter::ErrorMsg("The number of fitness sort size argument must be greater than 0");
             return 1;
         }
 
         /*
         unsigned young_loans_in_days = args["young_loans_in_days"].as<unsigned>();
         if (young_loans_in_days == 0) {
-            std::cerr << "The number of young loans days must be greater than 0\n";
+            Reporter::ErrorMsg("The number of young loans days must be greater than 0");
             return 1;
         }
         */
 
         unsigned work_batch = args["work_batch"].as<unsigned>();
         if (work_batch == 0) {
-            std::cerr << "Work batch must be greater than 0\n";
+            Reporter::ErrorMsg("Work batch argument must be greater than 0");
             return 1;
         }
 

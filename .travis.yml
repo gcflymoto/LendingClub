@@ -25,7 +25,6 @@ before_install:
 
 # command to install dependencies
 install:
-  - pip install .
   - pip install pyzmq
 
 language: python
@@ -42,7 +41,7 @@ python:
 
 # command to run tests
 script:
-  - make && make test
+  - make pytest
 
 os:
   - linux
