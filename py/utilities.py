@@ -14,40 +14,47 @@ import platform
 import time
 import csv
 import io
+import os
 
-zmq = None
+
+# ----------------------------------------------------------------------------------------------------------------------
+def reload_cached_file(cached_file, data_files):
+    cached_file_mod = os.path.getmtime(cached_file) if os.path.exists(cached_file) else 0
+    if not cached_file_mod:
+        return True
+
+    # Check modification time for all the data files passed in. If any of them is newer then the cached file
+    # reload all the data files
+    for data_file in data_files:
+        data_file_mod = os.path.getmtime(data_file)
+        if data_file_mod > cached_file_mod:
+            return True
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 def check_for_sqlite():
-    if platform.python_implementation() == 'PyPy':
-        enable_sqlite = 0
-    else:
-        enable_sqlite = 1
-    return enable_sqlite
+    return sqlite is not None
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+def check_for_pyzmq():
+    return zmq is not None
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-def check_for_pyzmq():
-    enable_pyzmq = 1
-
-    if platform.python_implementation() == 'PyPy':
-        enable_pyzmq = 0
-
-    if enable_pyzmq:
-        global zmq
-        try:
-            import zmq
-        except ImportError:
-            zmq = None
-            sys.stderr.write("Did not find pyzmq module installed, disabling parallel workers\n")
-            enable_pyzmq = 0
-
-    # if enable_pyzmq:
-    #    print("Found pyzmq")
-
-    return enable_pyzmq
+def import_module(module_name):
+    try:
+        __import__(module_name)
+        sys.stdout.write("Imported %s\n" % module_name)
+        sys.stdout.flush()
+        return sys.modules[module_name]
+    except ImportError:
+        sys.stdout.write("Warning!! could not import %s\n" % module_name)
+        sys.stdout.flush()
+        return None
 
 
+# ---------------------------------------------------------------------------------------------------------------------
 class Unbuffered(object):
     def __init__(self, stream):
         self.stream = stream
@@ -163,7 +170,7 @@ else:
         # def next(self, unicode=__builtins__.__dict__['unicode']):
         def __next__(self):
             return self.reader.__next__()
-        next=__next__
+        next = __next__
 
         def __iter__(self):
             return self
@@ -225,3 +232,6 @@ def download_data(url, file_name):
         sys.stdout.write(status)
 
     f.close()
+
+zmq = import_module("zmq")
+sqlite = import_module("sqlite3")

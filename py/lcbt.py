@@ -90,6 +90,7 @@ TESTRUN = 0
 PROFILE = 0
 MEMORY = 0
 
+
 class ProfileGuidedOptimization(object):
     def __init__(self, f, initial_value):
         self.f = f
@@ -424,7 +425,8 @@ class ZmqGATest(GATest):
         results_receiver = self.results_receiver
         for _ in range(self.args.workers):
             results_message = results_receiver.recv_json()
-            self.debug_msg("Worker[%i] returned %d results" % (results_message['worker'], len(results_message['results'])))
+            self.debug_msg("Worker[%i] returned %d results" %
+                           (results_message['worker'], len(results_message['results'])))
             for citizen_idx, result in results_message['results']:
                 # sys.stderr.write("results[%d]=%s\n" % (citizen_idx, result))
                 self.population[citizen_idx]['result'] = result
@@ -432,9 +434,11 @@ class ZmqGATest(GATest):
 
 
 class BaseLoanDataTester:
-    def __init__(self, lcbt, filters):
+    def __init__(self, lcbt, conversion_filters, args, worker_idx):
         self.lcbt = lcbt
-        self.filters = filters
+        self.conversion_filters = conversion_filters
+        self.args = args
+        self.worker_idx = worker_idx
         self.loan_data = None
 
     def set_loan_data(self, loan_data):
@@ -443,30 +447,37 @@ class BaseLoanDataTester:
     def get_loan_data(self):
         return self.loan_data
 
+    def load_data(self):
+        pass
+
 
 class PythonLoanDataTester(BaseLoanDataTester):
-    def __init__(self, lcbt, filters, conversion_filters, args, worker_idx):
-        BaseLoanDataTester.__init__(self, lcbt, filters)
-        self.set_loan_data(LoanData.LCLoanData(conversion_filters, args, worker_idx))
+    def __init__(self, lcbt, conversion_filters, args, worker_idx):
+        BaseLoanDataTester.__init__(self, lcbt, conversion_filters, args, worker_idx)
+
+    def load_data(self):
+        loan_data = LoanData.LCLoanData(self.conversion_filters, self.args, self.worker_idx)
+        loan_data.load_only_info(self.worker_idx >= 0)
+        self.set_loan_data(loan_data)
 
     def __call__(self, filters):
         self.lcbt.filters = filters
         consider = self.lcbt.consider
-        invested = [loan for loan in self.loan_data.loans if consider(loan)]
+        invested = [loan[LOAN_ENUM_rowid] for loan in self.loan_data.loans if consider(loan)]
         return self.loan_data.get_nar(invested)
 
 
 class SqliteLoanDataTester(BaseLoanDataTester):
-    def __init__(self, lcbt, filters, conversion_filters, args, worker_idx):
-        BaseLoanDataTester.__init__(self, lcbt, filters)
+    def __init__(self, lcbt, conversion_filters, args, worker_idx):
+        BaseLoanDataTester.__init__(self, lcbt, conversion_filters, args, worker_idx)
 
         # Generate the Sqlite Query
         self.sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join(
-            [lc_filter.query for lc_filter in self.filters if lc_filter.query])
-        # print(self.sql_query)
+            [lc_filter.query for lc_filter in self.conversion_filters.values() if lc_filter.query])
+        #print(self.sql_query)
 
         self.named_sql_query = "SELECT Id FROM Loans WHERE " + ' AND '.join(
-            [lc_filter.named_query for lc_filter in self.filters if lc_filter.query])
+            [lc_filter.named_query for lc_filter in self.conversion_filters.values() if lc_filter.query])
 
         """
         This ends up being a lot slower
@@ -476,18 +487,21 @@ class SqliteLoanDataTester(BaseLoanDataTester):
         """
         # http://www.sqlite.org/cvstrac/wiki?p=PerformanceTuning
         self.expanded_query = "SELECT Id FROM Loans WHERE Id IN\n (" + '\n INTERSECT '.join(
-            ['SELECT Id from Loans WHERE %s' % lc_filter.query for lc_filter in self.filters if
+            ['SELECT Id from Loans WHERE %s' % lc_filter.query for lc_filter in self.conversion_filters.values() if
              lc_filter.query]) + ')'
         # print(self.expanded_query)
 
-        self.set_loan_data(SqliteLoanData.SqliteLCLoanData(conversion_filters, args, worker_idx))
+    def load_data(self):
+        loan_data = SqliteLoanData.SqliteLCLoanData(self.conversion_filters, self.args, self.worker_idx)
+        loan_data.load_only_info(self.worker_idx >= 0)
+        self.set_loan_data(loan_data)
 
     def __call__(self, filters):
         # print(self.sql_query)
         params = tuple(lc_filter.get_value() for lc_filter in filters if '?' in lc_filter.query)
         # print([type(param) for param in params])
         self.loan_data.cursor.execute(self.sql_query, params)
-        invested = [self.loan_data.loans[row[0]] for row in self.loan_data.cursor.fetchall()]
+        invested = [row[0] for row in self.loan_data.cursor.fetchall()]
 
         #
         # params = dict()
@@ -510,7 +524,8 @@ class LCBT:
             self.filters[filter_idx] = lc_filter(args)
 
         tester = SqliteLoanDataTester if args.sqlite else PythonLoanDataTester
-        self.test = tester(self, self.filters, conversion_filters, args, worker_idx)
+        self.test = tester(self, conversion_filters, args, worker_idx)
+        self.test.load_data()
 
         self.args = args
         self.worker_idx = worker_idx
@@ -718,7 +733,7 @@ USAGE
                         help="checking mode: open the CSV results file and filter the loans into a separate file [default: %(default)s]")
     parser.add_argument('-r', '--checkresults', default="LoanStatsNewFiltered.csv",
                         help="file name for the filtered results used during checking mode [default: %(default)s]")
-    parser.add_argument('-z', '--zmq', default=False, action='store_true',
+    parser.add_argument('-z', '--zmq', default=True, action='store_true',
                         help="Use zmq libraries for multi-processing [default: %(default)s]")
     parser.add_argument('-q', '--sqlite', default=1, type=int,
                         help="Use sqlite as the core processing engine for the backtesting [default: %(default)s]")
@@ -738,7 +753,7 @@ USAGE
         args.workers = 1
         enable_workers = 0
 
-    if args.workers > 0 and args.zmq:
+    if enable_workers > 0 and args.zmq:
         enable_zmq = utilities.check_for_pyzmq()
     else:
         enable_zmq = False

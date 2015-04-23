@@ -31,19 +31,20 @@ LOAN_ENUM_addr_state = 16
 LOAN_ENUM_total_acc = 17
 LOAN_ENUM_desc_word_count = 18
 LOAN_ENUM_term = 19
+LOAN_ENUM_SIZE = 20  # The number of LOAN_ENUM enums
 
 # These enums are only used for conversions
 
-LOAN_ENUM_loan_status = 20
-LOAN_ENUM_issue_datetime = 21
-LOAN_ENUM_installment = 22
-LOAN_ENUM_int_rate = 23
-LOAN_ENUM_total_pymnt = 24
-LOAN_ENUM_out_prncp = 25
-LOAN_ENUM_out_prncp_inv = 26
-LOAN_ENUM_profit = 27
-LOAN_ENUM_principal = 28
-LOAN_ENUM_lost = 29
-LOAN_ENUM_defaulted = 30
+LOAN_INFO_ENUM_loan_status = 0
+LOAN_INFO_ENUM_issue_datetime = 1
+LOAN_INFO_ENUM_installment = 2
+LOAN_INFO_ENUM_int_rate = 3
+LOAN_INFO_ENUM_total_pymnt = 4
+LOAN_INFO_ENUM_out_prncp = 5
+LOAN_INFO_ENUM_out_prncp_inv = 6
+LOAN_INFO_ENUM_profit = 7
+LOAN_INFO_ENUM_principal = 8
+LOAN_INFO_ENUM_lost = 9
+LOAN_INFO_ENUM_defaulted = 10
+LOAN_INFO_ENUM_SIZE = 11
 
-LOAN_ENUM_SIZE = 31
