@@ -25,7 +25,7 @@ class LCLoanData:
     # Build a dictionary of columns we are interested in
     columns = dict([(k, None) for k in ["open_acc", "funded_amnt", "annual_inc", "grade",
                                         "dti", "delinq_2yrs", "earliest_cr_line", "emp_length", "home_ownership",
-                                        "is_inc_v", "inq_last_6mths", "purpose", "mths_since_last_delinq", "pub_rec",
+                                        "verification_status", "inq_last_6mths", "purpose", "mths_since_last_delinq", "pub_rec",
                                         "revol_util", "addr_state", "total_acc", "desc", "loan_status", "issue_d",
                                         "term", "installment", "int_rate", "total_pymnt", "out_prncp", "out_prncp_inv",
                                         "total_rec_int", "total_rec_prncp"]])

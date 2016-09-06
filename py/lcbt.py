@@ -718,9 +718,9 @@ USAGE
                         help="Comma separated list of loan terms to test [default: %(default)s]")
     parser.add_argument('-s', '--seed', default=100, help="Random Number Generator Seed [default: %(default)s]")
     parser.add_argument('-d', '--data',
-                        default="https://resources.lendingclub.com/LoanStats3a.csv.zip,https://resources.lendingclub.com/LoanStats3b.csv.zip,https://resources.lendingclub.com/LoanStats3c.csv.zip",
+                        default="https://resources.lendingclub.com/LoanStats3a.csv.zip,https://resources.lendingclub.com/LoanStats3b.csv.zip,https://resources.lendingclub.com/LoanStats3c.csv.zip,https://resources.lendingclub.com/LoanStats3d.csv.zip",
                         help="Comma separated download paths for the notes data files [default: %(default)s]")
-    parser.add_argument('-l', '--stats', default="LoanStats3a.csv.zip,LoanStats3b.csv.zip,LoanStats3c.csv.zip",
+    parser.add_argument('-l', '--stats', default="LoanStats3a.csv.zip,LoanStats3b.csv.zip,LoanStats3c.csv.zip,LoanStats3d.csv.zip",
                         help="Comma separated list of input Loan Stats CSV files [default: %(default)s]")
     parser.add_argument('-c', '--csvresults', default="lc_best.csv",
                         help="Output best results CSV file [default: %(default)s]")

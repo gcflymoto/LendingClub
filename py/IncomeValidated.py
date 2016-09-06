@@ -18,9 +18,9 @@ class IncomeValidated(Filter.Filter):
     classdocs
     """
     sqlite_type = "INT"
-    name = "is_inc_v"
-    query = "(is_inc_v != ?)"
-    named_query = "(is_inc_v != :is_inc_v)"
+    name = "verification_status"
+    query = "(verification_status != ?)"
+    named_query = "(verification_status != :verification_status)"
 
     def __init__(self, args, current=None):
         """
